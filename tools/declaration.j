@@ -27,8 +27,20 @@ export def const PHRASES as list of string init [
 
 /** The state of every item: "ticked", "unticked" or "missing", in order. */
 export func states(body as string) {
+    return statesOf($body, PHRASES);
+}
+
+/**
+ * The state of every checklist item, each found by its stable phrase: a line
+ * `- [x] ...` (or `* [X] ...`) holding the phrase is "ticked", `- [ ] ...`
+ * "unticked", and an item with no such line "missing".
+ * @param {string} body the text holding the checklist
+ * @param {list of string} phrases one lower-case phrase per item
+ * @return {list of string} one state per phrase, in order
+ */
+export func statesOf(body as string, phrases as list of string) {
     def found as list of string;
-    for (def p in PHRASES) {
+    for (def p in $phrases) {
         $found[] = "missing";
     }
     def text as string init strings.replace($body, "\r\n", "\n");
@@ -38,8 +50,8 @@ export func states(body as string) {
             continue;
         }
         def said as string init strings.lower(regex.replace('\s+', $m.groups[1], " "));
-        for (def i in 0..len(PHRASES)) {
-            if (not strings.contains($said, PHRASES[$i]) or $found[$i] == "ticked") {
+        for (def i in 0..len($phrases)) {
+            if (not strings.contains($said, $phrases[$i]) or $found[$i] == "ticked") {
                 continue;
             }
             $found[$i] = "unticked";
