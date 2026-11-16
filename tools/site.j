@@ -44,9 +44,9 @@ export def const DISCLAIMER as string init
 def const INTRO as string init
     '<p class="intro">The Jennifer Academy collects talks that teach the Jennifer ' +
     'programming language, written by the people who use it. Each talk is published under ' +
-    "its author's GitHub account. Open the slides and move with the arrow keys: " +
-    '<kbd>?</kbd> shows the help, <kbd>s</kbd> the speaker notes. Every talk is also a PDF ' +
-    'to read or print.</p>' + "\n";
+    "its author's GitHub account. Open the slides and move with the arrow keys; on a " +
+    'large screen the speaker notes are shown below each slide, <kbd>s</kbd> hides them ' +
+    'and <kbd>?</kbd> shows the help. Every talk is also a PDF to read or print.</p>' + "\n";
 
 def const STYLE as string init ':root {
   color-scheme: light dark;
@@ -261,7 +261,10 @@ func card(t as Talk, base as string) {
         def at as string init esc($base + "tags/" + $tag + "/");
         $out = $out + "<li><a href=\"" + $at + "\">" + esc($tag) + "</a></li>";
     }
-    $out = $out + "</ul>\n" + badges($t, $base);
+    $out = $out + "</ul>\n";
+    if (len($m.translations) > 0) {
+        $out = $out + badges($t, $base);
+    }
     $out = $out + "<div class=\"actions\"><a class=\"primary\" href=\"" + $href;
     $out = $out + "\">Slides</a><a href=\"" + esc($base + pdfPath($t));
     $out = $out + "\" type=\"application/pdf\">PDF</a></div>\n</li>\n";

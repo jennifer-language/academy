@@ -81,6 +81,9 @@ func testFrontPageOrderAndLinks() {
     testing.assertContains($page, "data-level=\"beginner\" data-tags=\"basics new\"");
     testing.assertContains($page, "<div class=\"filters\" id=\"filters\" hidden>");
     testing.assertContains($page, "data-kind=\"level\" data-value=\"beginner\"");
+    # One language: Slides and PDF buttons only, no language badges.
+    testing.assertFalse(strings.contains($page, "class=\"langs\""));
+    testing.assertFalse(strings.contains($page, "class=\"badge\""));
     testing.assertContains(
         $page,
         "<link rel=\"canonical\" href=\"https://academy.jennifer-lang.dev/\">");
@@ -158,6 +161,8 @@ func testTranslationsGetBadgesAndHreflang() {
     $all = sorted($all);
     def index as string init indexPage($all);
     testing.assertContains($index, "data-langs=\"en de\"");
+    # Badges only on the talk with a translation.
+    testing.assertEqual(strings.count($index, "<ul class=\"langs\">"), 1);
     testing.assertContains(
         $index,
         "<a class=\"badge\" href=\"ada/duo/\" hreflang=\"en\" title=\"Two languages\">EN</a>");
