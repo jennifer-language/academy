@@ -9,10 +9,13 @@ Each talk is a Markdown file built with
 the browser and a PDF, and lives under its author's GitHub account:
 
 ```text
-talks/<github-user>/<topic>/talk.md        the slides
+talks/<github-user>/<topic>/talk.md        the slides (talk.<lang>.md per language
+                                           for a talk in several languages)
 talks/<github-user>/<topic>/academy.toml   the catalogue entry
 talks/<github-user>/<topic>/*.png          its images
 ```
+
+A translation is published below its talk, at `/<github-user>/<topic>/<lang>/`.
 
 The talk `talks/mplx/classroom/` is at
 <https://academy.jennifer-lang.dev/mplx/classroom/>.
@@ -30,11 +33,12 @@ All written in Jennifer, under `tools/`:
 | File | What it does |
 | --- | --- |
 | `check.j` | Checks every talk against the rules in CONTRIBUTING.md (`--fast` skips parsing code and building). |
-| `build.sh` | Builds the site into `site/`: every talk (HTML and PDF), the front page, author and tag pages, imprint, `sitemap.xml`, `robots.txt`, `talks.json`, `CNAME`. |
+| `build.sh` | Builds the site into `site/`: every talk (HTML and PDF), the front page, author and tag pages, the legal page (from `legal.md`), `sitemap.xml`, `robots.txt`, `talks.json`, `CNAME`. |
 | `rules.j`, `meta.j` | The rules and the `academy.toml` schema, as a module (`rules_test.j` holds the negative cases). |
 | `site.j`, `gallery.j` | The academy's own pages (`site_test.j` tests order and escaping). |
 | `prepare.j` | Injects a talk's `academy.toml` fields into a copy of `talk.md` for cantrip. |
 | `declaration.j`, `check-declaration.j` | The pull-request declaration check (`declaration_test.j`). |
+| `review.j`, `check-review.j` | The translation-review check for non-English content (`review_test.j`). |
 | `namespaces.sh` | The pull-request namespace checks CI runs on GitHub. |
 | `install-jennifer.sh` | Installs the interpreter CI pins (a release or a commit). |
 
@@ -71,14 +75,27 @@ other sites and tools:
       "level": "beginner",
       "tags": ["teaching", "education"],
       "url": "https://academy.jennifer-lang.dev/mplx/classroom/",
-      "pdf": "https://academy.jennifer-lang.dev/mplx/classroom/classroom.pdf"
+      "pdf": "https://academy.jennifer-lang.dev/mplx/classroom/classroom.pdf",
+      "versions": [
+        {
+          "lang": "en",
+          "primary": true,
+          "title": "Jennifer for the classroom",
+          "description": "...",
+          "url": "https://academy.jennifer-lang.dev/mplx/classroom/",
+          "pdf": "https://academy.jennifer-lang.dev/mplx/classroom/classroom.pdf"
+        }
+      ]
     }
   ]
 }
 ```
 
 The talks are sorted newest first (`updated`, else `date`), then by title.
-`name` and `updated` are `""` when the talk does not set them. `version` goes
+`name` and `updated` are `""` when the talk does not set them. The top-level
+`title`, `description`, `lang`, `url` and `pdf` are the primary language's;
+`versions` lists every language, the primary first, a translation with its
+own `url` (`.../<lang>/`) and `pdf` (`.../<lang>/index.pdf`). `version` goes
 up when a field changes meaning or goes away; new fields may be added.
 
 ## CI and publishing
@@ -95,8 +112,13 @@ up when a field changes meaning or goes away; new fields may be added.
 - **ownership** and **declaration** (GitHub pull requests only): changed talks
   must be in the author's namespace, and the description must carry the ticked
   declaration. Maintainers are exempt.
+- **translation-review** (GitHub pull requests and reviews only): a pull
+  request changing non-English talk content needs a maintainer's approval of
+  its head commit with the ticked reviewer declaration. A submitted, edited or
+  dismissed review re-runs it. Maintainers' own pull requests are exempt.
+- On GitHub, `check.j` annotates each talk problem on its file and line and
+  lists them, grouped by talk, in the job summary.
 - **deploy** (GitHub, pushes to `main`): publishes `site/` to GitHub Pages.
-  It fails while `imprint.md` is still the placeholder.
 
 ### One-time setup
 
@@ -107,12 +129,19 @@ In the GitHub repository's settings:
    `site/CNAME`).
 3. **Pages**: tick "Enforce HTTPS" once the certificate has been issued.
 4. **Environments**: `github-pages` allows deployments from `main`.
+5. **Branch protection** (or a ruleset) on `main`, so the checks block merges:
+   require a pull request before merging, and require the status checks
+   "Check and build the talks" (site), "Namespaces are GitHub users"
+   (accounts), "Talks stay in the author's namespace" (ownership),
+   "Contributor declaration" (declaration) and "Translation review"
+   (translation-review). Without it they only report.
 
 DNS (already set up): a `CNAME` record for `academy.jennifer-lang.dev`
 pointing to `jennifer-language.github.io`.
 
-Before the first deploy, fill in `imprint.md` (name, address and contact as
-required for the site's country) and remove its `TODO:` line.
+The site's `/legal/` page (responsibility per author, how to report a talk,
+the disclaimer) is built from `legal.md`. The site has no imprint; if one is
+ever wanted, it goes into that file.
 
 ## Licences
 
