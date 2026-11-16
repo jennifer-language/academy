@@ -9,7 +9,8 @@ transition: slide
 ![Jennifer](jennifer-logo.png)
 
 A modern interpreted language that explains itself.
-Based on **Jennifer 0.26.0**, November 2026, by [@mplx](https://github.com/mplx).
+
+by [@mplx](https://github.com/mplx)
 
 > It also suits teaching and learning: an interactive REPL, an easy-to-read
 > grammar, and token and AST dumps show what an interpreter does at each stage,
@@ -361,6 +362,8 @@ trimmed here.)
 ```sh
 jennifer repl
 ```
+
+Based on Jennifer 0.26.0, November 2026.
 
 <!-- notes:
 Close with the invitation: install it, open the REPL, and type the first line
