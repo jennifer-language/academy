@@ -1,0 +1,9 @@
+title = "Advanced programming with Jennifer"
+description = "Advanced programming with the Jennifer programming language: concurrency with spawn, tasks and channels, try/catch and error kinds, profiling, when values are copied or borrowed, and performance tuning. Based on Jennifer 0.26.0."
+author = "mplx"
+license = "CC-BY-4.0"
+lang = "en"
+jennifer = "0.26.0"
+date = "2026-11"
+level = "advanced"
+tags = ["concurrency", "error-handling", "profiling", "performance", "memory"]

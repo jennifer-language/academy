@@ -1,0 +1,217 @@
+# SPDX-License-Identifier: LGPL-3.0-only
+# SPDX-FileCopyrightText: Copyright (C) 2026 mplx <mplx@jennifer-lang.dev>
+
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+    # edited: a fixed contributor declaration in the description re-runs the check.
+    types: [opened, synchronize, reopened, edited]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  # The interpreter CI runs against: a release (X.Y.Z, installed from its
+  # checksummed .deb) or a commit of Jennifer's main branch (built with Go).
+  # The tools and cantrip need 0.26.0, which is not released yet, so this pins
+  # the main-branch commit cantrip pins. Switch it to "0.26.0" once it ships.
+  # Not named JENNIFER: the tools read that as the interpreter's path.
+  JENNIFER_REF: "9486c82f34e666796dbbf80e443bd3b31f7d1149"
+  # The cantrip the talks are built with. Its image confinement and cantrip-
+  # names are on main, not yet in a release: pin the 0.1.0 tag once it exists.
+  CANTRIP_REF: "main"
+
+jobs:
+  site:
+    name: Check and build the talks
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # Only a commit needs a toolchain; a release installs from its .deb.
+      - if: ${{ !contains(env.JENNIFER_REF, '.') }}
+        uses: actions/setup-go@v5
+        with:
+          go-version: "1.26"
+
+      - name: Install Jennifer ${{ env.JENNIFER_REF }}
+        run: ./tools/install-jennifer.sh "$JENNIFER_REF"
+
+      - name: Get cantrip ${{ env.CANTRIP_REF }}
+        run: |
+          set -eu
+          git clone --quiet --filter=blob:none https://github.com/jennifer-language/cantrip.git "$RUNNER_TEMP/cantrip"
+          git -C "$RUNNER_TEMP/cantrip" checkout --quiet "$CANTRIP_REF"
+          echo "CANTRIP=$RUNNER_TEMP/cantrip/bin/cantrip" >> "$GITHUB_ENV"
+          echo "cantrip $(git -C "$RUNNER_TEMP/cantrip" rev-parse --short HEAD)"
+
+      - name: Format and lint the tools
+        run: |
+          set -eu
+          unformatted="$(jennifer fmt -l tools/*.j)"
+          if [ -n "$unformatted" ]; then
+            echo "$unformatted" | sed 's/^/::error::needs jennifer fmt: /'
+            exit 1
+          fi
+          jennifer lint tools/*.j
+
+      - name: Test the tools
+        run: |
+          set -eu
+          for t in tools/*_test.j; do
+            jennifer test "$t"
+          done
+
+      - name: Check the talks
+        run: jennifer run tools/check.j
+
+      - name: Build the site
+        run: ./tools/build.sh
+
+      - name: Check the PDFs are well formed
+        run: |
+          set -eu
+          sudo apt-get update -qq
+          sudo apt-get install -y --no-install-recommends qpdf
+          find site -name '*.pdf' -print -exec qpdf --check {} \; > /dev/null
+
+      - name: Upload the site for review
+        uses: actions/upload-artifact@v4
+        with:
+          name: site
+          path: site/
+          include-hidden-files: true
+          retention-days: 7
+
+      - name: Upload the site for Pages
+        if: github.server_url == 'https://github.com' && github.ref == 'refs/heads/main' && github.event_name == 'push'
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: site
+
+  # Every namespace a change touches must be a personal GitHub account, not
+  # an organisation. Asks the GitHub API, so it runs on GitHub only.
+  accounts:
+    name: Namespaces are GitHub users
+    if: github.server_url == 'https://github.com'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Check each touched namespace's account type
+        env:
+          GH_TOKEN: ${{ github.token }}
+          BASE: ${{ github.event_name == 'pull_request' && github.event.pull_request.base.sha || github.event.before }}
+          HEAD: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.sha || github.sha }}
+        run: |
+          set -eu
+          names="$(./tools/namespaces.sh touched "$BASE" "$HEAD")"
+          echo "touched: ${names:-none}"
+          # shellcheck disable=SC2086
+          ./tools/namespaces.sh accounts $names
+
+  # A pull request may add or change talks only in its author's namespace.
+  # Maintainers (owner, members, collaborators) may edit any talk.
+  ownership:
+    name: Talks stay in the author's namespace
+    if: github.server_url == 'https://github.com' && github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Check every changed talk is under talks/<author>/
+        env:
+          AUTHOR: ${{ github.event.pull_request.user.login }}
+          ASSOCIATION: ${{ github.event.pull_request.author_association }}
+          BASE: ${{ github.event.pull_request.base.sha }}
+          HEAD: ${{ github.event.pull_request.head.sha }}
+        run: |
+          set -eu
+          case "$ASSOCIATION" in
+            OWNER | MEMBER | COLLABORATOR)
+              echo "maintainer ($ASSOCIATION): may change any namespace"
+              exit 0 ;;
+          esac
+          ./tools/namespaces.sh owner "$AUTHOR" "$BASE" "$HEAD"
+
+  # A pull request that touches talks/ carries the ticked contributor
+  # declaration (.github/pull_request_template.md). Maintainers are exempt.
+  declaration:
+    name: Contributor declaration
+    if: github.server_url == 'https://github.com' && github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Does the pull request touch talks/?
+        id: scope
+        env:
+          ASSOCIATION: ${{ github.event.pull_request.author_association }}
+          BASE: ${{ github.event.pull_request.base.sha }}
+          HEAD: ${{ github.event.pull_request.head.sha }}
+        run: |
+          set -eu
+          needed=true
+          case "$ASSOCIATION" in
+            OWNER | MEMBER | COLLABORATOR) needed=false ;;
+          esac
+          if [ -z "$(git diff --name-only "$BASE" "$HEAD" -- talks/)" ]; then
+            needed=false
+          fi
+          echo "needed=$needed" >> "$GITHUB_OUTPUT"
+          echo "declaration needed: $needed"
+
+      - if: steps.scope.outputs.needed == 'true' && !contains(env.JENNIFER_REF, '.')
+        uses: actions/setup-go@v5
+        with:
+          go-version: "1.26"
+
+      - name: Install Jennifer ${{ env.JENNIFER_REF }}
+        if: steps.scope.outputs.needed == 'true'
+        run: ./tools/install-jennifer.sh "$JENNIFER_REF"
+
+      # The description goes in through the environment, never into the script.
+      - name: Check the declaration is complete and ticked
+        if: steps.scope.outputs.needed == 'true'
+        env:
+          PR_BODY: ${{ github.event.pull_request.body }}
+        run: jennifer run tools/check-declaration.j
+
+  deploy:
+    name: Publish to academy.jennifer-lang.dev
+    needs: [site, accounts]
+    if: github.server_url == 'https://github.com' && github.ref == 'refs/heads/main' && github.event_name == 'push'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+
+      # The site must not go live with the placeholder imprint.
+      - name: Check the imprint is filled in
+        run: |
+          if grep -q '^TODO: the maintainer fills in' imprint.md; then
+            echo "::error file=imprint.md::imprint.md is still the placeholder; fill in name, address and contact before publishing"
+            exit 1
+          fi
+
+      - id: deploy
+        uses: actions/deploy-pages@v4

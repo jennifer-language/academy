@@ -1,0 +1,121 @@
+# Jennifer Academy
+
+Talks that teach the [Jennifer programming language](https://jennifer-lang.dev/),
+written by the people who use it, published at
+**<https://academy.jennifer-lang.dev/>**.
+
+Each talk is a Markdown file built with
+[cantrip](https://github.com/jennifer-language/cantrip) into a slideshow for
+the browser and a PDF, and lives under its author's GitHub account:
+
+```text
+talks/<github-user>/<topic>/talk.md        the slides
+talks/<github-user>/<topic>/academy.toml   the catalogue entry
+talks/<github-user>/<topic>/*.png          its images
+```
+
+The talk `talks/mplx/classroom/` is at
+<https://academy.jennifer-lang.dev/mplx/classroom/>.
+
+**Contributing a talk:** see [CONTRIBUTING.md](CONTRIBUTING.md), with the
+[content policy](CONTRIBUTING.md#content-policy) and the
+[contributor declaration](CONTRIBUTING.md#the-declaration) every pull request
+carries. The talks are provided as is: see the
+[disclaimer](CONTRIBUTING.md#disclaimer).
+
+## The tools
+
+All written in Jennifer, under `tools/`:
+
+| File | What it does |
+| --- | --- |
+| `check.j` | Checks every talk against the rules in CONTRIBUTING.md (`--fast` skips parsing code and building). |
+| `build.sh` | Builds the site into `site/`: every talk (HTML and PDF), the front page, author and tag pages, imprint, `sitemap.xml`, `robots.txt`, `talks.json`, `CNAME`. |
+| `rules.j`, `meta.j` | The rules and the `academy.toml` schema, as a module (`rules_test.j` holds the negative cases). |
+| `site.j`, `gallery.j` | The academy's own pages (`site_test.j` tests order and escaping). |
+| `prepare.j` | Injects a talk's `academy.toml` fields into a copy of `talk.md` for cantrip. |
+| `declaration.j`, `check-declaration.j` | The pull-request declaration check (`declaration_test.j`). |
+| `namespaces.sh` | The pull-request namespace checks CI runs on GitHub. |
+| `install-jennifer.sh` | Installs the interpreter CI pins (a release or a commit). |
+
+Locally, with an interpreter and a cantrip checkout:
+
+```sh
+export CANTRIP=../cantrip/bin/cantrip        # in the workspace: ../apps/cantrip/bin/cantrip
+jennifer run tools/check.j
+for t in tools/*_test.j; do jennifer test "$t"; done
+tools/build.sh                               # then open site/index.html
+```
+
+## talks.json
+
+`https://academy.jennifer-lang.dev/talks.json` is the merged catalogue, for
+other sites and tools:
+
+```json
+{
+  "version": 1,
+  "site": "https://academy.jennifer-lang.dev/",
+  "talks": [
+    {
+      "author": "mplx",
+      "name": "",
+      "topic": "classroom",
+      "title": "Jennifer for the classroom",
+      "description": "...",
+      "license": "CC-BY-4.0",
+      "lang": "en",
+      "jennifer": "0.26.0",
+      "date": "2026-11",
+      "updated": "",
+      "level": "beginner",
+      "tags": ["teaching", "education"],
+      "url": "https://academy.jennifer-lang.dev/mplx/classroom/",
+      "pdf": "https://academy.jennifer-lang.dev/mplx/classroom/classroom.pdf"
+    }
+  ]
+}
+```
+
+The talks are sorted newest first (`updated`, else `date`), then by title.
+`name` and `updated` are `""` when the talk does not set them. `version` goes
+up when a field changes meaning or goes away; new fields may be added.
+
+## CI and publishing
+
+`.github/workflows/ci.yml` runs on every push and pull request:
+
+- **site** (GitHub and Forgejo): formats and lints the tools, runs their tests,
+  runs `tools/check.j`, builds the site and checks the PDFs with `qpdf`. The
+  interpreter is pinned by `JENNIFER_REF` (a main-branch commit until 0.26.0
+  is released), cantrip by `CANTRIP_REF` (`main` until cantrip 0.1.0 is
+  tagged).
+- **accounts** (GitHub only): every namespace a change touches must be a
+  personal GitHub account, asked through the GitHub API.
+- **ownership** and **declaration** (GitHub pull requests only): changed talks
+  must be in the author's namespace, and the description must carry the ticked
+  declaration. Maintainers are exempt.
+- **deploy** (GitHub, pushes to `main`): publishes `site/` to GitHub Pages.
+  It fails while `imprint.md` is still the placeholder.
+
+### One-time setup
+
+In the GitHub repository's settings:
+
+1. **Pages**: Source "GitHub Actions".
+2. **Pages**: Custom domain `academy.jennifer-lang.dev` (the build also writes
+   `site/CNAME`).
+3. **Pages**: tick "Enforce HTTPS" once the certificate has been issued.
+4. **Environments**: `github-pages` allows deployments from `main`.
+
+DNS (already set up): a `CNAME` record for `academy.jennifer-lang.dev`
+pointing to `jennifer-language.github.io`.
+
+Before the first deploy, fill in `imprint.md` (name, address and contact as
+required for the site's country) and remove its `TODO:` line.
+
+## Licences
+
+- Talks (`talks/`): [CC BY 4.0](LICENSE), by their authors.
+- Tools (`tools/`, `.github/`): [LGPL-3.0-only](LICENSE-tools), with SPDX
+  headers.

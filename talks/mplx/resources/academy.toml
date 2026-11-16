@@ -1,0 +1,9 @@
+title = "Jennifer resources"
+description = "Where to find everything around the Jennifer programming language: the interpreter, jvc, the deck registry, the curated Deckyard community decks, the apps and the demos. Based on Jennifer 0.26.0."
+author = "mplx"
+license = "CC-BY-4.0"
+lang = "en"
+jennifer = "0.26.0"
+date = "2026-11"
+level = "beginner"
+tags = ["ecosystem", "getting-started", "tooling", "decks", "jvc"]

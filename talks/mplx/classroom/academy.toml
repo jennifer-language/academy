@@ -1,0 +1,9 @@
+title = "Jennifer for the classroom"
+description = "Why the Jennifer programming language suits teaching and learning: a REPL, a readable grammar, token and AST dumps, a linter, a profiler, tests, and strict rules that turn mistakes into clear messages."
+author = "mplx"
+license = "CC-BY-4.0"
+lang = "en"
+jennifer = "0.26.0"
+date = "2026-11"
+level = "beginner"
+tags = ["teaching", "education", "repl", "linter", "profiler", "testing", "basics"]
