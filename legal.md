@@ -1,6 +1,4 @@
-# Imprint
-
-TODO: the maintainer fills in name, address and contact as required for the site's country (Impressum)
+# Legal
 
 The Jennifer Academy is part of the Jennifer programming language project.
 Each talk is published under its author's personal GitHub account, and its

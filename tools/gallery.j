@@ -10,8 +10,9 @@
  *
  * Reads every talk's academy.toml and writes `index.html`, one
  * `<user>/index.html` per author, one `tags/<tag>/index.html` per tag,
- * `imprint/index.html` from `imprint.md`, `sitemap.xml`, `robots.txt` and
- * `talks.json`, and adds a canonical link to each built slideshow. Run it
+ * `legal/index.html` from `legal.md`, `sitemap.xml`, `robots.txt` and
+ * `talks.json`, and adds canonical and hreflang links to each built
+ * slideshow, one per language version. Run it
  * from the repository root after `tools/build.sh` has built the talks (the
  * script calls it); it refuses a talk whose academy.toml is invalid.
  * @module gallery
@@ -72,9 +73,14 @@ for (def t in $all) {
         fs.mkdirAll(path.join($out, $t.user));
         fs.writeString(path.join($out, $t.user, "index.html"), site.userPage($all, $t.user));
     }
-    def slides as string init path.join($out, $t.user, $t.topic, "index.html");
-    if (fs.isFile($slides)) {
-        fs.writeString($slides, site.withCanonical(fs.readString($slides), $t));
+    for (def v in meta.versionsOf($t.meta)) {
+        def slides as string init path.join($out, $t.user, $t.topic, "index.html");
+        if (not $v.primary) {
+            $slides = path.join($out, $t.user, $t.topic, $v.lang, "index.html");
+        }
+        if (fs.isFile($slides)) {
+            fs.writeString($slides, site.withHead(fs.readString($slides), $t, $v));
+        }
     }
 }
 def tags as list of string init site.tagsOf($all);
@@ -82,10 +88,8 @@ for (def tag in $tags) {
     fs.mkdirAll(path.join($out, "tags", $tag));
     fs.writeString(path.join($out, "tags", $tag, "index.html"), site.tagPage($all, $tag));
 }
-fs.mkdirAll(path.join($out, "imprint"));
-fs.writeString(
-    path.join($out, "imprint", "index.html"),
-    site.imprintPage(fs.readString("imprint.md")));
+fs.mkdirAll(path.join($out, "legal"));
+fs.writeString(path.join($out, "legal", "index.html"), site.legalPage(fs.readString("legal.md")));
 fs.writeString(path.join($out, "sitemap.xml"), site.sitemap($all));
 fs.writeString(path.join($out, "robots.txt"), site.robots());
 fs.writeString(path.join($out, "talks.json"), site.catalogue($all));

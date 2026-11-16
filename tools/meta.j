@@ -33,7 +33,11 @@ export def const KEYS as list of string init [
     "updated",
     "level",
     "tags",
+    "translations",
 ];
+
+/** The keys a `[translations.<lang>]` table may hold. */
+export def const TRANSLATION_KEYS as list of string init ["title", "description", "keywords"];
 
 /** The keys that must be there. */
 export def const REQUIRED as list of string init [
@@ -48,6 +52,193 @@ export def const REQUIRED as list of string init [
     "tags",
 ];
 
+/** The ISO 639-1 language codes (all 183): the languages a talk may be in. */
+export def const ISO_CODES as list of string init [
+    "aa",
+    "ab",
+    "ae",
+    "af",
+    "ak",
+    "am",
+    "an",
+    "ar",
+    "as",
+    "av",
+    "ay",
+    "az",
+    "ba",
+    "be",
+    "bg",
+    "bi",
+    "bm",
+    "bn",
+    "bo",
+    "br",
+    "bs",
+    "ca",
+    "ce",
+    "ch",
+    "co",
+    "cr",
+    "cs",
+    "cu",
+    "cv",
+    "cy",
+    "da",
+    "de",
+    "dv",
+    "dz",
+    "ee",
+    "el",
+    "en",
+    "eo",
+    "es",
+    "et",
+    "eu",
+    "fa",
+    "ff",
+    "fi",
+    "fj",
+    "fo",
+    "fr",
+    "fy",
+    "ga",
+    "gd",
+    "gl",
+    "gn",
+    "gu",
+    "gv",
+    "ha",
+    "he",
+    "hi",
+    "ho",
+    "hr",
+    "ht",
+    "hu",
+    "hy",
+    "hz",
+    "ia",
+    "id",
+    "ie",
+    "ig",
+    "ii",
+    "ik",
+    "io",
+    "is",
+    "it",
+    "iu",
+    "ja",
+    "jv",
+    "ka",
+    "kg",
+    "ki",
+    "kj",
+    "kk",
+    "kl",
+    "km",
+    "kn",
+    "ko",
+    "kr",
+    "ks",
+    "ku",
+    "kv",
+    "kw",
+    "ky",
+    "la",
+    "lb",
+    "lg",
+    "li",
+    "ln",
+    "lo",
+    "lt",
+    "lu",
+    "lv",
+    "mg",
+    "mh",
+    "mi",
+    "mk",
+    "ml",
+    "mn",
+    "mr",
+    "ms",
+    "mt",
+    "my",
+    "na",
+    "nb",
+    "nd",
+    "ne",
+    "ng",
+    "nl",
+    "nn",
+    "no",
+    "nr",
+    "nv",
+    "ny",
+    "oc",
+    "oj",
+    "om",
+    "or",
+    "os",
+    "pa",
+    "pi",
+    "pl",
+    "ps",
+    "pt",
+    "qu",
+    "rm",
+    "rn",
+    "ro",
+    "ru",
+    "rw",
+    "sa",
+    "sc",
+    "sd",
+    "se",
+    "sg",
+    "si",
+    "sk",
+    "sl",
+    "sm",
+    "sn",
+    "so",
+    "sq",
+    "sr",
+    "ss",
+    "st",
+    "su",
+    "sv",
+    "sw",
+    "ta",
+    "te",
+    "tg",
+    "th",
+    "ti",
+    "tk",
+    "tl",
+    "tn",
+    "to",
+    "tr",
+    "ts",
+    "tt",
+    "tw",
+    "ty",
+    "ug",
+    "uk",
+    "ur",
+    "uz",
+    "ve",
+    "vi",
+    "vo",
+    "wa",
+    "wo",
+    "xh",
+    "yi",
+    "yo",
+    "za",
+    "zh",
+    "zu",
+];
+
 /** The one licence a talk is published under (the contributor declaration's). */
 export def const LICENSE as string init "CC-BY-4.0";
 
@@ -60,6 +251,7 @@ export def const MAX_DESCRIPTION as int init 300;
 export def const MAX_NAME as int init 80;
 export def const MAX_TAGS as int init 8;
 export def const MAX_TAG as int init 24;
+export def const MAX_KEYWORDS as int init 200;
 
 /** A talk's catalogue entry. `name` and `updated` are "" when not given. */
 export def struct Meta {
@@ -73,7 +265,25 @@ export def struct Meta {
     date as string,
     updated as string,
     level as string,
-    tags as list of string
+    tags as list of string,
+    translations as list of Translation
+};
+
+/** A further language of a talk: `[translations.<lang>]`. */
+export def struct Translation {
+    lang as string,
+    title as string,
+    description as string,
+    keywords as string
+};
+
+/** One language version of a talk, primary or translated, with its catalogue text. */
+export def struct Version {
+    lang as string,
+    primary as bool,
+    title as string,
+    description as string,
+    keywords as string
 };
 
 /** The parsed entry and what is wrong with it (one message per problem). */
@@ -105,6 +315,12 @@ func typeProblems(doc as toml.Value) {
         if ($key == "tags") {
             if ($kind != "list") {
                 $out[] = "tags must be a list of strings";
+            }
+            continue;
+        }
+        if ($key == "translations") {
+            if ($kind != "map") {
+                $out[] = "translations must be tables, [translations.<lang>]";
             }
             continue;
         }
@@ -153,27 +369,34 @@ func plainProblem(key as string, s as string) {
     return "";
 }
 
-/** The problems with the values (the types are already right). */
-func valueProblems(m as Meta, user as string) {
+/** The problems with a title and a description; `prefix` names where they are. */
+func textProblems(prefix as string, title as string, description as string) {
     def out as list of string;
-    for (def key in ["title", "description", "name"]) {
-        def v as string init $m.title;
-        if ($key == "description") {
-            $v = $m.description;
-        } elseif ($key == "name") {
-            $v = $m.name;
-        }
-        def p as string init plainProblem($key, $v);
+    for (def p in [
+        plainProblem($prefix + "title", $title),
+        plainProblem($prefix + "description", $description)
+    ]) {
         if ($p != "") {
             $out[] = $p;
         }
     }
-    if (strings.trim($m.title) == "" or len($m.title) > MAX_TITLE) {
-        $out[] = "title must be 1 to {MAX_TITLE} characters";
+    if (strings.trim($title) == "" or len($title) > MAX_TITLE) {
+        $out[] = $prefix + "title must be 1 to {MAX_TITLE} characters";
     }
-    def size as int init len($m.description);
+    def size as int init len($description);
     if ($size < MIN_DESCRIPTION or $size > MAX_DESCRIPTION) {
-        $out[] = "description is {$size} characters, not {MIN_DESCRIPTION} to {MAX_DESCRIPTION}";
+        $out[] = $prefix +
+            "description is {$size} characters, not {MIN_DESCRIPTION} to {MAX_DESCRIPTION}";
+    }
+    return $out;
+}
+
+/** The problems with the values (the types are already right). */
+func valueProblems(m as Meta, user as string) {
+    def out as list of string init textProblems("", $m.title, $m.description);
+    def p as string init plainProblem("name", $m.name);
+    if ($p != "") {
+        $out[] = $p;
     }
     if (len($m.name) > MAX_NAME) {
         $out[] = "name must be at most {MAX_NAME} characters";
@@ -184,8 +407,8 @@ func valueProblems(m as Meta, user as string) {
     if ($m.license != LICENSE) {
         $out[] = "license must be \"{LICENSE}\", got \"{$m.license}\"";
     }
-    if (not regex.matches('^[a-z]{2,3}$', $m.lang)) {
-        $out[] = "lang must be a primary language tag such as \"en\" or \"de\", got \"{$m.lang}\"";
+    if (not lists.contains(ISO_CODES, $m.lang)) {
+        $out[] = "lang must be an ISO 639-1 code such as \"en\" or \"de\", got \"{$m.lang}\"";
     }
     if (not regex.matches('^[0-9]+\.[0-9]+\.[0-9]+$', $m.jennifer)) {
         $out[] = "jennifer must be a release version X.Y.Z, got \"{$m.jennifer}\"";
@@ -223,6 +446,67 @@ func tagProblems(tags as list of string) {
     return $out;
 }
 
+/** A string in a translation table, or "" when absent or not a string. */
+func tableText(doc as toml.Value, at as string, key as string) {
+    def ptr as string init $at + "/" + $key;
+    if (not toml.has($doc, $ptr) or toml.typeOf($doc, $ptr) != "string") {
+        return "";
+    }
+    return toml.asString($doc, $ptr);
+}
+
+/** The problems with one `[translations.<lang>]` table, read at `at`. */
+func translationProblems(doc as toml.Value, at as string, t as Translation, primary as string) {
+    def out as list of string;
+    def name as string init "translations." + $t.lang;
+    if (not lists.contains(ISO_CODES, $t.lang)) {
+        $out[] = "[{$name}]: \"{$t.lang}\" is not an ISO 639-1 code";
+    }
+    if ($t.lang == $primary) {
+        $out[] = "[{$name}]: {$t.lang} is the primary language; use title and description";
+    }
+    if (toml.typeOf($doc, $at) != "map") {
+        $out[] = "[{$name}] must be a table";
+        return $out;
+    }
+    for (def key in toml.keys($doc, $at)) {
+        if (not lists.contains(TRANSLATION_KEYS, $key)) {
+            $out[] = "[{$name}]: unknown key \"{$key}\"";
+        } elseif (toml.typeOf($doc, $at + "/" + $key) != "string") {
+            $out[] = "[{$name}]: {$key} must be a string";
+        }
+    }
+    for (def p in textProblems("[" + $name + "] ", $t.title, $t.description)) {
+        $out[] = $p;
+    }
+    def kw as string init plainProblem("[" + $name + "] keywords", $t.keywords);
+    if ($kw != "") {
+        $out[] = $kw;
+    }
+    if (len($t.keywords) > MAX_KEYWORDS) {
+        $out[] = "[{$name}]: keywords must be at most {MAX_KEYWORDS} characters";
+    }
+    return $out;
+}
+
+/** The translation tables, in file order, and their problems appended to `problems`. */
+func translationsOf(doc as toml.Value, primary as string) {
+    def out as list of Translation;
+    if (not toml.has($doc, "/translations") or toml.typeOf($doc, "/translations") != "map") {
+        return $out;
+    }
+    for (def lang in toml.keys($doc, "/translations")) {
+        def at as string init "/translations/" + $lang;
+        $out[] = Translation{
+            lang: $lang,
+            title: tableText($doc, $at, "title"),
+            description: tableText($doc, $at, "description"),
+            keywords: tableText($doc, $at, "keywords"),
+        };
+    }
+    return $out;
+}
+
 /**
  * Parse and check an academy.toml.
  * @param {string} source the file's text
@@ -252,9 +536,16 @@ export func parse(source as string, user as string) {
         updated: text($doc, "updated"),
         level: text($doc, "level"),
         tags: tagsOf($doc),
+        translations: [],
     };
+    $m.translations = translationsOf($doc, $m.lang);
     for (def p in valueProblems($m, $user)) {
         $problems[] = $p;
+    }
+    for (def t in $m.translations) {
+        for (def p in translationProblems($doc, "/translations/" + $t.lang, $t, $m.lang)) {
+            $problems[] = $p;
+        }
     }
     for (def p in tagProblems($m.tags)) {
         $problems[] = $p;
@@ -279,12 +570,42 @@ func quoted(v as string) {
 }
 
 /**
+ * Every language version of a talk: the primary language first, then each
+ * translation in file order.
+ * @param {Meta} m an entry
+ * @return {list of Version} at least the primary version
+ */
+export func versionsOf(m as Meta) {
+    def out as list of Version init [
+        Version{
+            lang: $m.lang,
+            primary: true,
+            title: $m.title,
+            description: $m.description,
+            keywords: "",
+        }
+    ];
+    for (def t in $m.translations) {
+        $out[] = Version{
+            lang: $t.lang,
+            primary: false,
+            title: $t.title,
+            description: $t.description,
+            keywords: $t.keywords,
+        };
+    }
+    return $out;
+}
+
+/**
  * The front-matter lines injected for cantrip, which writes them into the
- * HTML and PDF metadata.
+ * HTML and PDF metadata: the version's title, description and language, and
+ * the talk's author and date.
  * @param {Meta} m a valid entry
+ * @param {Version} v the language version being built
  * @return {list of string} `key: "value"` lines, without the `---` fences
  */
-export func frontMatterLines(m as Meta) {
+export func frontMatterLines(m as Meta, v as Version) {
     def who as string init "@" + $m.author;
     if ($m.name != "") {
         $who = $m.name + " (@" + $m.author + ")";
@@ -299,12 +620,16 @@ export func frontMatterLines(m as Meta) {
             $words[] = $t;
         }
     }
+    def keywords as string init strings.join($words, ", ");
+    if ($v.keywords != "") {
+        $keywords = $v.keywords;
+    }
     return [
-        "title: " + quoted($m.title),
-        "description: " + quoted($m.description),
-        "subject: " + quoted($m.description),
-        "keywords: " + quoted(strings.join($words, ", ")),
-        "lang: " + quoted($m.lang),
+        "title: " + quoted($v.title),
+        "description: " + quoted($v.description),
+        "subject: " + quoted($v.description),
+        "keywords: " + quoted($keywords),
+        "lang: " + quoted($v.lang),
         "author: " + quoted($who),
         "date: " + quoted($month),
     ];

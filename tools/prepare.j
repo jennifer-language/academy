@@ -4,12 +4,14 @@
 # pragma-jennifer-version: >=0.26.0
 
 /**
- * Write a buildable copy of one talk: talk.md with the catalogue fields of
- * academy.toml injected into its front matter, plus its images.
+ * Write a buildable copy of every language version of one talk: its talk
+ * file with the catalogue fields of academy.toml injected into the front
+ * matter, plus the talk's images, into OUT/<lang>/talk.md.
  *
  *   jennifer run tools/prepare.j talks/<user>/<topic> OUT
  *
- * Prints the prepared talk.md's path; exits 1 when academy.toml is invalid.
+ * Prints one line per version, `<lang> <primary|translation> <path>`, the
+ * primary language first; exits 1 when academy.toml is invalid.
  * @module prepare
  * @author mplx <mplx@jennifer-lang.dev>
  * @license LGPL-3.0-only
@@ -35,4 +37,11 @@ for (def p in $entry.problems) {
 if (len($entry.problems) > 0) {
     exit 1;
 }
-io.printf("%s\n", rules.prepare($dir, $entry.meta, os.ARGS[2]));
+for (def v in meta.versionsOf($entry.meta)) {
+    def kind as string init "translation";
+    if ($v.primary) {
+        $kind = "primary";
+    }
+    def out as string init path.join(os.ARGS[2], $v.lang);
+    io.printf("%s %s %s\n", $v.lang, $kind, rules.prepare($dir, $entry.meta, $v, $out));
+}

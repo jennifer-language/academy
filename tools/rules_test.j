@@ -289,7 +289,7 @@ func testPrepareInjectsTheCatalogue() {
     def entry as meta.Checked init readMeta($dir, "ada");
     testing.assertEqual($entry.problems, []);
     def out as string init path.join($root, "prepared");
-    def prepared as string init prepare($dir, $entry.meta, $out);
+    def prepared as string init prepare($dir, $entry.meta, meta.versionsOf($entry.meta)[0], $out);
     def lines as list of string init strings.split(fs.readString($prepared), "\n");
     testing.assertEqual(
         $lines[0..11],
@@ -532,7 +532,7 @@ func testLayout() {
     testing.assertEqual(len($found), 7);
     testing.assertContains($messages, "README.md: layout:");
     testing.assertContains($messages, "Ada2: namespace:");
-    testing.assertContains($messages, "empty: layout: a talk directory holds exactly one talk");
+    testing.assertContains($messages, "empty: layout: " + MSG_NO_TALK);
     testing.assertContains($messages, "Bad_Slug: layout:");
     testing.assertContains($messages, "jennifer-language: namespace:");
     testing.assertContains($messages, "notes.txt: layout:");
@@ -647,4 +647,208 @@ func testImprintNotLastFails() {
         "---\n\n## Second",
         strings.trim(IMPRINT) + "\n\n---\n\n## Second");
     testing.assertEqual(rulesOf(checked($text)), ["author"]);
+}
+
+# ---------------------------------------------------------------------------
+# Talks in several languages
+# ---------------------------------------------------------------------------
+
+/** The German version of GOOD. */
+def const GOOD_DE as string init '---
+theme: plain
+---
+
+# Ein guter Vortrag
+
+Von @ada. Basierend auf Jennifer 0.26.0, mit Umlauten: ä ö ü ß é ² €.
+
+<!-- notes: Begrüßung -->
+';
+
+/** The table GOOD_META gains for the German version. */
+def const TABLE_DE as string init '
+[translations.de]
+title = "Ein guter Vortrag"
+description = "Ein kurzer Vortrag, der alle Regeln erfüllt, mit langer Beschreibung dazu."
+keywords = "jennifer, grundlagen"
+';
+
+/** A talk directory with the given files (name to text) and academy.toml. */
+func makeFiles(files as map of string to string, entry as string) {
+    def root as string init fs.makeTempDir("", "academy-test-");
+    def dir as string init path.join($root, "talks", "ada", "talk");
+    fs.mkdirAll($dir);
+    for (def name in $files) {
+        fs.writeString(path.join($dir, $name), $files[$name]);
+    }
+    fs.writeString(path.join($dir, "academy.toml"), $entry);
+    return $dir;
+}
+
+/** Check a talk made of these files, layout included, and return the findings. */
+func checkedFiles(files as map of string to string, entry as string) {
+    def dir as string init makeFiles($files, $entry);
+    defer fs.removeAll(path.dir(path.dir(path.dir($dir))));
+    def out as list of Finding init checkLayout(path.dir(path.dir($dir)));
+    for (def f in checkTalk($dir, "ada", fast())) {
+        $out[] = $f;
+    }
+    return $out;
+}
+
+func testTwoLanguagesPass() {
+    def files as map of string to string init {"talk.en.md": GOOD, "talk.de.md": GOOD_DE};
+    testing.assertEqual(checkedFiles($files, GOOD_META + TABLE_DE), []);
+}
+
+func testTalkFileLang() {
+    testing.assertEqual(talkFileLang("talk.md"), "");
+    testing.assertEqual(talkFileLang("talk.de.md"), "de");
+    testing.assertEqual(talkFileLang("talk.EN.md"), "EN");
+    testing.assertEqual(talkFileLang("notes.md"), "-");
+    testing.assertTrue(isTalkLang("de"));
+    testing.assertFalse(isTalkLang("xx"));
+    testing.assertFalse(isTalkLang("EN"));
+    testing.assertFalse(isTalkLang("deu"));
+    testing.assertEqual(len(meta.ISO_CODES), 183);
+}
+
+func testBothFormsFail() {
+    def files as map of string to string init {"talk.md": GOOD, "talk.de.md": GOOD_DE};
+    def found as list of Finding init checkedFiles($files, GOOD_META + TABLE_DE);
+    def text as string init messagesOf($found);
+    testing.assertContains($text, "layout: " + MSG_BOTH_FORMS);
+    testing.assertContains($text, "[translations.de] has no talk.de.md");
+}
+
+func testBadLanguageCodesFail() {
+    for (def bad in ["talk.xx.md", "talk.EN.md", "talk.deu.md"]) {
+        def files as map of string to string init {"talk.en.md": GOOD};
+        $files[$bad] = GOOD_DE;
+        def found as list of Finding init checkedFiles($files, GOOD_META);
+        testing.assertEqual(rulesOf($found), ["layout"]);
+        testing.assertContains($found[0].message, "is not an ISO 639-1 code");
+    }
+}
+
+func testMissingTableFails() {
+    def files as map of string to string init {"talk.en.md": GOOD, "talk.de.md": GOOD_DE};
+    def found as list of Finding init checkedFiles($files, GOOD_META);
+    testing.assertEqual(rulesOf($found), ["languages"]);
+    testing.assertContains($found[0].message, "talk.de.md has no [translations.de] table");
+}
+
+func testTableWithoutFileFails() {
+    def files as map of string to string init {"talk.en.md": GOOD};
+    def found as list of Finding init checkedFiles($files, GOOD_META + TABLE_DE);
+    testing.assertEqual(rulesOf($found), ["languages"]);
+    testing.assertContains($found[0].message, "[translations.de] has no talk.de.md");
+}
+
+func testPrimaryWithoutFileFails() {
+    def files as map of string to string init {"talk.de.md": GOOD_DE};
+    def entry as string init swap(GOOD_META, "lang = \"en\"", "lang = \"fr\"") + TABLE_DE;
+    def found as list of Finding init checkedFiles($files, $entry);
+    testing.assertEqual(rulesOf($found), ["languages"]);
+    testing.assertContains($found[0].message, "lang is \"fr\" but there is no talk.fr.md");
+}
+
+func testTranslationTables() {
+    testing.assertContains(metaProblems("lang = \"en\"", "lang = \"xx\""), "ISO 639-1");
+    def t as string init GOOD_META + TABLE_DE;
+    def problems as string init messagesOf(checkedFiles(
+        {"talk.en.md": GOOD, "talk.de.md": GOOD_DE},
+        swap($t, "keywords = ", "colour = ")));
+    testing.assertContains($problems, "[translations.de]: unknown key \"colour\"");
+    def short as string init swap(
+        $t,
+        "Ein kurzer Vortrag, der alle Regeln erfüllt, mit langer Beschreibung dazu.",
+        "Zu kurz.");
+    testing.assertContains(
+        messagesOf(checkedFiles({"talk.en.md": GOOD, "talk.de.md": GOOD_DE}, $short)),
+        "[translations.de] description is");
+    def own as string init swap($t, "[translations.de]", "[translations.en]");
+    testing.assertContains(
+        messagesOf(checkedFiles({"talk.en.md": GOOD}, $own)),
+        "en is the primary language");
+}
+
+func testEveryVersionIsChecked() {
+    def bad as string init swap(GOOD_DE, "<!-- notes: Begrüßung -->", "[x](https://example.com)");
+    def found as list of Finding init checkedFiles(
+        {"talk.en.md": GOOD, "talk.de.md": $bad},
+        GOOD_META + TABLE_DE);
+    testing.assertEqual(rulesOf($found), ["links", "notes"]);
+    testing.assertContains($found[0].file, "talk.de.md");
+    def empty as list of Finding init checkedFiles(
+        {
+            "talk.en.md": GOOD,
+            "talk.de.md": "---\ntheme: plain\n---\n"
+        },
+        GOOD_META + TABLE_DE);
+    testing.assertEqual(rulesOf($empty), ["version", "notes"]);
+    testing.assertContains($empty[1].message, "no slides");
+}
+
+func testImpressumByFileLanguage() {
+    def de as string init swap(GOOD_DE, "Von @ada. ", "") +
+        swap(IMPRINT, "## Imprint", "## Impressum");
+    testing.assertEqual(
+        checkedFiles({"talk.en.md": GOOD, "talk.de.md": $de}, GOOD_META + TABLE_DE),
+        []);
+    def en as string init anonymous() + swap(IMPRINT, "## Imprint", "## Impressum");
+    testing.assertEqual(
+        rulesOf(checkedFiles({"talk.en.md": $en, "talk.de.md": GOOD_DE}, GOOD_META + TABLE_DE)),
+        ["author"]);
+}
+
+func testPrepareATranslation() {
+    def dir as string init makeFiles(
+        {"talk.en.md": GOOD, "talk.de.md": GOOD_DE},
+        GOOD_META + TABLE_DE);
+    def root as string init path.dir(path.dir(path.dir($dir)));
+    defer fs.removeAll($root);
+    def entry as meta.Checked init readMeta($dir, "ada");
+    testing.assertEqual($entry.problems, []);
+    def versions as list of meta.Version init meta.versionsOf($entry.meta);
+    testing.assertEqual(len($versions), 2);
+    def prepared as string init prepare($dir, $entry.meta, $versions[1], path.join($root, "de"));
+    def fm as FrontMatter init frontMatter(strings.split(fs.readString($prepared), "\n"));
+    testing.assertEqual($fm.values["title"], "Ein guter Vortrag");
+    testing.assertEqual($fm.values["lang"], "de");
+    testing.assertEqual($fm.values["keywords"], "jennifer, grundlagen");
+    testing.assertContains(fs.readString($prepared), "# Ein guter Vortrag");
+}
+
+# ---------------------------------------------------------------------------
+# The PDF's character set
+# ---------------------------------------------------------------------------
+
+func testArrowFailsTheCharset() {
+    def arrow as string init convert.fromCodepoint(0x2192);
+    def found as list of Finding init checked(swap(
+        GOOD,
+        "## Second",
+        "## Second: a " + $arrow + " b"));
+    testing.assertEqual(rulesOf($found), ["charset"]);
+    testing.assertContains(
+        $found[0].message,
+        "U+2192 \"" + $arrow + "\" cannot be shown in the PDF");
+    testing.assertEqual($found[0].line, 18);
+}
+
+func testEmojiFailsTheCharset() {
+    def emoji as string init convert.fromCodepoint(0x1F600);
+    def found as list of Finding init checked(swap(
+        GOOD,
+        "def x as int init 6 * 7;",
+        "def x as int init 6 * 7; # " + $emoji));
+    testing.assertEqual(rulesOf($found), ["charset"]);
+    testing.assertContains($found[0].message, "U+1F600");
+}
+
+func testLatinTextPassesTheCharset() {
+    testing.assertEqual(checkCharset("t.md", "ä ö ü ß é ² € Œ ™ ‘quotes’ “double” … • \t tab"), []);
+    def greek as string init convert.fromCodepoint(0x03B1);
+    testing.assertEqual(len(checkCharset("t.md", $greek + " and " + $greek)), 1);
 }

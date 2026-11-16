@@ -19,22 +19,23 @@ must meet. Every rule is checked by `tools/check.j`, locally and in CI.
 ## Where a talk lives
 
 ```text
-talks/<github-user>/<topic>/talk.md        the slides
+talks/<github-user>/<topic>/talk.md        the slides (or talk.<lang>.md per language)
 talks/<github-user>/<topic>/academy.toml   the catalogue entry
 talks/<github-user>/<topic>/*.png|jpg|gif  its images, beside talk.md
 ```
 
 The talk is published at `https://academy.jennifer-lang.dev/<github-user>/<topic>/`,
-its PDF at `.../<topic>/<topic>.pdf`.
+its PDF at `.../<topic>/<topic>.pdf`. A talk in several languages is described
+in [Talks in several languages](#talks-in-several-languages).
 
 - **The namespace is your personal GitHub account**, written in lower case.
   Each talk has one responsible person, the account under which it is
   published, so organisations are not accepted as namespaces.
 - **The topic** is a slug: lowercase `a-z`, `0-9` and single inner hyphens
   (`intro-to-tasks`). It is the last part of the URL, so keep it short.
-- **One talk per directory**, holding `talk.md`, `academy.toml` and images
-  (`.png`, `.jpg`, `.jpeg`, `.gif`) only: no subdirectories, no symbolic links,
-  no other files.
+- **One talk per directory**, holding its talk file(s), `academy.toml` and
+  images (`.png`, `.jpg`, `.jpeg`, `.gif`) only: no subdirectories, no
+  symbolic links, no other files.
 - **Images are read only from the talk's own directory.** cantrip refuses an
   image outside it, and the checker does too. If several of your talks show the
   same picture, give each talk its own copy.
@@ -79,17 +80,63 @@ tags        = ["concurrency", "tasks", "channels"]
 | `author` | yes | Your GitHub login; must equal the namespace directory. |
 | `name` | no | Your display name, up to 80 characters. Shown as "Mona Example (@octocat)". |
 | `license` | yes | `"CC-BY-4.0"`, the only licence accepted (see [Licences](#licences)). |
-| `lang` | yes | The talk's language as a primary tag of 2 or 3 lowercase letters: `"en"`, `"de"`. |
+| `lang` | yes | The talk's (primary) language, an ISO 639-1 code: `"en"`, `"de"`, `"fr"`. |
 | `jennifer` | yes | The release the talk is based on, `X.Y.Z`. The slides must say it too (see rule 2). |
 | `date` | yes | When the talk was first published, `YYYY-MM`. |
 | `updated` | no | When it last changed substantially, `YYYY-MM`, not before `date`. Sorting uses it. |
 | `level` | yes | `"beginner"`, `"intermediate"` or `"advanced"`. |
-| `tags` | yes | 1 to 8 tags, each lowercase `a-z`, `0-9` and single hyphens, at most 24 characters. |
+| `tags` | yes | 1 to 8 tags, each lowercase `a-z`, `0-9` and single hyphens, at most 24 characters. Shared by every language. |
+| `[translations.<lang>]` | no | One table per further language: `title` and `description` (same limits as above), optional `keywords` (plain text, at most 200 characters). See below. |
 
 Write these values once, here. `tools/build.sh` copies `title`,
 `description`, `keywords` (from `tags`), `lang`, `author` and `date` into the
 front matter of a temporary copy of `talk.md` before cantrip runs, so the
 slideshow and the PDF carry them. `talk.md` must therefore not set them itself.
+
+## Talks in several languages
+
+A talk may come in several languages. It then has one file per language,
+`talk.<lang>.md`, instead of `talk.md`; `<lang>` is an ISO 639-1 code in lower
+case (`talk.de.md`, not `talk.DE.md` or `talk.deu.md`). The two forms are not
+mixed in one directory.
+
+```text
+talks/octocat/tasks/talk.en.md       the primary language, as academy.toml's lang
+talks/octocat/tasks/talk.de.md       a translation
+talks/octocat/tasks/academy.toml
+```
+
+```toml
+title       = "Tasks and channels in practice"
+description = "How to split work across tasks with spawn, collect results with task.wait, and stream values through channels."
+lang        = "en"
+# ... the other keys as above ...
+
+[translations.de]
+title       = "Tasks und Channels in der Praxis"
+description = "Wie man Arbeit mit spawn auf Tasks verteilt, Ergebnisse mit task.wait einsammelt und Werte durch Channels schickt."
+keywords    = "jennifer, nebenläufigkeit, tasks, channels"
+```
+
+- `lang` names the primary language, which must have its `talk.<lang>.md`.
+- Every other `talk.<lang>.md` needs a `[translations.<lang>]` table, and every
+  table needs its file.
+- Tags, level, date and author are shared. A version may be shorter than the
+  primary one, but has at least one slide, and every rule applies to every
+  version: notes, links, code, the author slide (an Impressum for a German
+  version), a build without warnings.
+- The primary language keeps the talk's address,
+  `/<github-user>/<topic>/`; each translation is published at
+  `/<github-user>/<topic>/<lang>/`, with its PDF as `index.pdf` beside it. Each
+  version names the others for search engines (`hreflang`).
+- **Character set:** the PDF is drawn in the standard PDF fonts, which cover
+  Western European text (Windows-1252). German, French, Spanish, Italian,
+  Dutch, Portuguese or the Nordic languages work; Greek, Cyrillic, CJK and
+  other scripts cannot be shown in the PDF, so talks in them are refused until
+  cantrip embeds a Unicode font.
+- Content in a language other than English needs a translation review by a
+  maintainer before it is merged; see
+  [Review of talks in other languages](#review-of-talks-in-other-languages).
 
 ## talk.md
 
@@ -167,8 +214,10 @@ each problem.
 | 4 | **The talk builds with cantrip without a warning.** A warning means a slide overflowed its page. | The talk is built with cantrip; any `cantrip: warning:` line fails. |
 | 5 | **Every `jennifer` code block parses**, unless it is marked as an excerpt. | Each block is written to a file and run through `jennifer ast` (parse and name resolution); an excerpt through `jennifer tokens` (it must lex). |
 | 6 | **UTF-8 without a byte-order mark, and no em-dashes (U+2014) or en-dashes (U+2013).** | The bytes of `talk.md` and `academy.toml` are checked; the dash rule also covers the repository's own Markdown, tools and workflows. |
-| 7 | **One talk per directory**, with valid names (see [Where a talk lives](#where-a-talk-lives)). | The tree under `talks/` is walked. |
+| 7 | **One talk per directory**, with valid names (see [Where a talk lives](#where-a-talk-lives)): `talk.md` or `talk.<lang>.md` files, never both. | The tree under `talks/` is walked. |
 | 8 | **The talk names its author** (see [Who you are](#who-you-are)). | The first slide is searched for `@<namespace>` or a link to its GitHub profile; the last for an Imprint. |
+| 9 | **Every character can be shown in the PDF.** cantrip's PDF fonts cover Windows-1252 only; anything else (an arrow `→`, an emoji, Greek or Cyrillic letters) would print as `?`. This applies to text, notes and code alike: write `->` or "gives" instead of an arrow. `ä ö ü ß é ² €` and typographic quotes are fine. | Each line of every talk file is matched against the Windows-1252 set; each other character is reported with its code point. |
+| 10 | **Languages match** (see [Talks in several languages](#talks-in-several-languages)). | File names are checked against ISO 639-1, and the files against academy.toml's `lang` and `[translations.<lang>]` tables. |
 
 ### The link allowlist
 
@@ -251,6 +300,32 @@ alone is responsible for it.
 
 Nothing is published without a maintainer's review and merge. The maintainers
 may decline, change or remove any talk at any time, without giving reasons.
+
+## Review of talks in other languages
+
+A pull request that adds or changes content in a language other than English
+needs a translation review: a `talk.md` whose `lang` is not `en`, any
+`talk.<lang>.md` other than `talk.en.md`, or an academy.toml holding a
+non-English title or description. CI's `translation-review` check passes only
+when a maintainer (the repository's owner, a member or a collaborator) other
+than the author has approved the pull request's **current** commit (a new push
+needs a new review) with this declaration in the review, every item ticked:
+
+```markdown
+## Reviewer declaration
+
+- [ ] I translated the complete text, speaker notes and code comments of every non-English talk file in this pull request into English, myself or with a translation tool, and read the translation in full.
+- [ ] I looked at every image in it.
+- [ ] To the best of my knowledge and judgement, the content is lawful and follows the academy's content policy.
+```
+
+Reviewers paste it into their approving review and tick the boxes. A later
+review by the same maintainer that requests changes, or a dismissed review,
+no longer counts.
+
+A pull request by a maintainer is exempt, because GitHub does not let anyone
+approve their own pull request; a maintainer takes the same care with their own
+non-English content.
 
 ## Reporting content (notice and takedown)
 

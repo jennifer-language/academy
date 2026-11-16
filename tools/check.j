@@ -22,6 +22,7 @@
  * @license LGPL-3.0-only
  */
 
+use convert;
 use fs;
 use io;
 use lists;
@@ -43,12 +44,15 @@ func setting(name as string, fallback as string) {
 /** Files outside talks/ that the dash rule also covers. */
 func repoTextFiles() {
     def out as list of string;
-    for (def top in ["README.md", "CONTRIBUTING.md", "imprint.md", "CLAUDE.md"]) {
+    for (def top in ["README.md", "CONTRIBUTING.md", "legal.md", "CLAUDE.md"]) {
         if (fs.isFile($top)) {
             $out[] = $top;
         }
     }
     for (def dir in ["tools", ".github"]) {
+        if (not fs.isDir($dir)) {
+            continue;
+        }
         for (def st in fs.walk($dir)) {
             def ext as string init path.ext($st.path);
             if (not $st.isDir and lists.contains([".j", ".sh", ".yml", ".md"], $ext)) {
@@ -57,6 +61,63 @@ func repoTextFiles() {
         }
     }
     return $out;
+}
+
+/** Escape a value for a GitHub workflow command (data, or a property with `prop`). */
+func ghEscape(s as string, prop as bool) {
+    def out as string init strings.replace(
+        strings.replace(strings.replace($s, "%", "%25"), "\r", "%0D"),
+        "\n",
+        "%0A");
+    if ($prop) {
+        $out = strings.replace(strings.replace($out, ":", "%3A"), ",", "%2C");
+    }
+    return $out;
+}
+
+/** The talk directory a finding belongs to (talks/<user>/<topic>), else its file. */
+func groupOf(file as string) {
+    def parts as list of string init strings.split($file, "/");
+    if (len($parts) >= 3 and $parts[0] == "talks") {
+        return strings.join($parts[0..3], "/");
+    }
+    return $file;
+}
+
+/**
+ * In GitHub Actions: one `::error` annotation per finding, on its file and
+ * line, and the findings grouped by talk in the job summary.
+ */
+func annotate(findings as list of rules.Finding) {
+    def groups as list of string;
+    for (def f in $findings) {
+        def where as string init "file=" + ghEscape($f.file, true);
+        if ($f.line > 0) {
+            $where = $where + ",line=" + convert.toString($f.line);
+        }
+        io.printf("::error %s::%s\n", $where, ghEscape($f.rule + ": " + $f.message, false));
+        if (not lists.contains($groups, groupOf($f.file))) {
+            $groups[] = groupOf($f.file);
+        }
+    }
+    if (not os.hasEnv("GITHUB_STEP_SUMMARY") or len($findings) == 0) {
+        return;
+    }
+    def md as string init "## Talk checks: " + convert.toString(len($findings)) + " problem(s)\n";
+    for (def g in $groups) {
+        $md = $md + "\n### `" + $g + "`\n\n";
+        for (def f in $findings) {
+            if (groupOf($f.file) != $g) {
+                continue;
+            }
+            def at as string init $f.file;
+            if ($f.line > 0) {
+                $at = $at + ":" + convert.toString($f.line);
+            }
+            $md = $md + "- `" + $at + "` " + $f.rule + ": " + $f.message + "\n";
+        }
+    }
+    fs.appendString(os.getEnv("GITHUB_STEP_SUMMARY"), $md);
 }
 
 def opts as rules.Options init rules.Options{
@@ -108,6 +169,9 @@ for (def file in repoTextFiles()) {
 
 for (def f in $findings) {
     io.printf("%s\n", rules.describe($f));
+}
+if (os.hasEnv("GITHUB_ACTIONS")) {
+    annotate($findings);
 }
 if (len($findings) > 0) {
     io.printf("check: %d problem(s) in %d talk(s)\n", len($findings), $count);

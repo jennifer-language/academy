@@ -4,7 +4,7 @@
 
 /**
  * The academy's own pages, as strings: the front page, one page per author
- * and per tag, the imprint, sitemap.xml, robots.txt and talks.json.
+ * and per tag, the legal page, sitemap.xml, robots.txt and talks.json.
  *
  * Everything shown comes from the talks' academy.toml files and is escaped
  * with the `html` module; the JSON-LD and talks.json go through `json`. The
@@ -97,6 +97,10 @@ h1 { font-size: 1.25rem; margin: 2rem 0 1rem; }
 .tags { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 0.3rem; }
 .tags a { font-size: 0.78rem; padding: 0.05rem 0.55rem; border-radius: 999px;
   background: var(--chip); color: var(--fg); text-decoration: none; }
+.langs { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap;
+  gap: 0.3rem 0.9rem; font-size: 0.85rem; }
+.langs .badge { font: 600 0.75rem ui-monospace, monospace; padding: 0.1rem 0.4rem;
+  border-radius: 0.3rem; border: 1px solid var(--accent); text-decoration: none; }
 .actions { margin-top: auto; padding-top: 0.4rem; display: flex; gap: 0.6rem; }
 .actions a { font-size: 0.9rem; padding: 0.3rem 0.8rem; border-radius: 999px;
   border: 1px solid var(--accent); text-decoration: none; }
@@ -110,19 +114,21 @@ footer { margin: 3rem 0 2rem; padding-top: 1rem; border-top: 1px solid var(--lin
 footer .fine { font-size: 0.75rem; }
 ';
 
-# The filter: chips toggle a level and a tag; a card shows when it matches both.
+# The filter: chips toggle a level, a tag and a language; a card shows when it
+# matches all three.
 def const SCRIPT as string init '(function () {
   var box = document.getElementById("filters");
   if (!box) { return; }
   box.hidden = false;
-  var on = { level: "", tag: "" };
+  var on = { level: "", tag: "", lang: "" };
+  function has(list, v) { return (" " + list + " ").indexOf(" " + v + " ") >= 0; }
   var cards = document.querySelectorAll(".talks > li");
   var none = document.getElementById("none");
   function apply() {
     var shown = 0;
     cards.forEach(function (c) {
       var ok = (!on.level || c.dataset.level === on.level) &&
-        (!on.tag || (" " + c.dataset.tags + " ").indexOf(" " + on.tag + " ") >= 0);
+        (!on.tag || has(c.dataset.tags, on.tag)) && (!on.lang || has(c.dataset.langs, on.lang));
       c.hidden = !ok;
       if (ok) { shown++; }
     });
@@ -131,14 +137,14 @@ def const SCRIPT as string init '(function () {
       b.setAttribute("aria-pressed", String(on[b.dataset.kind] === b.dataset.value));
     });
   }
-  var m = /^#(level|tag)=([a-z0-9-]+)$/.exec(location.hash);
+  var m = /^#(level|tag|lang)=([a-z0-9-]+)$/.exec(location.hash);
   if (m) { on[m[1]] = m[2]; }
   box.addEventListener("click", function (e) {
     var b = e.target.closest(".chip");
     if (!b) { return; }
     var k = b.dataset.kind;
     on[k] = on[k] === b.dataset.value ? "" : b.dataset.value;
-    var h = on.tag ? "#tag=" + on.tag : on.level ? "#level=" + on.level : "";
+    var h = k && on[k] ? "#" + k + "=" + on[k] : "";
     history.replaceState(null, "", h || location.pathname);
     apply();
   });
@@ -186,9 +192,48 @@ func talkPath(t as Talk) {
     return $t.user + "/" + $t.topic + "/";
 }
 
-/** The PDF's path below the site root. */
+/** The PDF's path below the site root (the primary language's). */
 func pdfPath(t as Talk) {
     return talkPath($t) + $t.topic + ".pdf";
+}
+
+/** A version's slideshow path: the primary at the talk's path, a translation below it. */
+func versionPath(t as Talk, v as meta.Version) {
+    if ($v.primary) {
+        return talkPath($t);
+    }
+    return talkPath($t) + $v.lang + "/";
+}
+
+/** A version's PDF path: `<topic>.pdf` for the primary, `<lang>/index.pdf` otherwise. */
+func versionPdf(t as Talk, v as meta.Version) {
+    if ($v.primary) {
+        return pdfPath($t);
+    }
+    return versionPath($t, $v) + "index.pdf";
+}
+
+/** The languages of a talk, primary first. */
+func langsOf(t as Talk) {
+    def out as list of string;
+    for (def v in meta.versionsOf($t.meta)) {
+        $out[] = $v.lang;
+    }
+    return $out;
+}
+
+/** The language badges: each version's code linking its slides, and its PDF. */
+func badges(t as Talk, base as string) {
+    def out as string init "<ul class=\"langs\">";
+    for (def v in meta.versionsOf($t.meta)) {
+        def code as string init esc($v.lang);
+        def slides as string init esc($base + versionPath($t, $v));
+        $out = $out + "<li><a class=\"badge\" href=\"" + $slides + "\" hreflang=\"" + $code;
+        $out = $out + "\" title=\"" + esc($v.title) + "\">" + strings.upper($code) + "</a> ";
+        $out = $out + "<a href=\"" + esc($base + versionPdf($t, $v)) + "\" hreflang=\"" + $code;
+        $out = $out + "\" type=\"application/pdf\">PDF</a></li>";
+    }
+    return $out + "</ul>\n";
 }
 
 /** One talk's card; `base` leads from the page to the site root. */
@@ -201,8 +246,10 @@ func card(t as Talk, base as string) {
         $who = esc($m.name) + " (" + $who + ")";
     }
     def tags as string init strings.join($m.tags, " ");
+    def langs as string init strings.join(langsOf($t), " ");
     def out as string init "<li class=\"talk\" lang=\"" + esc($m.lang) + "\" data-level=\"";
-    $out = $out + esc($m.level) + "\" data-tags=\"" + esc($tags) + "\">\n";
+    $out = $out + esc($m.level) + "\" data-tags=\"" + esc($tags) + "\" data-langs=\"";
+    $out = $out + esc($langs) + "\">\n";
     $out = $out + "<h2><a href=\"" + $href + "\">" + esc($m.title) + "</a></h2>\n";
     $out = $out + "<p>" + esc($m.description) + "</p>\n";
     def month as string init esc(meta.latest($m));
@@ -214,7 +261,8 @@ func card(t as Talk, base as string) {
         def at as string init esc($base + "tags/" + $tag + "/");
         $out = $out + "<li><a href=\"" + $at + "\">" + esc($tag) + "</a></li>";
     }
-    $out = $out + "</ul>\n<div class=\"actions\"><a class=\"primary\" href=\"" + $href;
+    $out = $out + "</ul>\n" + badges($t, $base);
+    $out = $out + "<div class=\"actions\"><a class=\"primary\" href=\"" + $href;
     $out = $out + "\">Slides</a><a href=\"" + esc($base + pdfPath($t));
     $out = $out + "\" type=\"application/pdf\">PDF</a></div>\n</li>\n";
     return $out;
@@ -254,6 +302,13 @@ func filters(talks as list of Talk) {
             }
         }
     }
+    def langs as list of string init langsIn($talks);
+    if (len($langs) > 1) {
+        $out = $out + "<span class=\"label\">|</span>";
+        for (def lang in $langs) {
+            $out = $out + chip("lang", $lang);
+        }
+    }
     $out = $out + "<span class=\"label\">|</span>";
     for (def tag in tagsOf($talks)) {
         $out = $out + chip("tag", $tag);
@@ -261,11 +316,28 @@ func filters(talks as list of Talk) {
     return $out + "</div>\n";
 }
 
+/** Every language a talk is in, sorted. */
+export func langsIn(talks as list of Talk) {
+    def out as list of string;
+    for (def t in $talks) {
+        for (def lang in langsOf($t)) {
+            if (not lists.contains($out, $lang)) {
+                $out[] = $lang;
+            }
+        }
+    }
+    return lists.sort($out);
+}
+
 /** One filter chip. */
 func chip(kind as string, value as string) {
     def v as string init esc($value);
+    def shown as string init $v;
+    if ($kind == "lang") {
+        $shown = strings.upper($v);
+    }
     def out as string init "<button type=\"button\" class=\"chip\" data-kind=\"" + $kind;
-    return $out + "\" data-value=\"" + $v + "\" aria-pressed=\"false\">" + $v + "</button>";
+    return $out + "\" data-value=\"" + $v + "\" aria-pressed=\"false\">" + $shown + "</button>";
 }
 
 /** The JSON-LD description of a list of talks, for search engines. */
@@ -341,7 +413,7 @@ func page(
     def foot as string init "<footer>\n<p>Talks are licensed under CC BY 4.0 by their authors. ";
     $foot = $foot + "<a href=\"" + REPO_URL + "\">Source and contributions</a> · ";
     $foot = $foot + "<a href=\"https://jennifer-lang.dev/\">jennifer-lang.dev</a> · ";
-    $foot = $foot + "<a href=\"" + $b + "imprint/\">Imprint</a></p>\n";
+    $foot = $foot + "<a href=\"" + $b + "legal/\">Legal</a></p>\n";
     $foot = $foot + "<p class=\"fine\">" + DISCLAIMER + "</p>\n</footer>\n</div>\n";
     return $head + $top + "<main>\n" + $body + "</main>\n" + $foot;
 }
@@ -455,19 +527,19 @@ export func tagPage(talks as list of Talk, tag as string) {
 }
 
 /**
- * The imprint page, from imprint.md, with the disclaimer as its own section.
- * @param {string} source imprint.md
- * @return {string} imprint/index.html
+ * The legal page, from legal.md, with the disclaimer as its own section.
+ * @param {string} source legal.md
+ * @return {string} legal/index.html
  */
-export func imprintPage(source as string) {
+export func legalPage(source as string) {
     def body as string init "<div class=\"prose\">\n" + markdown.toHtml($source);
     $body = $body + "\n<h2>Disclaimer</h2>\n<p>" + DISCLAIMER + "</p>\n</div>\n";
-    def description as string init "Imprint and disclaimer of the Jennifer Academy.";
-    def url as string init SITE_URL + "imprint/";
+    def description as string init "Responsibility, reporting and disclaimer: Jennifer Academy.";
+    def url as string init SITE_URL + "legal/";
     return page(
-        "Imprint - " + SITE_TITLE,
+        "Legal - " + SITE_TITLE,
         $description,
-        "jennifer, academy, imprint",
+        "jennifer, academy, legal, disclaimer",
         $url,
         "../",
         $body) + pageEnd(false);
@@ -482,13 +554,14 @@ func loc(url as string, month as string) {
 }
 
 /**
- * sitemap.xml: the front page, the authors, the tags, the imprint, every talk and PDF.
+ * sitemap.xml: the front page, the authors, the tags, the legal page, every talk and PDF.
  * @param {list of Talk} talks all sorted talks
  * @return {string} the sitemap
  */
 export func sitemap(talks as list of Talk) {
     def out as string init '<?xml version="1.0" encoding="UTF-8"?>' + "\n";
-    $out = $out + '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">' + "\n";
+    $out = $out + '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" ';
+    $out = $out + 'xmlns:xhtml="http://www.w3.org/1999/xhtml">' + "\n";
     $out = $out + loc(SITE_URL, "");
     def users as list of string;
     for (def t in $talks) {
@@ -499,12 +572,28 @@ export func sitemap(talks as list of Talk) {
     }
     for (def t in $talks) {
         def month as string init meta.latest($t.meta);
-        $out = $out + loc(SITE_URL + talkPath($t), $month) + loc(SITE_URL + pdfPath($t), $month);
+        def alt as string init alternatesXml($t);
+        for (def v in meta.versionsOf($t.meta)) {
+            def url as string init esc(SITE_URL + versionPath($t, $v));
+            $out = $out + "<url><loc>" + $url + "</loc><lastmod>" + esc($month) + "</lastmod>";
+            $out = $out + $alt + "</url>\n" + loc(SITE_URL + versionPdf($t, $v), $month);
+        }
     }
     for (def tag in tagsOf($talks)) {
         $out = $out + loc(SITE_URL + "tags/" + $tag + "/", "");
     }
-    return $out + loc(SITE_URL + "imprint/", "") + "</urlset>\n";
+    return $out + loc(SITE_URL + "legal/", "") + "</urlset>\n";
+}
+
+/** The sitemap's `xhtml:link` alternates of a talk: every version, and x-default. */
+func alternatesXml(t as Talk) {
+    def out as string init "";
+    for (def v in meta.versionsOf($t.meta)) {
+        $out = $out + "<xhtml:link rel=\"alternate\" hreflang=\"" + esc($v.lang) + "\" href=\"";
+        $out = $out + esc(SITE_URL + versionPath($t, $v)) + "\"/>";
+    }
+    $out = $out + "<xhtml:link rel=\"alternate\" hreflang=\"x-default\" href=\"";
+    return $out + esc(SITE_URL + talkPath($t)) + "\"/>";
 }
 
 /**
@@ -539,6 +628,18 @@ export func catalogue(talks as list of Talk) {
         $doc = json.set($doc, "/tags", $m.tags);
         $doc = json.set($doc, "/url", SITE_URL + talkPath($t));
         $doc = json.set($doc, "/pdf", SITE_URL + pdfPath($t));
+        def versions as json.Value init json.list([]);
+        for (def v in meta.versionsOf($m)) {
+            def one as json.Value init json.map({});
+            $one = json.set($one, "/lang", $v.lang);
+            $one = json.set($one, "/primary", $v.primary);
+            $one = json.set($one, "/title", $v.title);
+            $one = json.set($one, "/description", $v.description);
+            $one = json.set($one, "/url", SITE_URL + versionPath($t, $v));
+            $one = json.set($one, "/pdf", SITE_URL + versionPdf($t, $v));
+            $versions = json.append($versions, "", $one);
+        }
+        $doc = json.set($doc, "/versions", $versions);
         $list2 = json.append($list2, "", $doc);
     }
     def all as json.Value init json.map({});
@@ -549,17 +650,28 @@ export func catalogue(talks as list of Talk) {
 }
 
 /**
- * Add a canonical link to a talk's slideshow, which cantrip does not write.
+ * Add what cantrip does not write to one version's slideshow: its canonical
+ * link, and an `hreflang` alternate for every version plus `x-default`.
  * @param {string} page the slideshow's HTML
  * @param {Talk} t the talk
- * @return {string} the HTML with `<link rel="canonical">` after `<head>`
+ * @param {meta.Version} v the version this page is
+ * @return {string} the HTML with the links right after `<head>`
  */
-export func withCanonical(page as string, t as Talk) {
-    def link as string init "<head>\n<link rel=\"canonical\" href=\"" +
-        esc(SITE_URL + talkPath($t)) + "\">";
+export func withHead(page as string, t as Talk, v as meta.Version) {
     if (not strings.contains($page, "<head>")) {
         return $page;
     }
+    def links as string init "<head>\n<link rel=\"canonical\" href=\"" +
+        esc(SITE_URL + versionPath($t, $v)) + "\">";
+    for (def other in meta.versionsOf($t.meta)) {
+        $links = $links + "\n<link rel=\"alternate\" hreflang=\"" + esc($other.lang) + "\" href=\"";
+        $links = $links + esc(SITE_URL + versionPath($t, $other)) + "\">";
+    }
+    $links = $links + "\n<link rel=\"alternate\" hreflang=\"x-default\" href=\"";
+    $links = $links + esc(SITE_URL + talkPath($t)) + "\">";
     def at as int init strings.indexOf($page, "<head>");
-    return strings.substring($page, 0, $at) + $link + strings.substring($page, $at + 6, len($page));
+    return strings.substring($page, 0, $at) + $links + strings.substring(
+        $page,
+        $at + 6,
+        len($page));
 }

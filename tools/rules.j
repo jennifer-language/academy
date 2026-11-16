@@ -68,11 +68,14 @@ def const MSG_TOPIC_DIR as string init
     "a namespace holds only talk directories, talks/<user>/<topic>/";
 def const MSG_BAD_SLUG as string init
     "is not a valid slug: lowercase a-z, 0-9 and single inner hyphens";
-def const MSG_NO_TALK as string init "a talk directory holds exactly one talk, named talk.md";
+def const MSG_NO_TALK as string init
+    "a talk directory holds its talk: talk.md, or talk.<lang>.md per language";
+def const MSG_BOTH_FORMS as string init
+    "talk.md and talk.<lang>.md together: use talk.md for one language, talk.<lang>.md for several";
 def const MSG_NO_META as string init "a talk directory holds its catalogue entry, academy.toml";
 def const MSG_SUBDIR as string init "no subdirectories in a talk; keep its images beside talk.md";
 def const MSG_OTHER_FILE as string init
-    "a talk directory holds talk.md, academy.toml and images (.png, .jpg, .jpeg, .gif) only";
+    "a talk directory holds its talk files, academy.toml and images (.png, .jpg, .jpeg, .gif) only";
 
 /** One broken rule: where, which rule, and what to do about it. */
 export def struct Finding {
@@ -165,6 +168,11 @@ func lowerExt(name as string) {
     return strings.lower(path.ext($name));
 }
 
+/** Is this file name an image a talk may hold? */
+func isImage(name as string) {
+    return lists.contains(IMAGE_EXTENSIONS, lowerExt($name));
+}
+
 /** Is `child` (a resolved path) inside the directory `dir` (resolved)? */
 func isInside(dir as string, child as string) {
     return strings.startsWith($child, $dir + "/");
@@ -216,13 +224,51 @@ export func checkLayout(root as string) {
     return $out;
 }
 
-/** Append the findings for what a single talk directory holds. */
+/**
+ * The language a file name gives a talk file: "" for `talk.md`, the code for
+ * `talk.<code>.md` (valid or not), "-" for a file that is not a talk file.
+ * @param {string} name a file name
+ * @return {string} "", the code, or "-"
+ */
+export func talkFileLang(name as string) {
+    if ($name == "talk.md") {
+        return "";
+    }
+    def m as list of string init lineMatch('^talk\.([^/]+)\.md$', $name);
+    if (len($m) == 0) {
+        return "-";
+    }
+    return $m[1];
+}
+
+/** Is this a valid language code for a `talk.<lang>.md` name: ISO 639-1, lower case? */
+export func isTalkLang(code as string) {
+    return lists.contains(meta.ISO_CODES, $code);
+}
+
+/**
+ * The talk files of a directory, `talk.md` or `talk.<lang>.md` with a valid
+ * code, sorted.
+ * @param {string} dir the talk directory
+ * @return {list of string} file names
+ */
+export func talkFiles(dir as string) {
+    def out as list of string;
+    for (def name in fs.list($dir)) {
+        def lang as string init talkFileLang($name);
+        if ($lang == "" or isTalkLang($lang)) {
+            $out[] = $name;
+        }
+    }
+    return $out;
+}
+
+/** The findings for what a single talk directory holds. */
 func checkTalkDir(dir as string) {
     def out as list of Finding;
     def real as string init fs.realpath($dir);
-    if (not fs.isFile(path.join($dir, "talk.md"))) {
-        $out[] = finding($dir, 0, "layout", MSG_NO_TALK);
-    }
+    def single as bool init false;
+    def perLang as bool init false;
     if (not fs.isFile(path.join($dir, "academy.toml"))) {
         $out[] = finding($dir, 0, "layout", MSG_NO_META);
     }
@@ -236,12 +282,23 @@ func checkTalkDir(dir as string) {
             $out[] = finding($p, 0, "layout", "no symbolic links in a talk");
             continue;
         }
-        if ($name == "talk.md" or $name == "academy.toml") {
-            continue;
-        }
-        if (not lists.contains(IMAGE_EXTENSIONS, lowerExt($name))) {
+        def lang as string init talkFileLang($name);
+        if ($lang == "") {
+            $single = true;
+        } elseif ($lang != "-" and isTalkLang($lang)) {
+            $perLang = true;
+        } elseif ($lang != "-") {
+            def why as string init "\"{$lang}\" is not an ISO 639-1 code (e.g. talk.de.md)";
+            $out[] = finding($p, 0, "layout", $why);
+        } elseif ($name != "academy.toml" and not isImage($name)) {
             $out[] = finding($p, 0, "layout", MSG_OTHER_FILE);
         }
+    }
+    if (not $single and not $perLang) {
+        $out[] = finding($dir, 0, "layout", MSG_NO_TALK);
+    }
+    if ($single and $perLang) {
+        $out[] = finding($dir, 0, "layout", MSG_BOTH_FORMS);
     }
     return $out;
 }
@@ -709,6 +766,45 @@ export func checkDashes(file as string, text as string) {
     return $out;
 }
 
+# The characters cantrip's PDF can show: the standard PDF fonts are encoded in
+# Windows-1252, so anything else prints as "?". Tab, newline, carriage return,
+# printable ASCII, Latin-1 above U+00A0, and the 27 cp1252 extras in 0x80..0x9F.
+def const RE_NOT_CP1252 as string init '[^\t\n\r\x{20}-\x{7e}\x{a0}-\x{ff}' +
+    '\x{20ac}\x{201a}\x{0192}\x{201e}\x{2026}\x{2020}\x{2021}\x{02c6}\x{2030}\x{0160}' +
+    '\x{2039}\x{0152}\x{017d}\x{2018}\x{2019}\x{201c}\x{201d}\x{2022}\x{2013}\x{2014}' +
+    '\x{02dc}\x{2122}\x{0161}\x{203a}\x{0153}\x{017e}\x{0178}]';
+
+/**
+ * Find characters the PDF cannot show: anything outside Windows-1252, in
+ * text, notes and code alike. One finding per character per line.
+ * @param {string} file the file the text came from
+ * @param {string} text its contents
+ * @return {list of Finding} empty when every character can be shown
+ */
+export func checkCharset(file as string, text as string) {
+    def out as list of Finding;
+    def lines as list of string init strings.split($text, "\n");
+    for (def i in 0..len($lines)) {
+        def seen as list of string;
+        for (def m in regex.findAll(RE_NOT_CP1252, $lines[$i])) {
+            if (lists.contains($seen, $m.text)) {
+                continue;
+            }
+            $seen[] = $m.text;
+            def code as string init strings.upper(convert.toString(
+                convert.toCodepoint($m.text),
+                16));
+            while (len($code) < 4) {
+                $code = "0" + $code;
+            }
+            def why as string init "U+{$code} \"{$m.text}\" cannot be shown in the PDF; " +
+                "write it out (e.g. \"->\" or \"gives\")";
+            $out[] = finding($file, $i + 1, "charset", $why);
+        }
+    }
+    return $out;
+}
+
 /** Does the talk's text name the version, e.g. "Jennifer 0.26.0" or "Jennifer **0.26.0"? */
 func statesVersion(body as string, v as string) {
     for (def form in ["Jennifer " + $v, "Jennifer **" + $v, "**Jennifer " + $v]) {
@@ -919,19 +1015,36 @@ func firstLine(s as string) {
 }
 
 /**
- * Write a buildable copy of a talk into `out`: talk.md with the catalogue
- * fields from academy.toml injected into its front matter, and its images.
+ * The source file of a language version: `talk.md` when the talk has one,
+ * else `talk.<lang>.md`.
+ * @param {string} dir the talk directory
+ * @param {string} lang the version's language
+ * @return {string} the path
+ */
+export func sourceFile(dir as string, lang as string) {
+    def single as string init path.join($dir, "talk.md");
+    if (fs.isFile($single)) {
+        return $single;
+    }
+    return path.join($dir, "talk." + $lang + ".md");
+}
+
+/**
+ * Write a buildable copy of one language version into `out`: its talk file
+ * as talk.md, with the catalogue fields from academy.toml injected into its
+ * front matter, and the talk's images.
  * @param {string} dir the talk directory
  * @param {meta.Meta} m its valid catalogue entry
+ * @param {meta.Version} v the version to prepare
  * @param {string} out the directory to write (created)
  * @return {string} the path of the prepared talk.md
  */
-export func prepare(dir as string, m as meta.Meta, out as string) {
+export func prepare(dir as string, m as meta.Meta, v as meta.Version, out as string) {
     fs.mkdirAll($out);
-    def lines as list of string init strings.split(fs.readString(path.join($dir, "talk.md")), "\n");
+    def lines as list of string init strings.split(fs.readString(sourceFile($dir, $v.lang)), "\n");
     def fm as FrontMatter init frontMatter($lines);
     def head as list of string init ["---"];
-    for (def line in meta.frontMatterLines($m)) {
+    for (def line in meta.frontMatterLines($m, $v)) {
         $head[] = $line;
     }
     if ($fm.found) {
@@ -953,11 +1066,11 @@ export func prepare(dir as string, m as meta.Meta, out as string) {
 }
 
 /** The findings from building the prepared talk with cantrip (rule 4). */
-func checkBuild(file as string, dir as string, m as meta.Meta, opts as Options) {
+func checkBuild(file as string, dir as string, m as meta.Meta, v as meta.Version, opts as Options) {
     def out as list of Finding;
     def tmp as string init fs.makeTempDir("", "academy-build-");
     defer fs.removeAll($tmp);
-    def prepared as string init prepare($dir, $m, path.join($tmp, "talk"));
+    def prepared as string init prepare($dir, $m, $v, path.join($tmp, "talk"));
     def argv as list of string init [$opts.jennifer, "run", $opts.cantrip, "build", $prepared];
     $argv[] = "--out";
     $argv[] = path.join($tmp, "out");
@@ -994,22 +1107,75 @@ func checkMetaFile(dir as string, user as string) {
     return $out;
 }
 
-/**
- * Check one talk against every rule that reads its text.
- * @param {string} dir the talk directory, talks/<user>/<topic>
- * @param {string} user the namespace the talk is in
- * @param {Options} opts which slow checks to run, and with what
- * @return {list of Finding} empty when the talk passes
- */
-export func checkTalk(dir as string, user as string, opts as Options) {
-    def file as string init path.join($dir, "talk.md");
+/** The findings for how talk files and translation tables pair up. */
+func checkLanguages(dir as string, m as meta.Meta) {
     def out as list of Finding;
-    if (not fs.isFile($file)) {
-        $out[] = finding($file, 0, "layout", "missing talk.md");
+    def files as list of string init talkFiles($dir);
+    def toml as string init path.join($dir, "academy.toml");
+    if (lists.contains($files, "talk.md")) {
+        for (def t in $m.translations) {
+            def why as string init "[translations.{$t.lang}] has no talk.{$t.lang}.md; a talk in " +
+                "several languages uses talk.<lang>.md files, not talk.md";
+            $out[] = finding($toml, 0, "languages", $why);
+        }
         return $out;
     }
+    if (len($files) == 0 or $m.lang == "") {
+        return $out;
+    }
+    if (not lists.contains($files, "talk." + $m.lang + ".md")) {
+        def why as string init "lang is \"{$m.lang}\" but there is no talk.{$m.lang}.md";
+        $out[] = finding($toml, 0, "languages", $why);
+    }
+    def tables as list of string;
+    for (def t in $m.translations) {
+        $tables[] = $t.lang;
+        if (not lists.contains($files, "talk." + $t.lang + ".md")) {
+            $out[] = finding(
+                $toml,
+                0,
+                "languages",
+                "[translations.{$t.lang}] has no talk.{$t.lang}.md");
+        }
+    }
+    for (def name in $files) {
+        def lang as string init talkFileLang($name);
+        if ($lang != $m.lang and not lists.contains($tables, $lang)) {
+            def why as string init "{$name} has no [translations.{$lang}] table in academy.toml";
+            $out[] = finding(path.join($dir, $name), 0, "languages", $why);
+        }
+    }
+    return $out;
+}
+
+/** The version of `m` in language `lang`; `found` is false when there is none. */
+def struct Found {
+    found as bool,
+    version as meta.Version
+};
+
+/** Look up a language version. */
+func versionIn(m as meta.Meta, lang as string) {
+    for (def v in meta.versionsOf($m)) {
+        if ($v.lang == $lang) {
+            return Found{found: true, version: $v};
+        }
+    }
+    def none as meta.Version;
+    return Found{found: false, version: $none};
+}
+
+/** The findings for one talk file (`talk.md` or `talk.<lang>.md`) in language `lang`. */
+func checkFile(
+    dir as string,
+    name as string,
+    lang as string,
+    user as string,
+    entry as meta.Checked,
+    opts as Options) {
+    def file as string init path.join($dir, $name);
     def data as bytes init fs.readBytes($file);
-    $out = checkEncoding($file, $data);
+    def out as list of Finding init checkEncoding($file, $data);
     if (len($out) > 0) {
         return $out;
     }
@@ -1019,22 +1185,53 @@ export func checkTalk(dir as string, user as string, opts as Options) {
     def sc as Scan init scan($lines);
     def body as string init strings.join($lines[$fm.bodyStart..], "\n");
     def groups as list of list of Finding;
-    $groups[] = checkMetaFile($dir, $user);
-    def entry as meta.Checked init readMeta($dir, $user);
     $groups[] = checkDashes($file, $text);
+    $groups[] = checkCharset($file, $text);
     $groups[] = checkFrontMatter($file, $fm);
     $groups[] = checkVersion($file, $entry.meta, $body);
     $groups[] = checkLinks($file, $dir, $user, $sc);
     $groups[] = checkNotes($file, $sc, $fm.bodyStart);
-    $groups[] = checkAuthor($file, $sc, $fm, $user, $entry.meta.lang);
+    $groups[] = checkAuthor($file, $sc, $fm, $user, $lang);
     if ($opts.parseCode) {
         $groups[] = checkCode($file, $sc, $opts);
     }
-    if ($opts.build and len($entry.problems) == 0) {
-        $groups[] = checkBuild($file, $dir, $entry.meta, $opts);
+    def v as Found init versionIn($entry.meta, $lang);
+    if ($opts.build and len($entry.problems) == 0 and $v.found) {
+        $groups[] = checkBuild($file, $dir, $entry.meta, $v.version, $opts);
     }
     for (def g in $groups) {
         for (def f in $g) {
+            $out[] = $f;
+        }
+    }
+    return $out;
+}
+
+/**
+ * Check one talk against every rule that reads its text, for every language
+ * file it has.
+ * @param {string} dir the talk directory, talks/<user>/<topic>
+ * @param {string} user the namespace the talk is in
+ * @param {Options} opts which slow checks to run, and with what
+ * @return {list of Finding} empty when the talk passes
+ */
+export func checkTalk(dir as string, user as string, opts as Options) {
+    def out as list of Finding init checkMetaFile($dir, $user);
+    def entry as meta.Checked init readMeta($dir, $user);
+    def files as list of string init talkFiles($dir);
+    if (len($files) == 0) {
+        $out[] = finding(path.join($dir, "talk.md"), 0, "layout", "missing talk.md");
+        return $out;
+    }
+    for (def f in checkLanguages($dir, $entry.meta)) {
+        $out[] = $f;
+    }
+    for (def name in $files) {
+        def lang as string init talkFileLang($name);
+        if ($lang == "") {
+            $lang = $entry.meta.lang;
+        }
+        for (def f in checkFile($dir, $name, $lang, $user, $entry, $opts)) {
             $out[] = $f;
         }
     }
