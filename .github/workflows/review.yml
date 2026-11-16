@@ -1,0 +1,83 @@
+# SPDX-License-Identifier: LGPL-3.0-only
+# SPDX-FileCopyrightText: Copyright (C) 2026 mplx <mplx@jennifer-lang.dev>
+
+# The translation review lives in its own workflow so that a submitted review
+# re-runs only this check. In ci.yml a review event would also report the other
+# jobs as skipped on the same commit, and a required check counts a skipped run
+# as passed, hiding an earlier failure.
+
+name: Review
+
+on:
+  pull_request:
+    branches: [main]
+    types: [opened, synchronize, reopened]
+  pull_request_review:
+    types: [submitted, edited, dismissed]
+
+permissions:
+  contents: read
+  pull-requests: read
+
+concurrency:
+  group: review-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+env:
+  # The interpreter CI runs against: a release (X.Y.Z, installed from its
+  # checksummed .deb) or a commit of Jennifer's main branch (built with Go).
+  # The tools and cantrip need 0.26.0, which is not released yet, so this pins
+  # the main-branch commit cantrip pins. Switch it to "0.26.0" once it ships.
+  # Not named JENNIFER: the tools read that as the interpreter's path.
+  JENNIFER_REF: "9486c82f34e666796dbbf80e443bd3b31f7d1149"
+  # The cantrip the talks are built with. Its image confinement and cantrip-
+  # names are on main, not yet in a release: pin the 0.1.0 tag once it exists.
+  CANTRIP_REF: "main"
+
+jobs:
+  # Non-English talk content needs a maintainer's approving review with the
+  # reviewer declaration, on the current head commit (CONTRIBUTING.md).
+  translation-review:
+    name: Translation review
+    if: github.server_url == 'https://github.com'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+
+      # The API's answers go into files; nothing from them reaches the shell.
+      - name: Fetch the changed files and the reviews
+        id: fetch
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+          NUMBER: ${{ github.event.pull_request.number }}
+        run: |
+          set -eu
+          gh api --paginate "repos/$REPO/pulls/$NUMBER/files" \
+            --jq '.[] | select(.status != "removed") | .filename' > "$RUNNER_TEMP/files.txt"
+          gh api --paginate "repos/$REPO/pulls/$NUMBER/reviews" --jq '.[]' > "$RUNNER_TEMP/reviews.jsonl"
+          if grep -q '^talks/' "$RUNNER_TEMP/files.txt"; then
+            echo "talks=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "talks=false" >> "$GITHUB_OUTPUT"
+            echo "no talk changed"
+          fi
+
+      - if: steps.fetch.outputs.talks == 'true' && !contains(env.JENNIFER_REF, '.')
+        uses: actions/setup-go@v5
+        with:
+          go-version: "1.26"
+
+      - name: Install Jennifer ${{ env.JENNIFER_REF }}
+        if: steps.fetch.outputs.talks == 'true'
+        run: ./tools/install-jennifer.sh "$JENNIFER_REF"
+
+      - name: Check the translation review
+        if: steps.fetch.outputs.talks == 'true'
+        env:
+          PR_AUTHOR: ${{ github.event.pull_request.user.login }}
+          PR_ASSOCIATION: ${{ github.event.pull_request.author_association }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: jennifer run tools/check-review.j "$RUNNER_TEMP/files.txt" "$RUNNER_TEMP/reviews.jsonl"

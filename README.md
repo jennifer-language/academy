@@ -112,10 +112,13 @@ up when a field changes meaning or goes away; new fields may be added.
 - **ownership** and **declaration** (GitHub pull requests only): changed talks
   must be in the author's namespace, and the description must carry the ticked
   declaration. Maintainers are exempt.
-- **translation-review** (GitHub pull requests and reviews only): a pull
-  request changing non-English talk content needs a maintainer's approval of
-  its head commit with the ticked reviewer declaration. A submitted, edited or
-  dismissed review re-runs it. Maintainers' own pull requests are exempt.
+- **translation-review** (`.github/workflows/review.yml`, GitHub pull
+  requests and reviews only): a pull request changing non-English talk content
+  needs a maintainer's approval of its head commit with the ticked reviewer
+  declaration. A submitted, edited or dismissed review re-runs it. It has a
+  workflow of its own so that a review re-runs only this check: in `ci.yml` a
+  review would report the other jobs as skipped, and a required check counts a
+  skipped run as passed. Maintainers' own pull requests are exempt.
 - On GitHub, `check.j` annotates each talk problem on its file and line and
   lists them, grouped by talk, in the job summary.
 - **deploy** (GitHub, pushes to `main`): publishes `site/` to GitHub Pages.
@@ -129,7 +132,7 @@ In the GitHub repository's settings:
    `site/CNAME`).
 3. **Pages**: tick "Enforce HTTPS" once the certificate has been issued.
 4. **Environments**: `github-pages` allows deployments from `main`.
-5. **Branch protection** (or a ruleset) on `main`, so the checks block merges:
+5. **Ruleset** "main" on `main` (set up), so the checks block merges:
    require a pull request before merging, and require the status checks
    "Check and build the talks" (site), "Namespaces are GitHub users"
    (accounts), "Talks stay in the author's namespace" (ownership),

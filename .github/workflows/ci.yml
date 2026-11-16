@@ -10,16 +10,13 @@ on:
     branches: [main]
     # edited: a fixed contributor declaration in the description re-runs the check.
     types: [opened, synchronize, reopened, edited]
-  # A review re-runs only the translation-review job (the others skip it).
-  pull_request_review:
-    types: [submitted, edited, dismissed]
   workflow_dispatch:
 
 permissions:
   contents: read
 
 concurrency:
-  group: ci-${{ github.event_name == 'pull_request_review' && 'review-' || '' }}${{ github.ref }}
+  group: ci-${{ github.ref }}
   cancel-in-progress: true
 
 env:
@@ -36,7 +33,6 @@ env:
 jobs:
   site:
     name: Check and build the talks
-    if: github.event_name != 'pull_request_review'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -106,7 +102,7 @@ jobs:
   # an organisation. Asks the GitHub API, so it runs on GitHub only.
   accounts:
     name: Namespaces are GitHub users
-    if: github.server_url == 'https://github.com' && github.event_name != 'pull_request_review'
+    if: github.server_url == 'https://github.com'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -148,53 +144,6 @@ jobs:
               exit 0 ;;
           esac
           ./tools/namespaces.sh owner "$AUTHOR" "$BASE" "$HEAD"
-
-  # Non-English talk content needs a maintainer's approving review with the
-  # reviewer declaration, on the current head commit (CONTRIBUTING.md).
-  translation-review:
-    name: Translation review
-    if: github.server_url == 'https://github.com' && (github.event_name == 'pull_request' || github.event_name == 'pull_request_review')
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          ref: ${{ github.event.pull_request.head.sha }}
-
-      # The API's answers go into files; nothing from them reaches the shell.
-      - name: Fetch the changed files and the reviews
-        id: fetch
-        env:
-          GH_TOKEN: ${{ github.token }}
-          REPO: ${{ github.repository }}
-          NUMBER: ${{ github.event.pull_request.number }}
-        run: |
-          set -eu
-          gh api --paginate "repos/$REPO/pulls/$NUMBER/files" \
-            --jq '.[] | select(.status != "removed") | .filename' > "$RUNNER_TEMP/files.txt"
-          gh api --paginate "repos/$REPO/pulls/$NUMBER/reviews" --jq '.[]' > "$RUNNER_TEMP/reviews.jsonl"
-          if grep -q '^talks/' "$RUNNER_TEMP/files.txt"; then
-            echo "talks=true" >> "$GITHUB_OUTPUT"
-          else
-            echo "talks=false" >> "$GITHUB_OUTPUT"
-            echo "no talk changed"
-          fi
-
-      - if: steps.fetch.outputs.talks == 'true' && !contains(env.JENNIFER_REF, '.')
-        uses: actions/setup-go@v5
-        with:
-          go-version: "1.26"
-
-      - name: Install Jennifer ${{ env.JENNIFER_REF }}
-        if: steps.fetch.outputs.talks == 'true'
-        run: ./tools/install-jennifer.sh "$JENNIFER_REF"
-
-      - name: Check the translation review
-        if: steps.fetch.outputs.talks == 'true'
-        env:
-          PR_AUTHOR: ${{ github.event.pull_request.user.login }}
-          PR_ASSOCIATION: ${{ github.event.pull_request.author_association }}
-          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
-        run: jennifer run tools/check-review.j "$RUNNER_TEMP/files.txt" "$RUNNER_TEMP/reviews.jsonl"
 
   # A pull request that touches talks/ carries the ticked contributor
   # declaration (.github/pull_request_template.md). Maintainers are exempt.
