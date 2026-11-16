@@ -167,6 +167,12 @@ Based on **Jennifer 0.26.0**, by [@octocat](https://github.com/octocat).
 The front matter holds how the talk is presented, nothing else: `theme`
 (required), `ratio` and `transition` (optional).
 
+Every academy talk opens with its speaker notes shown below the slide (on a
+large screen; <kbd>s</kbd> hides them, `?notes=0` in the URL starts without
+them). The build sets cantrip's `notes: open` for that, so a talk does not set
+`notes` itself, and since the notes are part of what readers see, write them
+for readers as well as for yourself.
+
 ## Who you are
 
 Every talk names its author, in the talk itself, in one of two ways:

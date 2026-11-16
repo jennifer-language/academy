@@ -829,7 +829,10 @@ func checkFrontMatter(file as string, fm as FrontMatter) {
     }
     for (def key in maps.keys($fm.values)) {
         def at as int init $fm.lines[$key];
-        if (lists.contains(meta.INJECTED, $key)) {
+        if ($key == "notes") {
+            def why as string init "\"notes\" is set by the academy: talks open with notes shown";
+            $out[] = finding($file, $at, "front-matter", $why);
+        } elseif (lists.contains(meta.INJECTED, $key)) {
             def why as string init "\"{$key}\" comes from academy.toml; remove it here";
             $out[] = finding($file, $at, "front-matter", $why);
         } elseif (not lists.contains(FRONT_KEYS, $key)) {

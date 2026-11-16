@@ -292,7 +292,7 @@ func testPrepareInjectsTheCatalogue() {
     def prepared as string init prepare($dir, $entry.meta, meta.versionsOf($entry.meta)[0], $out);
     def lines as list of string init strings.split(fs.readString($prepared), "\n");
     testing.assertEqual(
-        $lines[0..11],
+        $lines[0..12],
         [
             "---",
             "title: \"A good talk\"",
@@ -302,6 +302,7 @@ func testPrepareInjectsTheCatalogue() {
             "lang: \"en\"",
             "author: \"Ada Example (@ada)\"",
             "date: \"2026-11\"",
+            "notes: open",
             "theme: plain",
             "ratio: 4:3",
             "---",
@@ -851,4 +852,13 @@ func testLatinTextPassesTheCharset() {
     testing.assertEqual(checkCharset("t.md", "ä ö ü ß é ² € Œ ™ ‘quotes’ “double” … • \t tab"), []);
     def greek as string init convert.fromCodepoint(0x03B1);
     testing.assertEqual(len(checkCharset("t.md", $greek + " and " + $greek)), 1);
+}
+
+func testTalkMayNotSetNotes() {
+    def found as list of Finding init checked(swap(
+        GOOD,
+        "theme: plain",
+        "theme: plain\nnotes: closed"));
+    testing.assertEqual(rulesOf($found), ["front-matter"]);
+    testing.assertContains($found[0].message, "\"notes\" is set by the academy");
 }

@@ -562,6 +562,7 @@ export def const INJECTED as list of string init [
     "lang",
     "author",
     "date",
+    "notes",
 ];
 
 /** Quote a value for cantrip's front matter, which strips one outer pair. */
@@ -632,6 +633,8 @@ export func frontMatterLines(m as Meta, v as Version) {
         "lang: " + quoted($v.lang),
         "author: " + quoted($who),
         "date: " + quoted($month),
+        # Every academy talk opens with the speaker notes shown; s hides them.
+        "notes: open",
     ];
 }
 
