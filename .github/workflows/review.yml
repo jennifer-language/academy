@@ -26,13 +26,11 @@ concurrency:
 env:
   # The interpreter CI runs against: a release (X.Y.Z, installed from its
   # checksummed .deb) or a commit of Jennifer's main branch (built with Go).
-  # The tools and cantrip need 0.26.0, which is not released yet, so this pins
-  # the main-branch commit cantrip pins. Switch it to "0.26.0" once it ships.
-  # Not named JENNIFER: the tools read that as the interpreter's path.
-  JENNIFER_REF: "9486c82f34e666796dbbf80e443bd3b31f7d1149"
-  # The cantrip the talks are built with. Its image confinement and cantrip-
-  # names are on main, not yet in a release: pin the 0.1.0 tag once it exists.
-  CANTRIP_REF: "main"
+  # The tools and cantrip need 0.26.0. Not named JENNIFER: the tools read that
+  # as the interpreter's path.
+  JENNIFER_REF: "0.26.0"
+  # The cantrip release the talks are built with.
+  CANTRIP_REF: "0.1.0"
 
 jobs:
   # Non-English talk content needs a maintainer's approving review with the
