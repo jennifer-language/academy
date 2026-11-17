@@ -10,14 +10,14 @@ transition: slide
 
 A modern interpreted language that explains itself.
 
-by [@mplx](https://github.com/mplx)
-
 > It also suits teaching and learning: an interactive REPL, an easy-to-read
 > grammar, and token and AST dumps show what an interpreter does at each stage,
 > plus a built-in linter and profiler and full test support. Its strict,
 > explicit design (conditions must be bool, conversions are spelled out, names
 > never shadow, errors are positioned) turns a mistake into a clear message
 > instead of silent misbehavior.
+
+by [@mplx](https://github.com/mplx)
 
 <!-- notes:
 This paragraph is from the introduction to Jennifer. The talk takes it apart
