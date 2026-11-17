@@ -1,0 +1,9 @@
+title = "Jennifer for coders"
+description = "For programmers who know another language: what Jennifer does differently, from sigils and strict types to value semantics, errors as values, modules, tests and spawn."
+author = "mplx"
+license = "CC-BY-4.0"
+lang = "en"
+jennifer = "0.26.0"
+date = "2026-11"
+level = "intermediate"
+tags = ["basics", "language-tour", "types", "errors", "concurrency", "testing"]
