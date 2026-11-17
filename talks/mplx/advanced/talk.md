@@ -1,5 +1,6 @@
 ---
-theme: carbon-dark
+theme: carbon
+mode: dark
 ratio: 16:9
 transition: zoom
 ---
@@ -373,5 +374,7 @@ Based on Jennifer 0.26.0, November 2026.
 <!-- notes:
 Everything here is in the user guide, with more examples. The figures are from
 0.26.0; the milestones plan to close the three borrow gaps, so check the
-performance guide for what has changed since.
+performance guide for what has changed since. If you take one thing home, make
+it the order of work: write it plainly, measure with the profiler, then fix the
+one line it names.
 -->

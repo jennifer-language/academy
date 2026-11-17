@@ -15,7 +15,8 @@ Based on **Jennifer 0.26.0**, November 2026, by [@mplx](https://github.com/mplx)
 <!-- notes:
 A short tour of everything around the language: what to install, where the
 documentation is, how to get extra packages, and which programs already use
-it. Every address on these slides is live.
+it. Every address on these slides is live. If you are new, keep this talk open
+in a tab: it is the map you come back to when you wonder where something lives.
 -->
 
 ---

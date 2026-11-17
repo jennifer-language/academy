@@ -46,13 +46,19 @@ export def const GITHUB_PATHS as list of string init ["topics/grimoire-plugin"];
 export def const DENIED_NAMESPACES as list of string init ["jennifer-language", "deckyard"];
 
 /** Front-matter keys a talk may set: how it is presented. The rest comes from academy.toml. */
-export def const FRONT_KEYS as list of string init ["theme", "ratio", "transition"];
+export def const FRONT_KEYS as list of string init ["theme", "mode", "ratio", "transition"];
 
 /** Front-matter keys every talk must set. */
 export def const FRONT_REQUIRED as list of string init ["theme"];
 
 /** File extensions a talk directory may hold besides `talk.md`. */
 export def const IMAGE_EXTENSIONS as list of string init [".png", ".jpg", ".jpeg", ".gif"];
+
+/** The most slides a talk may have (rule 11). */
+export def const MAX_SLIDES as int init 20;
+
+/** The fewest words of speaker notes a slide needs; a closing imprint is exempt (rule 3). */
+export def const MIN_NOTE_WORDS as int init 40;
 
 /** The word in a fence's info string that marks a block as an excerpt. */
 export def const EXCERPT as string init "excerpt";
@@ -115,11 +121,15 @@ export def struct Block {
     text as string
 };
 
-/** A slide: the line it starts on, whether it has text, and whether it has notes. */
+/**
+ * A slide: the line it starts on, whether it has text, whether it has notes
+ * and how many words they hold, and its visible lines.
+ */
 export def struct Slide {
     line as int,
     hasText as bool,
     hasNotes as bool,
+    noteWords as int,
     visible as list of string
 };
 
@@ -510,7 +520,13 @@ export func stripCodeSpans(line as string) {
  */
 export func slides(sc as Scan, from as int) {
     def out as list of Slide;
-    def cur as Slide init Slide{line: $from + 1, hasText: false, hasNotes: false, visible: []};
+    def cur as Slide init Slide{
+        line: $from + 1,
+        hasText: false,
+        hasNotes: false,
+        noteWords: 0,
+        visible: []
+    };
     def inNote as bool init false;
     for (def i in $from..len($sc.lines)) {
         def line as string init $sc.lines[$i];
@@ -518,7 +534,7 @@ export func slides(sc as Scan, from as int) {
             if ($cur.hasText) {
                 $out[] = $cur;
             }
-            $cur = Slide{line: $i + 2, hasText: false, hasNotes: false, visible: []};
+            $cur = Slide{line: $i + 2, hasText: false, hasNotes: false, noteWords: 0, visible: []};
             $inNote = false;
             continue;
         }
@@ -536,6 +552,9 @@ export func slides(sc as Scan, from as int) {
             $cur.hasNotes = true;
             $inNote = true;
         }
+        if ($inNote) {
+            $cur.noteWords = $cur.noteWords + noteWords($prose);
+        }
         if (not $inNote) {
             $cur.visible[] = $prose;
         }
@@ -547,6 +566,31 @@ export func slides(sc as Scan, from as int) {
         $out[] = $cur;
     }
     return $out;
+}
+
+/**
+ * The words of speaker notes on one line: the text after `<!-- notes:` (when
+ * the line opens them) and before `-->` (when it closes them).
+ * @param {string} line a line inside or opening a notes comment
+ * @return {int} the number of words
+ */
+export func noteWords(line as string) {
+    def t as string init $line;
+    def at as int init strings.indexOf($t, "<!-- notes:");
+    if ($at >= 0) {
+        $t = strings.substring($t, $at + len("<!-- notes:"), len($t));
+    }
+    def end as int init strings.indexOf($t, "-->");
+    if ($end >= 0) {
+        $t = strings.substring($t, 0, $end);
+    }
+    def n as int init 0;
+    for (def w in regex.split('\s+', strings.trim($t))) {
+        if ($w != "") {
+            $n = $n + 1;
+        }
+    }
+    return $n;
 }
 
 # ---------------------------------------------------------------------------
@@ -836,7 +880,7 @@ func checkFrontMatter(file as string, fm as FrontMatter) {
             def why as string init "\"{$key}\" comes from academy.toml; remove it here";
             $out[] = finding($file, $at, "front-matter", $why);
         } elseif (not lists.contains(FRONT_KEYS, $key)) {
-            def why as string init "unknown key \"{$key}\"; only theme, ratio, transition";
+            def why as string init "unknown key \"{$key}\"; only theme, mode, ratio, transition";
             $out[] = finding($file, $at, "front-matter", $why);
         }
     }
@@ -941,18 +985,43 @@ func checkAuthor(file as string, sc as Scan, fm as FrontMatter, user as string, 
     return $out;
 }
 
-/** The findings for the slides without speaker notes (rule 3). */
-func checkNotes(file as string, sc as Scan, from as int) {
+/**
+ * The findings for the slides without enough speaker notes (rule 3): every
+ * slide needs notes of at least MIN_NOTE_WORDS words, except a closing
+ * imprint, which needs notes of any length.
+ */
+func checkNotes(file as string, sc as Scan, from as int, lang as string) {
     def out as list of Finding;
     def all as list of Slide init slides($sc, $from);
     if (len($all) == 0) {
         $out[] = finding($file, 0, "notes", "the talk has no slides");
     }
     for (def i in 0..len($all)) {
-        if (not $all[$i].hasNotes) {
+        def s as Slide init $all[$i];
+        if (not $s.hasNotes) {
             def why as string init "slide {$i + 1} has no speaker notes (<!-- notes: ... -->)";
-            $out[] = finding($file, $all[$i].line, "notes", $why);
+            $out[] = finding($file, $s.line, "notes", $why);
+            continue;
         }
+        def imprint as bool init $i == len($all) - 1 and isImprint($s, $lang);
+        if ($s.noteWords < MIN_NOTE_WORDS and not $imprint) {
+            def why as string init "slide {$i + 1} has {$s.noteWords} words of speaker notes; " +
+                "write at least {MIN_NOTE_WORDS}: what you would say, not the slide again";
+            $out[] = finding($file, $s.line, "notes", $why);
+        }
+    }
+    return $out;
+}
+
+/** The finding when the talk has more than MAX_SLIDES slides (rule 11). */
+func checkLength(file as string, sc as Scan, from as int) {
+    def out as list of Finding;
+    def all as list of Slide init slides($sc, $from);
+    if (len($all) > MAX_SLIDES) {
+        def count as int init len($all);
+        def why as string init "the talk has {$count} slides; at most {MAX_SLIDES}, " +
+            "so split it into two talks";
+        $out[] = finding($file, $all[MAX_SLIDES].line, "length", $why);
     }
     return $out;
 }
@@ -1193,7 +1262,8 @@ func checkFile(
     $groups[] = checkFrontMatter($file, $fm);
     $groups[] = checkVersion($file, $entry.meta, $body);
     $groups[] = checkLinks($file, $dir, $user, $sc);
-    $groups[] = checkNotes($file, $sc, $fm.bodyStart);
+    $groups[] = checkNotes($file, $sc, $fm.bodyStart, $lang);
+    $groups[] = checkLength($file, $sc, $fm.bodyStart);
     $groups[] = checkAuthor($file, $sc, $fm, $user, $lang);
     if ($opts.parseCode) {
         $groups[] = checkCode($file, $sc, $opts);

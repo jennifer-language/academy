@@ -26,7 +26,7 @@ By @ada. Based on Jennifer 0.26.0. See [the docs](https://docs.jennifer-lang.dev
 def x as int init 6 * 7;
 ```
 
-<!-- notes: hello -->
+<!-- notes: hello ... -->
 
 ---
 
@@ -37,7 +37,7 @@ https://example.com/in-a-fence
 ---
 ```
 
-<!-- notes: the dashes in the fence do not split the slide -->
+<!-- notes: the dashes in the fence do not split the slide ... -->
 ';
 
 /** The catalogue entry beside GOOD. */
@@ -77,9 +77,20 @@ func makeTalkWith(user as string, topic as string, text as string, entry as stri
     def root as string init fs.makeTempDir("", "academy-test-");
     def dir as string init path.join($root, "talks", $user, $topic);
     fs.mkdirAll($dir);
-    fs.writeString(path.join($dir, "talk.md"), $text);
+    fs.writeString(path.join($dir, "talk.md"), padNotes($text));
     fs.writeString(path.join($dir, "academy.toml"), $entry);
     return $dir;
+}
+
+/**
+ * Expand every notes comment ending in ` ... -->` to MIN_NOTE_WORDS more
+ * words, so a fixture reads short but passes the notes rule.
+ */
+func padNotes(text as string) {
+    return strings.replace(
+        $text,
+        " ... -->",
+        " " + strings.repeat("word ", MIN_NOTE_WORDS) + "-->");
 }
 
 /** Check GOOD with another academy.toml (fast) and return the findings. */
@@ -137,8 +148,8 @@ func testExternalLinkFails() {
 func testBareUrlAndAutolinkFail() {
     def text as string init swap(
         GOOD,
-        "<!-- notes: hello -->",
-        "Visit http://evil.test and <https://evil.test/a>.\n\n<!-- notes: hello -->");
+        "<!-- notes: hello ... -->",
+        "Visit http://evil.test and <https://evil.test/a>.\n\n<!-- notes: hello ... -->");
     testing.assertEqual(rulesOf(checked($text)), ["links", "links"]);
 }
 
@@ -163,7 +174,7 @@ func testImageOutsideTheTalkFails() {
 func testMissingNoteFails() {
     def found as list of Finding init checked(swap(
         GOOD,
-        "<!-- notes: the dashes in the fence do not split the slide -->",
+        "<!-- notes: the dashes in the fence do not split the slide ... -->",
         ""));
     testing.assertEqual(rulesOf($found), ["notes"]);
     testing.assertContains($found[0].message, "slide 2");
@@ -171,7 +182,10 @@ func testMissingNoteFails() {
 
 func testFrontMatterHoldsOnlyPresentationKeys() {
     testing.assertEqual(
-        checked(swap(GOOD, "theme: plain", "theme: plain\nratio: 4:3\ntransition: zoom")),
+        checked(swap(
+            GOOD,
+            "theme: plain",
+            "theme: plain\nmode: dark\nratio: 4:3\ntransition: zoom")),
         []);
     def dup as list of Finding init checked(swap(
         GOOD,
@@ -369,7 +383,7 @@ func testExcerptIsOnlyLexed() {
     testing.assertEqual(checkTalk($dir, "ada", $opts), []);
     fs.writeString(
         path.join($dir, "talk.md"),
-        swap(GOOD, "def x as int init 6 * 7;", "def x as int init $y;"));
+        padNotes(swap(GOOD, "def x as int init 6 * 7;", "def x as int init $y;")));
     testing.assertEqual(rulesOf(checkTalk($dir, "ada", $opts)), ["code"]);
 }
 
@@ -466,7 +480,7 @@ func testSlidesFollowCantrip() {
         "~~~~",
         "---",
         "~~~~",
-        "<!-- notes: x -->",
+        "<!-- notes: x ... -->",
         "---"
     ];
     def all as list of Slide init slides(scan($lines), 0);
@@ -581,7 +595,7 @@ def const IMPRINT as string init '
 
 Ada Example, Vienna, Austria
 
-<!-- notes: who is responsible for this talk -->
+<!-- notes: who is responsible for this talk ... -->
 ';
 
 /** GOOD without the author on its title slide. */
@@ -630,7 +644,10 @@ func testOtherUsersMentionFails() {
         ["author"]);
     def link as string init swap(GOOD, "By @ada.", "By [ada](https://github.com/bob).");
     testing.assertEqual(rulesOf(checked($link)), ["links", "author"]);
-    def inNotes as string init swap(GOOD, "<!-- notes: hello -->", "<!-- notes: by @ada -->");
+    def inNotes as string init swap(
+        GOOD,
+        "<!-- notes: hello ... -->",
+        "<!-- notes: by @ada ... -->");
     testing.assertEqual(rulesOf(checked(swap($inNotes, "By @ada. ", ""))), ["author"]);
 }
 
@@ -663,7 +680,7 @@ theme: plain
 
 Von @ada. Basierend auf Jennifer 0.26.0, mit Umlauten: ä ö ü ß é ² €.
 
-<!-- notes: Begrüßung -->
+<!-- notes: Begrüßung ... -->
 ';
 
 /** The table GOOD_META gains for the German version. */
@@ -680,7 +697,7 @@ func makeFiles(files as map of string to string, entry as string) {
     def dir as string init path.join($root, "talks", "ada", "talk");
     fs.mkdirAll($dir);
     for (def name in $files) {
-        fs.writeString(path.join($dir, $name), $files[$name]);
+        fs.writeString(path.join($dir, $name), padNotes($files[$name]));
     }
     fs.writeString(path.join($dir, "academy.toml"), $entry);
     return $dir;
@@ -775,7 +792,10 @@ func testTranslationTables() {
 }
 
 func testEveryVersionIsChecked() {
-    def bad as string init swap(GOOD_DE, "<!-- notes: Begrüßung -->", "[x](https://example.com)");
+    def bad as string init swap(
+        GOOD_DE,
+        "<!-- notes: Begrüßung ... -->",
+        "[x](https://example.com)");
     def found as list of Finding init checkedFiles(
         {"talk.en.md": GOOD, "talk.de.md": $bad},
         GOOD_META + TABLE_DE);
@@ -861,4 +881,50 @@ func testTalkMayNotSetNotes() {
         "theme: plain\nnotes: closed"));
     testing.assertEqual(rulesOf($found), ["front-matter"]);
     testing.assertContains($found[0].message, "\"notes\" is set by the academy");
+}
+
+/** Notes long enough for any slide, for building talks in the tests below. */
+def const LONG_NOTE as string init "<!-- notes: long ... -->";
+
+/** Words are counted between the opening of the notes and their close. */
+func testNoteWords() {
+    testing.assertEqual(noteWords("<!-- notes: one two -->"), 2);
+    testing.assertEqual(noteWords("text before <!-- notes: three words here"), 3);
+    testing.assertEqual(noteWords("  four words, then the -->  end"), 4);
+    testing.assertEqual(noteWords("<!-- notes: -->"), 0);
+    testing.assertEqual(noteWords("   "), 0);
+}
+
+/** A slide with fewer than MIN_NOTE_WORDS words of notes fails, naming the count. */
+func testShortNotesFail() {
+    def found as list of Finding init checked(swap(
+        GOOD,
+        "<!-- notes: the dashes",
+        "<!-- notes: too short --> <!-- the dashes"));
+    testing.assertEqual(rulesOf($found), ["notes"]);
+    testing.assertContains($found[0].message, "slide 2 has 2 words");
+    testing.assertContains($found[0].message, "at least 40");
+}
+
+/** A closing imprint needs notes, but they may be short; the same slide earlier may not. */
+func testImprintNotesMayBeShort() {
+    testing.assertEqual(checked(anonymous() + swap(IMPRINT, " ... -->", " -->")), []);
+    def early as list of Finding init checked(GOOD + swap(IMPRINT, " ... -->", " -->") +
+        "\n---\n\n## After\n\n" + LONG_NOTE +
+        "\n");
+    testing.assertEqual(rulesOf($early), ["notes"]);
+    testing.assertContains($early[0].message, "slide 3 has");
+}
+
+/** A talk may have MAX_SLIDES slides, and one more fails at that slide. */
+func testTooManySlidesFail() {
+    def text as string init GOOD;
+    for (def i in 0..MAX_SLIDES - 2) {
+        $text = $text + "\n---\n\n## More\n\n" + LONG_NOTE + "\n";
+    }
+    testing.assertEqual(checked($text), []);
+    def found as list of Finding init checked($text + "\n---\n\n## One too many\n\n" + LONG_NOTE +
+        "\n");
+    testing.assertEqual(rulesOf($found), ["length"]);
+    testing.assertContains($found[0].message, "21 slides; at most 20");
 }

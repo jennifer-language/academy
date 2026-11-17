@@ -165,7 +165,9 @@ Based on **Jennifer 0.26.0**, by [@octocat](https://github.com/octocat).
 ```
 
 The front matter holds how the talk is presented, nothing else: `theme`
-(required), `ratio` and `transition` (optional).
+(required), `mode`, `ratio` and `transition` (optional). `mode: light` or
+`mode: dark` picks the palette the talk opens in (light by default); a viewer
+switches it with <kbd>m</kbd>.
 
 Every academy talk opens with its speaker notes shown below the slide (on a
 large screen; <kbd>s</kbd> hides them, `?notes=0` in the URL starts without
@@ -215,8 +217,8 @@ each problem.
 | # | Rule | How it is checked |
 | --- | --- | --- |
 | 1 | **No external links or images.** Links point only into the Jennifer project (the allowlist below). Images are local files beside `talk.md`. | Every Markdown link and image target, reference definition, autolink and bare URL in the text, outside fenced code and code spans, is matched against the allowlist. |
-| 2 | **Front matter and catalogue entry.** `talk.md` sets `theme` and at most `ratio` and `transition`; `academy.toml` follows the schema above. The slides state the Jennifer version from `academy.toml` ("Based on Jennifer 0.26.0"). | Front-matter keys are compared with the allowed list; `academy.toml` is parsed with Jennifer's `toml` module and every key validated; the text is searched for "Jennifer X.Y.Z". |
-| 3 | **Every slide has speaker notes**, a `<!-- notes: ... -->` comment. | The slides are split the way cantrip splits them; each needs a notes comment outside code. |
+| 2 | **Front matter and catalogue entry.** `talk.md` sets `theme` and at most `mode`, `ratio` and `transition`; `academy.toml` follows the schema above. The slides state the Jennifer version from `academy.toml` ("Based on Jennifer 0.26.0"). | Front-matter keys are compared with the allowed list; `academy.toml` is parsed with Jennifer's `toml` module and every key validated; the text is searched for "Jennifer X.Y.Z". |
+| 3 | **Every slide has speaker notes of at least 40 words**, a `<!-- notes: ... -->` comment. Write what you would say: the explanation, the example you would give, the question you would ask the room. A reader of the published talk has only the slides and the notes. A closing imprint slide needs notes, but they may be short. | The slides are split the way cantrip splits them; each needs a notes comment outside code, and its words are counted. |
 | 4 | **The talk builds with cantrip without a warning.** A warning means a slide overflowed its page. | The talk is built with cantrip; any `cantrip: warning:` line fails. |
 | 5 | **Every `jennifer` code block parses**, unless it is marked as an excerpt. | Each block is written to a file and run through `jennifer ast` (parse and name resolution); an excerpt through `jennifer tokens` (it must lex). |
 | 6 | **UTF-8 without a byte-order mark, and no em-dashes (U+2014) or en-dashes (U+2013).** | The bytes of `talk.md` and `academy.toml` are checked; the dash rule also covers the repository's own Markdown, tools and workflows. |
@@ -224,6 +226,7 @@ each problem.
 | 8 | **The talk names its author** (see [Who you are](#who-you-are)). | The first slide is searched for `@<namespace>` or a link to its GitHub profile; the last for an Imprint. |
 | 9 | **Every character can be shown in the PDF.** cantrip's PDF fonts cover Windows-1252 only; anything else (an arrow `→`, an emoji, Greek or Cyrillic letters) would print as `?`. This applies to text, notes and code alike: write `->` or "gives" instead of an arrow. `ä ö ü ß é ² €` and typographic quotes are fine. | Each line of every talk file is matched against the Windows-1252 set; each other character is reported with its code point. |
 | 10 | **Languages match** (see [Talks in several languages](#talks-in-several-languages)). | File names are checked against ISO 639-1, and the files against academy.toml's `lang` and `[translations.<lang>]` tables. |
+| 11 | **At most 20 slides.** A longer subject is two talks, each of which can be given on its own. | The slides are counted the way cantrip splits them. |
 
 ### The link allowlist
 
