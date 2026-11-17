@@ -1,0 +1,9 @@
+title = "Introduction to Markdown"
+description = "The Markdown that Grimoire and cantrip understand: headings, emphasis, lists, links, code, tables, callouts and attribute lists, plus how a book and a slide deck are laid out."
+author = "mplx"
+license = "CC-BY-4.0"
+lang = "en"
+jennifer = "0.26.0"
+date = "2026-11"
+level = "beginner"
+tags = ["markdown", "writing", "grimoire", "cantrip", "documentation"]
