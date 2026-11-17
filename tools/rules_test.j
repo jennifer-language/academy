@@ -583,7 +583,7 @@ func testBuildWarningFails() {
     def found as list of Finding init checkTalk($dir, "ada", $opts);
     testing.assertEqual(rulesOf($found), ["build"]);
     testing.assertContains($found[0].message, "cantrip: warning:");
-    fs.writeString(path.join($dir, "talk.md"), GOOD);
+    fs.writeString(path.join($dir, "talk.md"), padNotes(GOOD));
     testing.assertEqual(checkTalk($dir, "ada", $opts), []);
 }
 
