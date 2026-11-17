@@ -1,0 +1,9 @@
+title = "Learning programming with Jennifer"
+description = "A first course in programming for complete beginners: values and types, variables, sums, decisions, loops, lists, maps and functions, with one small program per idea."
+author = "mplx"
+license = "CC-BY-4.0"
+lang = "en"
+jennifer = "0.26.0"
+date = "2026-11"
+level = "beginner"
+tags = ["basics", "beginner", "teaching", "first-steps"]
