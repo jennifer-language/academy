@@ -1,0 +1,9 @@
+title = "From PHP to Jennifer"
+description = "A guide for PHP developers: what carries over, what changes (declarations, no type juggling, lists and maps, structs as values), and where Composer, PDO and PHPUnit went."
+author = "mplx"
+license = "CC-BY-4.0"
+lang = "en"
+jennifer = "0.26.0"
+date = "2026-11"
+level = "intermediate"
+tags = ["php", "migration", "language-tour", "web", "sql"]
