@@ -1,0 +1,9 @@
+title = "One CI pipeline for GitHub, Gitea and Forgejo"
+description = "One workflow file that checks a Jennifer app on GitHub, Gitea and Forgejo: fmt, lint, docblocks, tests and a Grimoire book, installing Jennifer in CI, and what differs between the forges: workflow folders, actions, runner labels, tokens, Pages and artifacts."
+author = "mplx"
+license = "CC-BY-4.0"
+lang = "en"
+jennifer = "0.26.0"
+date = "2026-11"
+level = "intermediate"
+tags = ["ci", "tooling", "lint", "testing", "grimoire", "documentation"]
