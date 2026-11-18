@@ -1,0 +1,9 @@
+title = "The 10 traps of Jennifer"
+description = "The ten mistakes everyone makes in their first Jennifer programs, from sigils and reserved words to string slices, brace interpolation and value semantics: the wrong code, the interpreter's real message, and the fix."
+author = "mplx"
+license = "CC-BY-4.0"
+lang = "en"
+jennifer = "0.26.0"
+date = "2026-11"
+level = "beginner"
+tags = ["basics", "mistakes", "errors", "strings", "lint"]
