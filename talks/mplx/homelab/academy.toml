@@ -1,0 +1,9 @@
+title = "Homelab automation with Jennifer"
+description = "One nightly Jennifer script that checks a homelab and reports: Proxmox guests, storage and backups, Synology volumes and disks, the Unraid array and containers, Frigate camera events, a Docker host. Credentials, parallel checks, typed errors, systemd and offline tests. Based on Jennifer 0.26.0."
+author = "mplx"
+license = "CC-BY-4.0"
+lang = "en"
+jennifer = "0.26.0"
+date = "2026-11"
+level = "intermediate"
+tags = ["homelab", "proxmox", "synology", "unraid", "frigate", "docker", "monitoring", "automation"]
