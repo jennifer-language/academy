@@ -1,0 +1,9 @@
+title = "STR allele frequencies from STRidER"
+description = "Read a STRidER STR allele-frequency export with @deckyard/strider, check and convert one population, then compute random match probabilities and likelihood ratios with @deckyard/forensicgenetics: theta, the 5/(2N) floor, missing loci, error kinds. Invented data only. Based on Jennifer 0.26.0."
+author = "mplx"
+license = "CC-BY-4.0"
+lang = "en"
+jennifer = "0.26.0"
+date = "2026-11"
+level = "advanced"
+tags = ["forensics", "genetics", "statistics", "xml", "decks", "errors"]
