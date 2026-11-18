@@ -395,7 +395,7 @@ right, centred or justified.
 
 - The module reference: [pdf on docs.jennifer-lang.dev](https://docs.jennifer-lang.dev/modules/pdf.html)
 - The interpreter and its modules: [jennifer-language/jennifer](https://github.com/jennifer-language/jennifer)
-- Slides and books built on this module: cantrip and Grimoire, in the
+- Slides and books built on this module: Cantrip and Grimoire, in the
   [Jennifer Academy](https://academy.jennifer-lang.dev/)
 
 Based on Jennifer 0.26.0, November 2026.
@@ -403,7 +403,7 @@ Based on Jennifer 0.26.0, November 2026.
 <!-- notes:
 The reference page lists every function with its parameters, including the
 image and embedded-font parts this talk only mentioned. The best larger
-examples are two tools built on the module: cantrip, which made the PDF of
+examples are two tools built on the module: Cantrip, which made the PDF of
 these slides, and Grimoire, which prints whole manuals with bookmarks and page
 numbers. Both are free to read, and both are covered by talks of their own.
 -->

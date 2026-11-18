@@ -9,13 +9,13 @@ transition: fade
 ![Jennifer](jennifer-logo.png)
 
 Plain text that reads well as it is and renders into books, slides and web
-pages: the Markdown that Grimoire and cantrip understand.
+pages: the Markdown that Grimoire and Cantrip understand.
 
 by [@mplx](https://github.com/mplx)
 
 <!-- notes:
 Markdown is how you write for the Jennifer project: the manual is Markdown
-built by Grimoire, every talk in this academy is Markdown built by cantrip, and
+built by Grimoire, every talk in this academy is Markdown built by Cantrip, and
 so are the README files of every repository. This talk covers exactly the
 Markdown those two tools support, with the source on each slide and, where it
 fits, the rendered result right below it. The slides themselves are an example.
@@ -58,7 +58,7 @@ missing blank line between two blocks.
 <!-- notes:
 Two asterisks make text bold and one makes it italic. Backticks mark code,
 which is shown in a fixed-width font and never formatted further. The last
-four are extensions that Grimoire and cantrip both support: two tildes strike
+four are extensions that Grimoire and Cantrip both support: two tildes strike
 text through, two equals signs highlight it, and single tildes and carets make
 a subscript and a superscript, as in water and squared.
 -->
@@ -102,7 +102,7 @@ deck
 
 <!-- notes:
 A task list is a bullet list whose items start with brackets: a space for open,
-an x for done. Grimoire and cantrip draw a checkbox the reader cannot tick,
+an x for done. Grimoire and Cantrip draw a checkbox the reader cannot tick,
 because a page is not a form. A definition list is a term on one line and its
 meaning on the next, after a colon. It is how a glossary or a list of options
 is written, and both tools render it.
@@ -168,7 +168,7 @@ fence longer: four backticks around three.
 | Tool     | Builds       | Output    |
 | :------- | :----------: | --------: |
 | Grimoire | books        | HTML, PDF |
-| cantrip  | slide decks  | HTML, PDF |
+| Cantrip  | slide decks  | HTML, PDF |
 
 <!-- notes:
 A table is rows of cells between pipes. The second row separates the header
@@ -197,7 +197,7 @@ A greater-than sign starts a quotation, as in an email reply. A quotation that
 opens with an exclamation mark in brackets becomes a callout: NOTE, TIP,
 IMPORTANT, WARNING or CAUTION, each in its own colour. The syntax is the one
 GitHub uses, so the same file reads correctly there, in Grimoire and in
-cantrip, and a tool that does not know it shows a plain quotation.
+Cantrip, and a tool that does not know it shows a plain quotation.
 -->
 
 ---
@@ -218,7 +218,7 @@ Press <kbd>Ctrl</kbd> + <kbd>C</kbd> to stop.
 Curly braces after a heading give it a fixed anchor, so a link to it keeps
 working when the heading text changes. On a link or an image, a dot and a name
 add a CSS class; only the class is passed through, for safety. The kbd tag
-draws a key cap in cantrip, the one bit of HTML it accepts in a slide. In a
+draws a key cap in Cantrip, the one bit of HTML it accepts in a slide. In a
 Grimoire book it is escaped like any other HTML unless raw HTML is switched on.
 -->
 
@@ -228,14 +228,14 @@ Grimoire book it is escaped like any other HTML unless raw HTML is switched on.
 
 - Footnotes: `[^1]` stays as written
 - Raw HTML is escaped unless the book or deck allows it
-- cantrip: a bare `https://` address in text is not linked
-- cantrip: `---` separates slides, so it is not a rule or a heading underline
+- Cantrip: a bare `https://` address in text is not linked
+- Cantrip: `---` separates slides, so it is not a rule or a heading underline
 
 <!-- notes:
 Knowing the limits saves time. Footnotes are the one common extension that is
 missing. HTML in the text is shown as text, unless a Grimoire book sets raw
 HTML on or a deck is built with raw-html, because a page should not run code
-its author did not mean to. In cantrip, wrap an address in angle brackets to
+its author did not mean to. In Cantrip, wrap an address in angle brackets to
 link it, and use three stars for a horizontal rule.
 -->
 
@@ -264,7 +264,7 @@ saying pagebreak starts a new page in the printed book.
 
 ---
 
-## cantrip: slides from one file
+## Cantrip: slides from one file
 
 ````markdown
 ---
@@ -282,7 +282,7 @@ mode: dark
 ````
 
 <!-- notes:
-A cantrip deck is one Markdown file. The front matter at the top picks the
+A Cantrip deck is one Markdown file. The front matter at the top picks the
 theme and whether it opens light or dark. A line of three dashes starts the
 next slide, and a comment that begins with notes holds what the speaker says,
 which is hidden on the slide and shown in the notes panel. This talk is built
@@ -294,7 +294,7 @@ exactly that way.
 ## Where to go next
 
 - Grimoire's Markdown: [grimoire.jennifer-lang.dev](https://grimoire.jennifer-lang.dev/)
-- cantrip's slide format: [cantrip.jennifer-lang.dev](https://cantrip.jennifer-lang.dev/)
+- Cantrip's slide format: [cantrip.jennifer-lang.dev](https://cantrip.jennifer-lang.dev/)
 - Write a talk yourself: the [Jennifer Academy](https://academy.jennifer-lang.dev/)
 
 Based on Jennifer 0.26.0, November 2026.

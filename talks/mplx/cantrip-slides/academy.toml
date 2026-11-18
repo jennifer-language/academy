@@ -1,5 +1,5 @@
-title = "Slides with cantrip"
-description = "cantrip turns one Markdown file into a self-contained browser slideshow and a PDF: slide separators, front matter, speaker notes, themes and modes, ratios, transitions, code and pictures, presenting keys, and how the Jennifer Academy builds its talks."
+title = "Slides with Cantrip"
+description = "Cantrip turns one Markdown file into a self-contained browser slideshow and a PDF: slide separators, front matter, speaker notes, themes and modes, ratios, transitions, code and pictures, presenting keys, and how the Jennifer Academy builds its talks."
 author = "mplx"
 license = "CC-BY-4.0"
 lang = "en"

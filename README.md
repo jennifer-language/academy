@@ -5,7 +5,7 @@ written by the people who use it, published at
 **<https://academy.jennifer-lang.dev/>**.
 
 Each talk is a Markdown file built with
-[cantrip](https://github.com/jennifer-language/cantrip) into a slideshow for
+[Cantrip](https://github.com/jennifer-language/cantrip) into a slideshow for
 the browser and a PDF, and lives under its author's GitHub account:
 
 ```text
@@ -43,7 +43,7 @@ All written in Jennifer, under `tools/`:
 | `update-hint.sh` | The pull-request reminder to set `updated` after a large change to a talk. |
 | `install-jennifer.sh` | Installs the interpreter CI pins (a release or a commit). |
 
-Locally, with an interpreter and a cantrip checkout:
+Locally, with an interpreter and a Cantrip checkout:
 
 ```sh
 export CANTRIP=../cantrip/bin/cantrip        # in the workspace: ../apps/cantrip/bin/cantrip
@@ -109,7 +109,7 @@ up when a field changes meaning or goes away; new fields may be added.
 
 - **site** (GitHub and Forgejo): formats and lints the tools, runs their tests,
   runs `tools/check.j`, builds the site and checks the PDFs with `qpdf`. The
-  interpreter is pinned by `JENNIFER_REF` and cantrip by `CANTRIP_REF`, each a
+  interpreter is pinned by `JENNIFER_REF` and Cantrip by `CANTRIP_REF`, each a
   release tag.
 - **accounts** (GitHub only): every namespace a change touches must be a
   personal GitHub account, asked through the GitHub API.

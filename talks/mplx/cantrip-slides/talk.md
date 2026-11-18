@@ -4,21 +4,21 @@ ratio: 16:9
 transition: zoom
 ---
 
-# Slides with cantrip
+# Slides with Cantrip
 
 ![Jennifer](jennifer-logo.png)
 
 One Markdown file in, a browser slideshow and a PDF out.
 
-Based on **Jennifer 0.26.0** and cantrip 0.3.1, November 2026, by [@mplx](https://github.com/mplx).
+Based on **Jennifer 0.26.0** and Cantrip 0.3.1, November 2026, by [@mplx](https://github.com/mplx).
 
 <!-- notes:
-cantrip is the slide tool of the Jennifer project, a program written in
-Jennifer. Every talk in this academy, this one included, is a cantrip deck.
+Cantrip is the slide tool of the Jennifer project, a program written in
+Jennifer. Every talk in this academy, this one included, is a Cantrip deck.
 We go through the whole format: slides, front matter, notes, themes, code and
 pictures, then the keys for presenting, the PDF, and how the academy builds
 and checks its talks with it. The outputs shown come from real runs of
-cantrip 0.3.1.
+Cantrip 0.3.1.
 -->
 
 ---
@@ -63,9 +63,9 @@ Needs Jennifer 0.26.0 or newer; no `net`, `exec` or `sql`, so it runs on
 `jennifer-tiny` too.
 
 <!-- notes:
-jvc, Jennifer's package manager, installs cantrip as an app: a command on your
+jvc, Jennifer's package manager, installs Cantrip as an app: a command on your
 PATH. From a git checkout you run the launcher directly, which is what this
-academy's checker does. cantrip uses only modules that ship with the
+academy's checker does. Cantrip uses only modules that ship with the
 interpreter: markdown to parse and lay out, pdf to write the file, html to
 escape, args for the command line. It never touches the network, which is why
 the small embeddable interpreter can run it.
@@ -156,7 +156,7 @@ goes to the audience, so notes are out. Each flag flips one of them.
 ## Themes and modes
 
 - **13 themes**, each with a light and a dark palette
-- cantrip's own: `plain` (default), `solar`, `contrast`
+- Cantrip's own: `plain` (default), `solar`, `contrast`
 - Grimoire's, same names and colours: `carbon` `ember` `grimoire` `ivy`
   `meridian` `nordic` `obsidian` `orchid` `sepia` `terminal`
 - `mode: dark` opens dark; the viewer flips with <kbd>m</kbd>
@@ -213,7 +213,7 @@ io.printf("{1 / 0}\n");
 
 <!-- notes:
 Code keeps every space and blank line. The word after the opening fence ends
-up as a class, so you can add a highlighter of your own; cantrip itself does
+up as a class, so you can add a highlighter of your own; Cantrip itself does
 not colour code. The example is a real Jennifer program, and running it stops
 with "division by zero" and the file, line and column, which is the point of
 the slide it came from. A wide code line scrolls in the slideshow and wraps in
@@ -234,7 +234,7 @@ the PDF.
 - Only a picture alone in its paragraph is drawn in the PDF
 
 <!-- notes:
-Keep pictures beside the deck. For the PDF, cantrip resolves the path against
+Keep pictures beside the deck. For the PDF, Cantrip resolves the path against
 the deck's directory, whatever directory you run it from, and refuses absolute
 paths, paths that climb out with two dots, and links that point outside. So a
 deck from a stranger cannot pull a private file into the PDF it builds. Use
@@ -316,7 +316,7 @@ Three good habits: 4 slide(s), 2 with notes
 ```
 
 <!-- notes:
-A slide that does not fit continues on a second PDF page, and cantrip says so
+A slide that does not fit continues on a second PDF page, and Cantrip says so
 on stderr. The PDF is still complete; the warning is a prompt to split the
 slide. info writes nothing and lists the slides with their headings, a star
 for each slide with notes. A slide listed without a heading usually means a
@@ -339,7 +339,7 @@ Exit code `2`: the command line was wrong. `1`: the deck could not be built.
 
 <!-- notes:
 build writes both files, html and pdf one each. For build, --out is a path
-without the extension, since two files come out; cantrip never creates
+without the extension, since two files come out; Cantrip never creates
 directories, and never writes over an input file. Several input files make one
 deck, numbered straight through, with the first file's front matter. The two
 exit codes let a script tell a typo in a command from a broken deck.
@@ -347,7 +347,7 @@ exit codes let a script tell a typo in a command from a broken deck.
 
 ---
 
-## How the academy uses cantrip
+## How the academy uses Cantrip
 
 - A talk is `talk.md` (theme, ratio, transition, mode) plus `academy.toml`
 - `tools/prepare.j` writes title, description, author, date, keywords
@@ -362,9 +362,9 @@ jennifer run tools/check.j talks/mplx/cantrip-slides
 
 <!-- notes:
 The catalogue data is written once, in academy.toml, and injected into the
-front matter of a copy before cantrip runs, so the slideshow and the PDF carry
+front matter of a copy before Cantrip runs, so the slideshow and the PDF carry
 it. That is also why every academy talk opens with its notes visible. The
-checker turns cantrip's overflow warning into an error, and adds rules of its
+checker turns Cantrip's overflow warning into an error, and adds rules of its
 own: at least forty words of notes per slide, only Windows-1252 characters
 because of the PDF fonts, and Jennifer code that parses.
 -->
@@ -382,7 +382,7 @@ Based on Jennifer 0.26.0, November 2026.
 
 <!-- notes:
 The manual is a Grimoire book and covers every flag and key shown here in more
-detail. The sample deck is built and published on every push to cantrip, so it
+detail. The sample deck is built and published on every push to Cantrip, so it
 always matches the current code. And the academy's contributing guide is
 the shortest way from reading talks to giving one: fork, write talk.md and
 academy.toml, run the check, open a pull request.

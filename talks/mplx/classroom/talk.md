@@ -23,7 +23,7 @@ by [@mplx](https://github.com/mplx)
 This paragraph is from the introduction to Jennifer. The talk takes it apart
 one claim at a time: one slide per claim, one small program per slide, and the
 interpreter's real output underneath. Nothing here is mocked up.
-The deck itself is made with cantrip, a slide tool written in Jennifer.
+The deck itself is made with Cantrip, a slide tool written in Jennifer.
 -->
 
 ---
@@ -357,7 +357,7 @@ trimmed here.)
 - Language: [jennifer-lang.dev](https://jennifer-lang.dev/)
 - Source: [github.com/jennifer-language/jennifer](https://github.com/jennifer-language/jennifer)
 - More talks: [academy.jennifer-lang.dev](https://academy.jennifer-lang.dev/)
-- This talk: Markdown in the [Jennifer Academy](https://academy.jennifer-lang.dev/), made with [cantrip](https://github.com/jennifer-language/cantrip)
+- This talk: Markdown in the [Jennifer Academy](https://academy.jennifer-lang.dev/), made with [Cantrip](https://github.com/jennifer-language/cantrip)
 
 ```sh
 jennifer repl
@@ -368,6 +368,6 @@ Based on Jennifer 0.26.0, November 2026.
 <!-- notes:
 Close with the invitation: install it, open the REPL, and type the first line
 from the second slide. The deck you just saw is a Markdown file in the Jennifer
-Academy, rendered by cantrip, a program written in Jennifer. Students find more
+Academy, rendered by Cantrip, a program written in Jennifer. Students find more
 talks there and, once they feel confident, can contribute their own.
 -->

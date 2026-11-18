@@ -367,7 +367,7 @@ the line the profiler names: everywhere else, readable small functions win.
 - Performance: `docs/user-guide/performance.md`
 - Profiler: `docs/technical/cli_profile.md`
 - Language: [jennifer-lang.dev](https://jennifer-lang.dev/)
-- This talk: in the [Jennifer Academy](https://academy.jennifer-lang.dev/), made with [cantrip](https://github.com/jennifer-language/cantrip)
+- This talk: in the [Jennifer Academy](https://academy.jennifer-lang.dev/), made with [Cantrip](https://github.com/jennifer-language/cantrip)
 
 Based on Jennifer 0.26.0, November 2026.
 

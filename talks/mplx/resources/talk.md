@@ -149,8 +149,8 @@ a fix to how decks are built and checked lands everywhere at once.
 
 | App | What it does |
 | --- | --- |
-| [grimoire](https://grimoire.jennifer-lang.dev/) | Markdown to a documentation site and a PDF; builds every deck's book |
-| [cantrip](https://github.com/jennifer-language/cantrip) | Markdown to slides: an HTML slideshow and a PDF (this deck) |
+| [Grimoire](https://grimoire.jennifer-lang.dev/) | Markdown to a documentation site and a PDF; builds every deck's book |
+| [Cantrip](https://github.com/jennifer-language/cantrip) | Markdown to slides: an HTML slideshow and a PDF (this deck) |
 | [jvc](https://jvc.jennifer-lang.dev/) | the deck manager |
 | [registry](https://github.com/jennifer-language/registry) | the deck registry server and its operator tool |
 | [ocsaml](https://github.com/mplx/openconnect-saml) | Cisco AnyConnect VPN with SAML / SSO login |
@@ -159,7 +159,7 @@ Grimoire plugins: [`grimoire-plugin`](https://github.com/topics/grimoire-plugin)
 
 <!-- notes:
 The best evidence that a language works is the tools built with it. Grimoire
-builds the documentation of every deck, cantrip made the slides you are
+builds the documentation of every deck, Cantrip made the slides you are
 looking at, jvc and the registry run the package ecosystem, and ocsaml gets
 people through a corporate VPN. Grimoire takes plugins; user plugins such as
 mermaid diagrams and KaTeX maths are tagged grimoire-plugin on GitHub.

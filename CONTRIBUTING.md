@@ -3,7 +3,7 @@
 The Jennifer Academy publishes talks that teach the Jennifer programming
 language, written by the people who use it, at
 <https://academy.jennifer-lang.dev/>. A talk is a Markdown file that
-[cantrip](https://github.com/jennifer-language/cantrip) turns into a slideshow
+[Cantrip](https://github.com/jennifer-language/cantrip) turns into a slideshow
 for the browser and a PDF. This page says how to add one and which rules it
 must meet. Every rule is checked by `tools/check.j`, locally and in CI.
 
@@ -36,7 +36,7 @@ in [Talks in several languages](#talks-in-several-languages).
 - **One talk per directory**, holding its talk file(s), `academy.toml` and
   images (`.png`, `.jpg`, `.jpeg`, `.gif`) only: no subdirectories, no
   symbolic links, no other files.
-- **Images are read only from the talk's own directory.** cantrip refuses an
+- **Images are read only from the talk's own directory.** Cantrip refuses an
   image outside it, and the checker does too. If several of your talks show the
   same picture, give each talk its own copy.
 
@@ -90,7 +90,7 @@ tags        = ["concurrency", "tasks", "channels"]
 
 Write these values once, here. `tools/build.sh` copies `title`,
 `description`, `keywords` (from `tags`), `lang`, `author` and `date` into the
-front matter of a temporary copy of `talk.md` before cantrip runs, so the
+front matter of a temporary copy of `talk.md` before Cantrip runs, so the
 slideshow and the PDF carry them. `talk.md` must therefore not set them itself.
 
 ## Talks in several languages
@@ -133,16 +133,16 @@ keywords    = "jennifer, nebenläufigkeit, tasks, channels"
   Western European text (Windows-1252). German, French, Spanish, Italian,
   Dutch, Portuguese or the Nordic languages work; Greek, Cyrillic, CJK and
   other scripts cannot be shown in the PDF, so talks in them are refused until
-  cantrip embeds a Unicode font.
+  Cantrip embeds a Unicode font.
 - Content in a language other than English needs a translation review by a
   maintainer before it is merged; see
   [Review of talks in other languages](#review-of-talks-in-other-languages).
 
 ## talk.md
 
-A cantrip deck: front matter, then slides separated by a line of `---`. The
+A Cantrip deck: front matter, then slides separated by a line of `---`. The
 format, the themes and the transitions are described in
-[cantrip's documentation](https://github.com/jennifer-language/cantrip/blob/main/docs/format.md).
+[Cantrip's documentation](https://github.com/jennifer-language/cantrip/blob/main/docs/format.md).
 
 ```markdown
 ---
@@ -171,7 +171,7 @@ switches it with <kbd>m</kbd>.
 
 Every academy talk opens with its speaker notes shown below the slide (on a
 large screen; <kbd>s</kbd> hides them, `?notes=0` in the URL starts without
-them). The build sets cantrip's `notes: open` for that, so a talk does not set
+them). The build sets Cantrip's `notes: open` for that, so a talk does not set
 `notes` itself, and since the notes are part of what readers see, write them
 for readers as well as for yourself.
 
@@ -218,15 +218,15 @@ each problem.
 | --- | --- | --- |
 | 1 | **No external links or images.** Links point only into the Jennifer project (the allowlist below). Images are local files beside `talk.md`. | Every Markdown link and image target, reference definition, autolink and bare URL in the text, outside fenced code and code spans, is matched against the allowlist. |
 | 2 | **Front matter and catalogue entry.** `talk.md` sets `theme` and at most `mode`, `ratio` and `transition`; `academy.toml` follows the schema above. The slides state the Jennifer version from `academy.toml` ("Based on Jennifer 0.26.0"). | Front-matter keys are compared with the allowed list; `academy.toml` is parsed with Jennifer's `toml` module and every key validated; the text is searched for "Jennifer X.Y.Z". |
-| 3 | **Every slide has speaker notes of at least 40 words**, a `<!-- notes: ... -->` comment. Write what you would say: the explanation, the example you would give, the question you would ask the room. A reader of the published talk has only the slides and the notes. A closing imprint slide needs notes, but they may be short. | The slides are split the way cantrip splits them; each needs a notes comment outside code, and its words are counted. |
-| 4 | **The talk builds with cantrip without a warning.** A warning means a slide overflowed its page. | The talk is built with cantrip; any `cantrip: warning:` line fails. |
+| 3 | **Every slide has speaker notes of at least 40 words**, a `<!-- notes: ... -->` comment. Write what you would say: the explanation, the example you would give, the question you would ask the room. A reader of the published talk has only the slides and the notes. A closing imprint slide needs notes, but they may be short. | The slides are split the way Cantrip splits them; each needs a notes comment outside code, and its words are counted. |
+| 4 | **The talk builds with Cantrip without a warning.** A warning means a slide overflowed its page. | The talk is built with Cantrip; any `cantrip: warning:` line fails. |
 | 5 | **Every `jennifer` code block parses**, unless it is marked as an excerpt. | Each block is written to a file and run through `jennifer ast` (parse and name resolution); an excerpt through `jennifer tokens` (it must lex). |
 | 6 | **UTF-8 without a byte-order mark, and no em-dashes (U+2014) or en-dashes (U+2013).** | The bytes of `talk.md` and `academy.toml` are checked; the dash rule also covers the repository's own Markdown, tools and workflows. |
 | 7 | **One talk per directory**, with valid names (see [Where a talk lives](#where-a-talk-lives)): `talk.md` or `talk.<lang>.md` files, never both. | The tree under `talks/` is walked. |
 | 8 | **The talk names its author** (see [Who you are](#who-you-are)). | The first slide is searched for `@<namespace>` or a link to its GitHub profile; the last for an Imprint. |
-| 9 | **Every character can be shown in the PDF.** cantrip's PDF fonts cover Windows-1252 only; anything else (an arrow `→`, an emoji, Greek or Cyrillic letters) would print as `?`. This applies to text, notes and code alike: write `->` or "gives" instead of an arrow. `ä ö ü ß é ² €` and typographic quotes are fine. | Each line of every talk file is matched against the Windows-1252 set; each other character is reported with its code point. |
+| 9 | **Every character can be shown in the PDF.** Cantrip's PDF fonts cover Windows-1252 only; anything else (an arrow `→`, an emoji, Greek or Cyrillic letters) would print as `?`. This applies to text, notes and code alike: write `->` or "gives" instead of an arrow. `ä ö ü ß é ² €` and typographic quotes are fine. | Each line of every talk file is matched against the Windows-1252 set; each other character is reported with its code point. |
 | 10 | **Languages match** (see [Talks in several languages](#talks-in-several-languages)). | File names are checked against ISO 639-1, and the files against academy.toml's `lang` and `[translations.<lang>]` tables. |
-| 11 | **At most 20 slides.** A longer subject is two talks, each of which can be given on its own. | The slides are counted the way cantrip splits them. |
+| 11 | **At most 20 slides.** A longer subject is two talks, each of which can be given on its own. | The slides are counted the way Cantrip splits them. |
 
 ### The link allowlist
 
@@ -268,7 +268,7 @@ string still fails. Mark only what really is a fragment.
 ## Checking locally
 
 You need the Jennifer interpreter (0.26.0 or a newer build) and a checkout of
-cantrip:
+Cantrip:
 
 ```sh
 git clone https://github.com/jennifer-language/cantrip.git ../cantrip
