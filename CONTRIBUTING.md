@@ -55,7 +55,7 @@ open an issue, or ask that person.
 
 ## academy.toml
 
-The catalogue entry. The front page, the author and tag pages, the sitemap,
+The catalogue entry. The front page, the author, level and tag pages, the sitemap,
 `talks.json` and the talk's HTML and PDF metadata are built from it. The schema
 is strict: an unknown key, a wrong type or a bad value fails the check.
 
@@ -83,7 +83,7 @@ tags        = ["concurrency", "tasks", "channels"]
 | `lang` | yes | The talk's (primary) language, an ISO 639-1 code: `"en"`, `"de"`, `"fr"`. |
 | `jennifer` | yes | The release the talk is based on, `X.Y.Z`. The slides must say it too (see rule 2). |
 | `date` | yes | When the talk was first published, `YYYY-MM`. |
-| `updated` | no | When it last changed substantially, `YYYY-MM`, not before `date`. Sorting uses it. |
+| `updated` | no | When it last changed substantially, `YYYY-MM`, not before `date`. Shown on the card, and "Newest first" sorts by it. Leave it for small fixes; CI reminds you when the slides changed by 20 lines or more. Search engines get the day of the last commit either way. |
 | `level` | yes | `"beginner"`, `"intermediate"` or `"advanced"`. |
 | `tags` | yes | 1 to 8 tags, each lowercase `a-z`, `0-9` and single hyphens, at most 24 characters. Shared by every language. |
 | `[translations.<lang>]` | no | One table per further language: `title` and `description` (same limits as above), optional `keywords` (plain text, at most 200 characters). See below. |

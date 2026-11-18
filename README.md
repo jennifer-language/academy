@@ -33,13 +33,14 @@ All written in Jennifer, under `tools/`:
 | File | What it does |
 | --- | --- |
 | `check.j` | Checks every talk against the rules in CONTRIBUTING.md (`--fast` skips parsing code and building). |
-| `build.sh` | Builds the site into `site/`: every talk (HTML and PDF), the front page, author and tag pages, the legal page (from `legal.md`), `sitemap.xml`, `robots.txt`, `talks.json`, `CNAME`. |
+| `build.sh` | Builds the site into `site/`: every talk (HTML and PDF), the front page, author, level and tag pages, the legal page (from `legal.md`), `sitemap.xml`, `robots.txt`, `talks.json`, `llms.txt`, `CNAME`. |
 | `rules.j`, `meta.j` | The rules and the `academy.toml` schema, as a module (`rules_test.j` holds the negative cases). |
 | `site.j`, `gallery.j` | The academy's own pages (`site_test.j` tests order and escaping). |
 | `prepare.j` | Injects a talk's `academy.toml` fields into a copy of `talk.md` for cantrip. |
 | `declaration.j`, `check-declaration.j` | The pull-request declaration check (`declaration_test.j`). |
 | `review.j`, `check-review.j` | The translation-review check for non-English content (`review_test.j`). |
 | `namespaces.sh` | The pull-request namespace checks CI runs on GitHub. |
+| `update-hint.sh` | The pull-request reminder to set `updated` after a large change to a talk. |
 | `install-jennifer.sh` | Installs the interpreter CI pins (a release or a commit). |
 
 Locally, with an interpreter and a cantrip checkout:
@@ -72,6 +73,7 @@ other sites and tools:
       "jennifer": "0.26.0",
       "date": "2026-11",
       "updated": "",
+      "modified": "2026-11-18",
       "level": "beginner",
       "tags": ["teaching", "education"],
       "url": "https://academy.jennifer-lang.dev/mplx/classroom/",
@@ -92,7 +94,10 @@ other sites and tools:
 ```
 
 The talks are sorted newest first (`updated`, else `date`), then by title.
-`name` and `updated` are `""` when the talk does not set them. The top-level
+`name` and `updated` are `""` when the talk does not set them. `modified` is
+the day the talk's directory last changed in git (any change, a typo fix too),
+or the `updated` / `date` month when the build has no git history; `updated` is
+the author's own "this changed substantially", the date readers see. The top-level
 `title`, `description`, `lang`, `url` and `pdf` are the primary language's;
 `versions` lists every language, the primary first, a translation with its
 own `url` (`.../<lang>/`) and `pdf` (`.../<lang>/index.pdf`). `version` goes
@@ -120,6 +125,9 @@ up when a field changes meaning or goes away; new fields may be added.
   skipped run as passed. Maintainers' own pull requests are exempt.
 - On GitHub, `check.j` annotates each talk problem on its file and line and
   lists them, grouped by talk, in the job summary.
+- **update-hint** (GitHub pull requests only): when a talk's slides change by
+  20 lines or more and its `updated` stays as it was, a notice (never a
+  failure) suggests setting it; `tools/update-hint.sh`.
 - **deploy** (GitHub, pushes to `main`): publishes `site/` to GitHub Pages.
 
 ### One-time setup

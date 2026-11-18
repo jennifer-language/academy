@@ -33,7 +33,11 @@ jobs:
     name: Check and build the talks
     runs-on: ubuntu-latest
     steps:
+      # The whole history: the sitemap's lastmod is each talk's last commit,
+      # and a shallow clone would give every talk the same day.
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       # Only a commit needs a toolchain; a release installs from its .deb.
       - if: ${{ !contains(env.JENNIFER_REF, '.') }}
@@ -142,6 +146,22 @@ jobs:
               exit 0 ;;
           esac
           ./tools/namespaces.sh owner "$AUTHOR" "$BASE" "$HEAD"
+
+  # A reminder, never a failure: a talk whose slides changed a lot while its
+  # `updated` stayed gets a notice suggesting the author set it.
+  update-hint:
+    name: Updated month reminder
+    if: github.server_url == 'https://github.com' && github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Suggest setting updated where the slides changed a lot
+        env:
+          BASE: ${{ github.event.pull_request.base.sha }}
+          HEAD: ${{ github.event.pull_request.head.sha }}
+        run: ./tools/update-hint.sh "$BASE" "$HEAD"
 
   # A pull request that touches talks/ carries the ticked contributor
   # declaration (.github/pull_request_template.md). Maintainers are exempt.
