@@ -236,9 +236,18 @@ def const SCRIPT as string init '(function () {
   var start = new URLSearchParams(location.search || location.hash.slice(1));
   selects.forEach(function (s) {
     var v = start.get(s.dataset.kind);
-    for (var i = 0; v && i < s.options.length; i++) {
-      if (s.options[i].value === v) { s.value = v; }
+    if (!v || !/^[a-z0-9-]+$/.test(v)) { return; }
+    var found = false;
+    for (var i = 0; i < s.options.length; i++) {
+      if (s.options[i].value === v) { found = true; }
     }
+    // A topic of one talk is not in the list, but a link to it still works.
+    if (!found && s.dataset.kind === "tag" &&
+        document.querySelector(".talks > li[data-tags~=\"" + v + "\"]")) {
+      s.add(new Option(v, v));
+      found = true;
+    }
+    if (found) { s.value = v; }
   });
   search.value = start.get("q") || "";
   if (["newest", "title"].indexOf(start.get("sort")) >= 0) { sort.value = start.get("sort"); }
@@ -255,6 +264,13 @@ def const SCRIPT as string init '(function () {
   apply();
 })();
 ';
+
+/**
+ * How many talks a topic needs to be offered in the filter bar. Rarer topics
+ * keep their tag page, their link on the card and the search; listing every one
+ * would make the dropdown longer than the list of talks.
+ */
+def const TOPIC_MIN as int init 2;
 
 /**
  * A talk in the catalogue: where it lives, its entry, and the day its
@@ -451,8 +467,9 @@ func levelName(level as string) {
 }
 
 /**
- * The filter bar under the header's search box: a dropdown of the levels in use, of the tags
- * and, with several languages, of the languages, each option with its number
+ * The filter bar under the header's search box: a dropdown of the levels in
+ * use, of the tags at least TOPIC_MIN talks share and, with several languages,
+ * of the languages, each option with its number
  * of talks. Hidden until the script runs, so without it every talk shows.
  */
 func filters(talks as list of Talk) {
@@ -472,7 +489,10 @@ func filters(talks as list of Talk) {
     $out = $out + dropdown("level", "Level", "All levels", $levels);
     def tags as list of string;
     for (def tag in tagsOf($talks)) {
-        $tags[] = option($tag, $tag, len(byTag($talks, $tag)));
+        def n as int init len(byTag($talks, $tag));
+        if ($n >= TOPIC_MIN) {
+            $tags[] = option($tag, $tag, $n);
+        }
     }
     $out = $out + dropdown("tag", "Topic", "All topics", $tags);
     def langs as list of string init langsIn($talks);

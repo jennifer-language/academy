@@ -88,7 +88,9 @@ func testFrontPageOrderAndLinks() {
         "<select data-kind=\"level\"><option value=\"\">All levels</option>" +
             "<option value=\"beginner\">Beginner (4)</option></select>");
     testing.assertContains($page, "<option value=\"basics\">basics (4)</option>");
-    testing.assertContains($page, "<option value=\"zeta\">zeta (1)</option>");
+    # A topic of one talk is left out of the dropdown; its card still links it.
+    testing.assertFalse(strings.contains($page, "<option value=\"zeta\">"));
+    testing.assertContains($page, "<a href=\"tags/zeta/\">zeta</a>");
     testing.assertContains($page, "id=\"filter-q\"");
     # Each card carries its level as a class (the colour) and as text.
     testing.assertContains(
