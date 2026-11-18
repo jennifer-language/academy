@@ -1,0 +1,9 @@
+title = "Packaging a Jennifer app with Docker"
+description = "Ship a Jennifer web app as a container: the official interpreter images and their tags, a .dockerignore allowlist, a multi-stage build with a Grimoire docs stage, a non-root user, configuration and secrets from the environment, health checks, clean stops, and compose. Based on Jennifer 0.26.0."
+author = "mplx"
+license = "CC-BY-4.0"
+lang = "en"
+jennifer = "0.26.0"
+date = "2026-11"
+level = "intermediate"
+tags = ["docker", "containers", "deployment", "web", "security", "grimoire"]
