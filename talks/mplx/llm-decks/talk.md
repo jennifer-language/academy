@@ -436,7 +436,7 @@ the live API, and openai only against a local Ollama.
 
 ```jennifer excerpt
 def srv as httpd.Server init httpd.listen("127.0.0.1:" + $port);
-while (true) {
+while (true) { # lint-disable: L105
     def req as httpd.Request init httpd.accept($srv);
     def path as string init httpd.path($req);
     # ... pick the next scripted answer for this path ...
@@ -452,6 +452,9 @@ fake: POST /v1beta/models/gemini-3.8-flash:generateContent ...
 ```
 
 <!-- notes:
+The trailing lint-disable comment silences L105, jennifer lint's warning for a
+loop whose condition is always true: this server loop is meant to run until
+the process is stopped.
 The fake behind this talk serves all three paths with scripted answers in
 order: a text reply, a tool-call reply, the final answer, then a 429. It logs
 which key header arrived, never its value. Start it on a free port, set the
