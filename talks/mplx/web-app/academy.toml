@@ -1,0 +1,9 @@
+title = "A web app in Jennifer from scratch"
+description = "A small multi-user web app with the bundled web module: routes and middleware, forms, a MariaDB database with migrations, password login and server-side sessions, escaped templates, CSRF protection, a clean shutdown, and tests against a throwaway database. Based on Jennifer 0.26.0."
+author = "mplx"
+license = "CC-BY-4.0"
+lang = "en"
+jennifer = "0.26.0"
+date = "2026-11"
+level = "intermediate"
+tags = ["web", "http", "sql", "mariadb", "sessions", "security", "testing"]
