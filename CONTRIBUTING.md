@@ -85,7 +85,7 @@ tags        = ["concurrency", "tasks", "channels"]
 | `date` | yes | When the talk was first published, `YYYY-MM`. |
 | `updated` | no | When it last changed substantially, `YYYY-MM`, not before `date`. Shown on the card, and "Newest first" sorts by it. Leave it for small fixes; CI reminds you when the slides changed by 20 lines or more. Search engines get the day of the last commit either way. |
 | `level` | yes | `"beginner"`, `"intermediate"` or `"advanced"`. |
-| `tags` | yes | 1 to 8 tags, each lowercase `a-z`, `0-9` and single hyphens, at most 24 characters. Shared by every language. |
+| `tags` | yes | 1 to 8 tags, each lowercase `a-z`, `0-9` and single hyphens, at most 24 characters. Shared by every language. Reuse a tag other talks already have where one fits (`errors`, not `error-handling`): the front page's topic filter lists only tags two or more talks share. The level is its own field, so no `beginner` tag. |
 | `[translations.<lang>]` | no | One table per further language: `title` and `description` (same limits as above), optional `keywords` (plain text, at most 200 characters). See below. |
 
 Write these values once, here. `tools/build.sh` copies `title`,
