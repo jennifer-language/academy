@@ -8,16 +8,16 @@ transition: fade
 
 ![Jennifer](jennifer-logo.png)
 
-A folder of Markdown in, a searchable website and a printed book out, rebuilt
-by CI on every release.
+A folder of Markdown in, a searchable website, a printed book and an EPUB
+out, rebuilt by CI on every release.
 
 Based on **Jennifer 0.26.0** and Grimoire 0.5.0, November 2026, by [@mplx](https://github.com/mplx).
 
 <!-- notes:
 Grimoire is the documentation builder of the Jennifer project, written in
-Jennifer. It builds the language manual, the module reference, cantrip's
+Jennifer. It builds the language manual, the module reference, Cantrip's
 manual and its own. This talk goes from an empty directory to a book on the
-web: the outline, the configuration, the PDF, several books from one tree,
+web: the outline, the configuration, the PDF and the EPUB, several books from one tree,
 plugins, the container image and the CI workflow that publishes it all from a
 release tag. Outputs shown are from real runs of Grimoire 0.5.0.
 -->
@@ -28,7 +28,8 @@ release tag. Outputs shown are from real runs of Grimoire 0.5.0.
 
 - A directory of Markdown becomes a **static website**: themed, with search,
   light and dark mode, an outline and per-page contents
-- On request the **whole book as one PDF**: cover, bookmarks, page numbers
+- On request the **whole book as one PDF**: cover, bookmarks, page numbers,
+  and as an **EPUB** for e-readers
 - The site works from a web root, a subdirectory, or **straight off the disk**
   over `file://`, search included
 - Nothing is fetched unless you opt in; same input, **byte-identical** output
@@ -148,8 +149,8 @@ pageNumbers = true
 
 <!-- notes:
 Every key is optional, and a directory of Markdown builds with no file at all.
-A command-line flag always wins over the file, so trying a theme is
-grimoire build --theme nordic, no edit needed. The built-in highlighter colours
+A command-line flag always wins over the file, so trying a theme needs no
+edit: add --theme nordic to the build command. The built-in highlighter colours
 Jennifer while the site is built: no JavaScript, nothing loaded. editUrl puts
 an edit-this-page link on every chapter, with the chapter's path filled in.
 -->
@@ -168,7 +169,7 @@ The picture is the nordic theme, the same page in light and dark. Every theme
 must ship both palettes, so no theme can have a broken dark mode. The reader
 picks light, dark or follow-the-system in the top bar, and the choice is
 applied before the first paint, so there is no white flash between pages.
-The cantrip themes of the same names use the same colours, so slides can
+The Cantrip themes of the same names use the same colours, so slides can
 match the manual next to them.
 -->
 
@@ -195,6 +196,36 @@ after the whole book is laid out, so Grimoire stamps them in a second pass.
 In a container without git, set GRIMOIRE_VERSION or GRIMOIRE_COMMIT and the
 footer still knows. The exclude line is the one the Jennifer manual uses: its
 generated API pages and coverage report are not worth printing.
+-->
+
+---
+
+## The e-book: EPUB
+
+```toml
+[renderer.epub]
+output = "my-book.epub"
+cover = "assets/cover.png"      # optional
+stylesheet = "assets/epub.css"  # optional, a default is built in
+```
+
+```text
+$ grimoire build --pdf --verbose
+  plugin  renderer epub  ->  .../grimoire-epub
+  render  epub  ->  my-book.epub
+```
+
+- Same outline, reflowable text: a reader that is not a browser
+- Ships with Grimoire, and in the container image; nothing to install
+
+<!-- notes:
+The third edition beside the site and the PDF comes from the bundled epub
+renderer, switched on by naming it. It reads the Markdown, not the built HTML,
+so it renders what the book says. Links between chapters and to headings are
+rewritten into the archive, and pictures are carried in. A reader refuses a
+chapter that is not valid XML, so every chapter is parsed back first: a book
+that would produce a broken EPUB fails the build instead. Like the rest, the
+same input gives the same bytes.
 -->
 
 ---

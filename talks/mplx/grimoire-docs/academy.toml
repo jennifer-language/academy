@@ -1,9 +1,9 @@
 title = "Docs that build themselves with Grimoire"
-description = "Grimoire turns a folder of Markdown into a searchable website and a PDF book: SUMMARY.md, grimoire.toml, themes, several books from one docs tree, plugins, the container image, and a CI workflow that publishes from each release."
+description = "Grimoire turns a folder of Markdown into a searchable website, a PDF book and an EPUB: SUMMARY.md, grimoire.toml, themes, several books from one docs tree, plugins, the container image, and a CI workflow that publishes from each release."
 author = "mplx"
 license = "CC-BY-4.0"
 lang = "en"
 jennifer = "0.26.0"
 date = "2026-11"
 level = "beginner"
-tags = ["grimoire", "documentation", "markdown", "ci", "docker"]
+tags = ["grimoire", "documentation", "markdown", "pdf", "epub", "ci", "docker"]
