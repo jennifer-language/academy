@@ -1,0 +1,9 @@
+title = "A JSON store on disk with flatdb"
+description = "The flatdb stdlib module: load a JSON file, query and edit it with JSON Pointer through a value-semantic handle, crash-atomic saves, conflict checks and locked updates, a worked bookmark store, and when to use sql instead. Based on Jennifer 0.26.0."
+author = "mplx"
+license = "CC-BY-4.0"
+lang = "en"
+jennifer = "0.26.0"
+date = "2026-11"
+level = "intermediate"
+tags = ["json", "flatdb", "stdlib", "files", "concurrency", "sql"]
