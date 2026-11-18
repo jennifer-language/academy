@@ -1,0 +1,9 @@
+title = "Errors done right in Jennifer"
+description = "Error handling in Jennifer beyond try and catch: Error values, module error structs with their own fields, matching on kind, the generic kinds, rewrapping without hiding them, typing helpers, web.onError and lint L104."
+author = "mplx"
+license = "CC-BY-4.0"
+lang = "en"
+jennifer = "0.26.0"
+date = "2026-11"
+level = "advanced"
+tags = ["error-handling", "errors", "modules", "lint", "web"]
