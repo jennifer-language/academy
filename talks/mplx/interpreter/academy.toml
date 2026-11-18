@@ -1,0 +1,9 @@
+title = "Inside the Jennifer interpreter"
+description = "A contributor's tour of the Jennifer interpreter: the requirement header, lexer, parser and resolver, runtime values and value semantics, why the language rules are what they are, the Go and TinyGo builds, and how to make a first fix."
+author = "mplx"
+license = "CC-BY-4.0"
+lang = "en"
+jennifer = "0.26.0"
+date = "2026-11"
+level = "advanced"
+tags = ["interpreter", "internals", "parser", "runtime", "tinygo", "contributing"]

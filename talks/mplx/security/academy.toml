@@ -1,0 +1,9 @@
+title = "Jennifer facing hostile input"
+description = "Writing servers, parsers and decks that read data you do not control: the trust model, the stdlib's caps and the limit kind, bounded parsing, timeouts and cancellation, the web server's defaults, and what deck capabilities and publishing do and do not promise."
+author = "mplx"
+license = "CC-BY-4.0"
+lang = "en"
+jennifer = "0.26.0"
+date = "2026-11"
+level = "advanced"
+tags = ["security", "parsing", "limits", "errors", "web", "decks"]
