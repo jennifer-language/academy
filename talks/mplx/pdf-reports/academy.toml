@@ -1,0 +1,9 @@
+title = "Making PDFs with Jennifer"
+description = "A multi-page table report with the stdlib pdf module: A4 landscape, standard fonts and measureText, right-aligned numbers, columns clipped with an ellipsis, page breaks with a repeated header, Page x of y footers, and the WinAnsi limit."
+author = "mplx"
+license = "CC-BY-4.0"
+lang = "en"
+jennifer = "0.26.0"
+date = "2026-11"
+level = "intermediate"
+tags = ["pdf", "reports", "printing", "stdlib"]
