@@ -1,0 +1,9 @@
+title = "Key-value stores: kv, Redis and memcached"
+description = "Key-value stores in Jennifer: the in-process kv library with TTLs and a handle shared across tasks, the bundled redis and memcache client modules, their errors and limits, and kvstore to switch backends under session and ratelimit. Based on Jennifer 0.26.0."
+author = "mplx"
+license = "CC-BY-4.0"
+lang = "en"
+jennifer = "0.26.0"
+date = "2026-11"
+level = "intermediate"
+tags = ["stdlib", "concurrency", "sessions", "errors", "limits", "web"]
