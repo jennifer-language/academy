@@ -1,0 +1,9 @@
+title = "Testing in Jennifer"
+description = "How to test Jennifer code with jennifer test: test functions, the testing assertions, error tests with assertThrows, fixtures and cleanup with defer, fake servers on a loopback port, proving a test catches the bug, and fmt and lint in CI."
+author = "mplx"
+license = "CC-BY-4.0"
+lang = "en"
+jennifer = "0.26.0"
+date = "2026-11"
+level = "intermediate"
+tags = ["testing", "tooling", "ci", "fixtures"]
