@@ -73,10 +73,12 @@ body {
 a { color: var(--accent); }
 kbd { font: 0.85em ui-monospace, monospace; padding: 0.05rem 0.35rem;
   border: 1px solid var(--line); border-radius: 0.3rem; background: var(--card); }
-.wrap { max-width: 60rem; margin: 0 auto; padding: 0 16px; }
+.wrap { max-width: 112rem; margin: 0 auto; padding: 0 16px; }
+@media (min-width: 60rem) { .wrap { padding: 0 2rem; } }
 header { padding: 2rem 0 1rem; display: flex; flex-wrap: wrap; align-items: center;
   gap: 1rem 1.5rem; }
-.search { flex: 1 1 18rem; margin: 0; }
+.search { flex: 0 1 36rem; margin: 0 0 0 auto; }
+@media (max-width: 40rem) { .search { flex: 1 1 100%; } }
 .search input { width: 100%; font: inherit; font-size: 1.05rem; color: var(--fg);
   background: var(--card); border: 1px solid var(--line); border-radius: 999px;
   height: 2.9rem; padding: 0 1.2rem; }
@@ -87,10 +89,34 @@ header { padding: 2rem 0 1rem; display: flex; flex-wrap: wrap; align-items: cent
 .brand span { font-size: 1.6rem; font-weight: 700; letter-spacing: -0.01em; }
 .intro { max-width: 44rem; color: var(--muted); margin-bottom: 0.4rem; }
 .links { display: flex; flex-wrap: wrap; gap: 0.3rem 1.1rem; margin: 0; font-size: 0.95rem; }
-.levels { display: flex; flex-wrap: wrap; align-items: center; gap: 0.3rem 1rem;
+.lead { display: flex; flex-wrap: wrap; align-items: flex-start; gap: 1.5rem 3rem; }
+.lead > div { flex: 1 1 28rem; max-width: 44rem; }
+.lead .intro { margin-top: 0; }
+.bylevel { flex: 1 1 30rem; display: grid; gap: 0.7rem;
+  grid-template-columns: repeat(auto-fit, minmax(9.5rem, 1fr)); }
+.bylevel a { --level: var(--muted); --level-bg: var(--chip);
+  display: flex; flex-direction: column; gap: 0.15rem; text-decoration: none; color: var(--fg);
+  background: var(--card); border: 1px solid var(--line); border-left: 4px solid var(--level);
+  border-radius: 0.6rem; padding: 0.6rem 0.9rem; }
+.bylevel a.beginner { --level: var(--beginner); }
+.bylevel a.intermediate { --level: var(--intermediate); }
+.bylevel a.advanced { --level: var(--advanced); }
+.bylevel a:hover { box-shadow: 0 0 0 1px var(--level); }
+.bylevel strong { color: var(--level); font-size: 1rem; }
+.bylevel .n { font-size: 1.5rem; font-weight: 700; line-height: 1.2; }
+.bylevel .who { font-size: 0.8rem; color: var(--muted); }
+@media (max-width: 40rem) {
+  .bylevel { grid-template-columns: 1fr; gap: 0.5rem; }
+  .bylevel a { display: grid; grid-template-columns: auto 1fr; align-items: baseline;
+    gap: 0.1rem 0.8rem; padding: 0.5rem 0.8rem; }
+  .bylevel .n { font-size: 1rem; justify-self: end; }
+  .bylevel .who { grid-column: 1 / -1; }
+}
+.pagenav { display: flex; flex-wrap: wrap; align-items: center; gap: 0.3rem 1rem;
   margin: 0.8rem 0 1.4rem; font-size: 0.95rem; }
-.levels .count { margin: 0; line-height: inherit; color: var(--muted); }
-.levels [aria-current] { font-weight: 600; }
+h1 + .pagenav { margin-top: -0.3rem; }
+.pagenav .count { margin: 0; line-height: inherit; color: var(--muted); }
+.pagenav [aria-current] { font-weight: 600; }
 h1 { font-size: 1.25rem; margin: 2rem 0 1rem; }
 .filters { display: flex; flex-wrap: wrap; align-items: flex-end; gap: 0.6rem 0.8rem;
   margin: 0 0 1.2rem; padding: 0.8rem 1rem; background: var(--card);
@@ -131,6 +157,9 @@ a.level:hover { text-decoration: underline; }
 .tags { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 0.3rem; }
 .tags a { font-size: 0.75rem; padding: 0.05rem 0.5rem; border-radius: 999px;
   background: var(--chip); color: var(--fg); text-decoration: none; }
+.tags .current { display: inline-block; font-size: 0.75rem; font-weight: 600;
+  padding: 0.05rem 0.5rem; border-radius: 999px; background: var(--accent);
+  color: var(--accent-fg); }
 .langs { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap;
   gap: 0.3rem 0.9rem; font-size: 0.85rem; }
 .langs .badge { font: 600 0.75rem ui-monospace, monospace; padding: 0.1rem 0.4rem;
@@ -343,7 +372,7 @@ func badges(t as Talk, base as string) {
 }
 
 /** One talk's card; `base` leads from the page to the site root. */
-func card(t as Talk, base as string, withLevel as bool) {
+func card(t as Talk, base as string, withLevel as bool, currentTag as string) {
     def m as meta.Meta init $t.meta;
     def href as string init esc($base + talkPath($t));
     def profile as string init esc(html.safeUrl("https://github.com/" + $m.author));
@@ -369,6 +398,11 @@ func card(t as Talk, base as string, withLevel as bool) {
     $out = $out + "<span><time datetime=\"" + $month + "\">" + $month + "</time></span></div>\n";
     $out = $out + "<ul class=\"tags\">";
     for (def tag in $m.tags) {
+        if ($tag == $currentTag) {
+            $out = $out + "<li><span class=\"current\" aria-current=\"page\">" + esc($tag) +
+                "</span></li>";
+            continue;
+        }
         def at as string init esc($base + "tags/" + $tag + "/");
         $out = $out + "<li><a href=\"" + $at + "\">" + esc($tag) + "</a></li>";
     }
@@ -384,12 +418,13 @@ func card(t as Talk, base as string, withLevel as bool) {
 
 /**
  * The list of cards, and the line shown when a filter leaves none. A level's
- * own page leaves the level label off: there every card has the same one.
+ * own page leaves the level label off: there every card has the same one. A
+ * tag's page marks its tag on each card instead of linking it to itself.
  */
-func cards(talks as list of Talk, base as string, withLevel as bool) {
+func cards(talks as list of Talk, base as string, withLevel as bool, currentTag as string) {
     def out as string init "<ul class=\"talks\">\n";
     for (def t in shown($talks)) {
-        $out = $out + card($t, $base, $withLevel);
+        $out = $out + card($t, $base, $withLevel, $currentTag);
     }
     return $out + "</ul>\n<p id=\"none\" class=\"empty\" hidden>No talk matches this filter.</p>\n";
 }
@@ -606,8 +641,9 @@ export func indexPage(talks as list of Talk) {
         "Contribute a talk</a><a href=\"https://jennifer-lang.dev/\">jennifer-lang.dev</a>";
     $links = $links + "<a href=\"https://docs.jennifer-lang.dev/\">Documentation</a>";
     $links = $links + "<a href=\"talks.json\">talks.json</a></p>\n";
-    def body as string init INTRO + $links + "<h1>Talks</h1>\n" + filters($talks) +
-        cards($talks, "", true);
+    def body as string init "<div class=\"lead\"><div>\n" + INTRO + $links + "</div>\n" +
+        levelBoxes($talks) + "</div>\n<h1>Talks</h1>\n" + filters($talks) +
+        cards($talks, "", true, "");
     $body = $body + websiteLd() + jsonLd($talks);
     def out as string init page(
         SITE_TITLE,
@@ -673,17 +709,37 @@ func levelIntro(level as string) {
     return "Talks that go deep: the language's corners, its runtime and larger systems.";
 }
 
+/** "1 talk", "4 talks". */
+func talksCount(n as int) {
+    if ($n == 1) {
+        return "1 talk";
+    }
+    return convert.toString($n) + " talks";
+}
+
+/**
+ * The front page's level boxes beside the intro: each level in use, coloured
+ * like its cards, with its number of talks and who it is for, linking its page.
+ */
+func levelBoxes(talks as list of Talk) {
+    def out as string init "<nav class=\"bylevel\" aria-label=\"Talks by level\">";
+    for (def level in levelsOf($talks)) {
+        def l as string init esc($level);
+        $out = $out + "<a class=\"" + $l + "\" href=\"levels/" + $l + "/\"><strong>" +
+            esc(levelName($level)) + "</strong><span class=\"n\">" +
+            talksCount(len(byLevel($talks, $level))) + "</span><span class=\"who\">" +
+            esc(levelIntro($level)) + "</span></a>";
+    }
+    return $out + "</nav>\n";
+}
+
 /**
  * The line under a level page's intro: how many talks it lists, then links to
  * all talks and to the other levels, the current one marked, not linked.
  */
 func levelNav(talks as list of Talk, level as string, n as int) {
-    def count as string init convert.toString($n) + " talks";
-    if ($n == 1) {
-        $count = "1 talk";
-    }
-    def out as string init "<nav class=\"levels\" aria-label=\"Levels\"><p class=\"count\">" +
-        $count + "</p><a href=\"../../\">All talks</a>";
+    def out as string init "<nav class=\"pagenav\" aria-label=\"Levels\"><p class=\"count\">" +
+        talksCount($n) + "</p><a href=\"../../\">All talks</a>";
     for (def other in levelsOf($talks)) {
         if ($other == $level) {
             $out = $out + "<span aria-current=\"page\">" + esc(levelName($other)) + "</span>";
@@ -705,7 +761,7 @@ export func levelPage(talks as list of Talk, level as string) {
     def name as string init levelName($level);
     def body as string init "<h1>" + esc($name) + " talks</h1>\n<p class=\"intro\">" +
         esc(levelIntro($level)) + "</p>\n" + levelNav($talks, $level, len($mine)) +
-        cards($mine, "../../", false) + jsonLd($mine);
+        cards($mine, "../../", false, "") + jsonLd($mine);
     def description as string init $name + " talks about the Jennifer programming language. " +
         levelIntro($level);
     def url as string init SITE_URL + "levels/" + $level + "/";
@@ -771,7 +827,7 @@ export func userPage(talks as list of Talk, user as string) {
     def profile as string init esc(html.safeUrl("https://github.com/" + $user));
     def body as string init "<h1>Talks by <a href=\"" + $profile + "\">@" + esc($user) +
         "</a></h1>\n";
-    $body = $body + cards($mine, "../", true) + jsonLd($mine);
+    $body = $body + cards($mine, "../", true, "") + jsonLd($mine);
     def description as string init "Talks about the Jennifer programming language by @" + $user +
         ".";
     def title as string init "@" + $user + " - " + SITE_TITLE;
@@ -788,7 +844,9 @@ export func userPage(talks as list of Talk, user as string) {
 export func tagPage(talks as list of Talk, tag as string) {
     def mine as list of Talk init byTag($talks, $tag);
     def body as string init "<h1>Talks tagged " + esc($tag) + "</h1>\n" +
-        cards($mine, "../../", true) + jsonLd($mine);
+        "<nav class=\"pagenav\" aria-label=\"Talks\"><p class=\"count\">" + talksCount(len($mine)) +
+        "</p><a href=\"../../\">All talks</a></nav>\n" + cards($mine, "../../", true, $tag) +
+        jsonLd($mine);
     def description as string init "Talks about the Jennifer programming language tagged " + $tag +
         ".";
     def url as string init SITE_URL + "tags/" + $tag + "/";

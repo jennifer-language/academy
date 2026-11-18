@@ -236,18 +236,35 @@ func testSearchAndLevelRoutes() {
     testing.assertContains($index, '"urlTemplate":"' + SITE_URL + '?q={search_term_string}"');
     testing.assertContains($index, "<a class=\"level\" href=\"levels/advanced/\">Advanced</a>");
     testing.assertEqual(levelsOf($all), ["beginner", "intermediate", "advanced"]);
+    # Beside the intro: one box per level, with its count and its page.
+    testing.assertContains(
+        $index,
+        "<nav class=\"bylevel\" aria-label=\"Talks by level\"><a class=\"beginner\" " +
+            "href=\"levels/beginner/\"><strong>Beginner</strong><span class=\"n\">2 talks</span>");
+    testing.assertContains(
+        $index,
+        "href=\"levels/advanced/\"><strong>Advanced</strong><span class=\"n\">1 talk</span>");
     def advanced as string init levelPage($all, "advanced");
     testing.assertContains($advanced, "<h1>Advanced talks</h1>");
     # A count and the way to the other levels; the current one is not a link.
     testing.assertContains(
         $advanced,
-        "<nav class=\"levels\" aria-label=\"Levels\"><p class=\"count\">1 talk</p>" +
+        "<nav class=\"pagenav\" aria-label=\"Levels\"><p class=\"count\">1 talk</p>" +
             "<a href=\"../../\">All talks</a><a href=\"../beginner/\">Beginner</a>" +
             "<a href=\"../intermediate/\">Intermediate</a>" +
             "<span aria-current=\"page\">Advanced</span></nav>");
     # Every card there has the same level, so it carries no label.
     testing.assertFalse(strings.contains($advanced, "class=\"level\""));
     testing.assertContains(tagPage($all, "zeta"), "<a class=\"level\" href=\"../../levels/");
+    # A tag page: the count, the way back, and its own tag marked, not linked.
+    def zeta as string init tagPage($all, "zeta");
+    testing.assertContains(
+        $zeta,
+        "<nav class=\"pagenav\" aria-label=\"Talks\"><p class=\"count\">1 talk</p>" +
+            "<a href=\"../../\">All talks</a></nav>");
+    testing.assertContains($zeta, "<span class=\"current\" aria-current=\"page\">zeta</span>");
+    testing.assertFalse(strings.contains($zeta, "href=\"../../tags/zeta/\""));
+    testing.assertContains($zeta, "href=\"../../tags/basics/\"");
     testing.assertContains($advanced, "href=\"../../ada/old/\"");
     testing.assertFalse(strings.contains($advanced, "href=\"../../ada/new/\""));
     testing.assertContains(
