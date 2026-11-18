@@ -1,0 +1,9 @@
+title = "The stances of Jennifer"
+description = "Why Jennifer is the way it is: its seven design stances, each with a short example and the interpreter's real message, the features turned down because of them, the ones that shipped anyway, and how a feature proposal is judged."
+author = "mplx"
+license = "CC-BY-4.0"
+lang = "en"
+jennifer = "0.26.0"
+date = "2026-11"
+level = "beginner"
+tags = ["basics", "design", "errors", "mistakes", "language-tour"]
