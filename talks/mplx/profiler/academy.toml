@@ -1,0 +1,9 @@
+title = "Using the Jennifer profiler"
+description = "jennifer profile in depth: every flag and column, hits and wall-clock time per source position, recursion depth, modules, spawned tasks, the --allocs copy report, pprof and trace export, and a real program taken from 1.2 s to 0.33 s. Based on Jennifer 0.26.0."
+author = "mplx"
+license = "CC-BY-4.0"
+lang = "en"
+jennifer = "0.26.0"
+date = "2026-11"
+level = "intermediate"
+tags = ["profiling", "performance", "memory", "tooling", "concurrency"]
