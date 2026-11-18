@@ -1,0 +1,9 @@
+title = "YAML, TOML, JSON and XML"
+description = "One small config in four formats: how json, toml, yaml and xml map to Jennifer values, typed access, writing and round trips, where the formats differ (types, dates, YAML traps, JSON numbers), strict errors and limits on hostile input. Based on Jennifer 0.26.0."
+author = "mplx"
+license = "CC-BY-4.0"
+lang = "en"
+jennifer = "0.26.0"
+date = "2026-11"
+level = "intermediate"
+tags = ["json", "toml", "yaml", "xml", "config", "parsing", "limits"]
