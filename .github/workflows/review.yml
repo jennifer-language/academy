@@ -30,7 +30,7 @@ env:
   # as the interpreter's path.
   JENNIFER_REF: "0.26.0"
   # The cantrip release the talks are built with.
-  CANTRIP_REF: "0.2.0"
+  CANTRIP_REF: "0.3.0"
 
 jobs:
   # Non-English talk content needs a maintainer's approving review with the

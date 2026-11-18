@@ -104,9 +104,8 @@ up when a field changes meaning or goes away; new fields may be added.
 
 - **site** (GitHub and Forgejo): formats and lints the tools, runs their tests,
   runs `tools/check.j`, builds the site and checks the PDFs with `qpdf`. The
-  interpreter is pinned by `JENNIFER_REF` (a main-branch commit until 0.26.0
-  is released), cantrip by `CANTRIP_REF` (`main` until cantrip 0.1.0 is
-  tagged).
+  interpreter is pinned by `JENNIFER_REF` and cantrip by `CANTRIP_REF`, each a
+  release tag.
 - **accounts** (GitHub only): every namespace a change touches must be a
   personal GitHub account, asked through the GitHub API.
 - **ownership** and **declaration** (GitHub pull requests only): changed talks
