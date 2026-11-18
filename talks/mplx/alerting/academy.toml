@@ -1,0 +1,9 @@
+title = "Notifications and alerting with Jennifer"
+description = "Alerts that reach the right people once: the @jennifer/gotify, telegram, slack and discord decks, one alert fanned out to all four, 429 and Retry-After, typed errors, secrets from the environment, a disk check that alerts and recovers, and tests against a mock server."
+author = "mplx"
+license = "CC-BY-4.0"
+lang = "en"
+jennifer = "0.26.0"
+date = "2026-11"
+level = "intermediate"
+tags = ["monitoring", "gotify", "telegram", "slack", "discord", "errors", "decks"]
