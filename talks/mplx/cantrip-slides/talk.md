@@ -10,7 +10,7 @@ transition: zoom
 
 One Markdown file in, a browser slideshow and a PDF out.
 
-Based on **Jennifer 0.26.0** and Cantrip 0.3.1, November 2026, by [@mplx](https://github.com/mplx).
+Based on **Jennifer 0.26.0** and Cantrip 0.4.0, November 2026, by [@mplx](https://github.com/mplx).
 
 <!-- notes:
 Cantrip is the slide tool of the Jennifer project, a program written in
@@ -18,7 +18,7 @@ Jennifer. Every talk in this academy, this one included, is a Cantrip deck.
 We go through the whole format: slides, front matter, notes, themes, code and
 pictures, then the keys for presenting, the PDF, and how the academy builds
 and checks its talks with it. The outputs shown come from real runs of
-Cantrip 0.3.1.
+Cantrip 0.4.0.
 -->
 
 ---
@@ -207,14 +207,16 @@ io.printf("{1 / 0}\n");
 ```
 ````
 
-- The language survives: `<code class="language-jennifer">`
-- No highlighter shipped, nothing loaded from a CDN
+- The language after the fence picks the colours, in HTML and PDF
+- Built in, nothing loaded from a CDN; `highlight: false` turns it off
 - Show a fence inside a fence with a **longer** outer fence
 
 <!-- notes:
-Code keeps every space and blank line. The word after the opening fence ends
-up as a class, so you can add a highlighter of your own; Cantrip itself does
-not colour code. The example is a real Jennifer program, and running it stops
+Code keeps every space and blank line. The word after the opening fence names
+the language, and Cantrip colours the code when it builds the deck: Jennifer
+exactly as Grimoire colours it, and PHP, shell, Go, Python, JavaScript, JSON,
+TOML, YAML, SQL and more. Each theme has its own readable colours, in the
+slideshow and in the PDF; an unknown language stays plain. The example is a real Jennifer program, and running it stops
 with "division by zero" and the file, line and column, which is the point of
 the slide it came from. A wide code line scrolls in the slideshow and wraps in
 the PDF.
@@ -275,7 +277,7 @@ script into your page. Wrap an address in angle brackets to make it a link.
 The slide number is in the URL: `talk.html#4`; `?notes=1` opens the notes.
 
 <!-- notes:
-The arrow keys, Home and End work too. On a phone, swipe or tap the left or
+The arrow keys, Home and End work too. On a phone or tablet, swipe or tap the left or
 right third of the screen; a small button bar stands in for the keys. Because
 the current slide is in the address, a reload keeps your place and you can
 send a link to slide four. While the notes panel is open the slide is scaled
