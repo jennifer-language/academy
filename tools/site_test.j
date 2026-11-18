@@ -28,7 +28,7 @@ func talk(topic as string, title as string, date as string, updated as string) {
         tags: ["basics", $topic],
         translations: [],
     };
-    return Talk{user: "ada", topic: $topic, meta: $m};
+    return Talk{user: "ada", topic: $topic, meta: $m, modified: ""};
 }
 
 /** The talks of the tests, in no particular order. */
@@ -66,21 +66,36 @@ func testFrontPageEscapes() {
     testing.assertFalse(strings.contains($page, "<b>tags</b>"));
     # The JSON-LD cannot close its script element either.
     testing.assertContains($page, "\\u003cscript\\u003ealert(1)\\u003c/script\\u003e \\u0026 more");
-    testing.assertEqual(strings.count($page, "</script>"), 2);
+    # Two JSON-LD blocks (the site with its search, the talks) and the search script.
+    testing.assertEqual(strings.count($page, "</script>"), 3);
 }
 
 func testFrontPageOrderAndLinks() {
     def page as string init indexPage(sorted(sample()));
     def at as list of int;
-    for (def topic in ["new", "xss", "zeta", "old"]) {
+    # One level only: the cards go by title ("<script..." sorts first).
+    for (def topic in ["xss", "new", "old", "zeta"]) {
         $at[] = strings.indexOf($page, "href=\"ada/" + $topic + "/\"");
     }
     testing.assertTrue($at[0] > 0 and $at[0] < $at[1] and $at[1] < $at[2] and $at[2] < $at[3]);
     testing.assertContains($page, "href=\"ada/new/new.pdf\"");
     testing.assertContains($page, "href=\"tags/basics/\"");
     testing.assertContains($page, "data-level=\"beginner\" data-tags=\"basics new\"");
-    testing.assertContains($page, "<div class=\"filters\" id=\"filters\" hidden>");
-    testing.assertContains($page, "data-kind=\"level\" data-value=\"beginner\"");
+    # The filter bar: dropdowns with a count per option, hidden until the script runs.
+    testing.assertContains($page, "<form class=\"filters\" id=\"filters\" hidden>");
+    testing.assertContains(
+        $page,
+        "<select data-kind=\"level\"><option value=\"\">All levels</option>" +
+            "<option value=\"beginner\">Beginner (4)</option></select>");
+    testing.assertContains($page, "<option value=\"basics\">basics (4)</option>");
+    testing.assertContains($page, "<option value=\"zeta\">zeta (1)</option>");
+    testing.assertContains($page, "id=\"filter-q\"");
+    # Each card carries its level as a class (the colour) and as text.
+    testing.assertContains(
+        $page,
+        "<li class=\"talk beginner\" lang=\"en\" data-level=\"beginner\"");
+    testing.assertContains($page, "<a class=\"level\" href=\"levels/beginner/\">Beginner</a>");
+    testing.assertTrue(strings.contains($page, "<script>"));
     # One language: Slides and PDF buttons only, no language badges.
     testing.assertFalse(strings.contains($page, "class=\"langs\""));
     testing.assertFalse(strings.contains($page, "class=\"badge\""));
@@ -173,9 +188,10 @@ func testTranslationsGetBadgesAndHreflang() {
     testing.assertContains($index, "href=\"ada/duo/duo.pdf\" hreflang=\"en\"");
     testing.assertContains(
         $index,
-        "data-kind=\"lang\" data-value=\"de\" aria-pressed=\"false\">DE</button>");
+        "<select data-kind=\"lang\"><option value=\"\">All languages</option>" +
+            "<option value=\"de\">DE (1)</option><option value=\"en\">EN (");
     testing.assertEqual(langsIn($all), ["de", "en"]);
-    # One language in the whole catalogue: no language chips.
+    # One language in the whole catalogue: no language dropdown.
     testing.assertFalse(strings.contains(indexPage(sorted(sample())), "data-kind=\"lang\""));
     def map2 as string init sitemap($all);
     testing.assertContains($map2, "xmlns:xhtml=\"http://www.w3.org/1999/xhtml\"");
@@ -190,4 +206,74 @@ func testTranslationsGetBadgesAndHreflang() {
     testing.assertEqual(json.asString($doc, "/talks/0/versions/1/url"), SITE_URL + "ada/duo/de/");
     testing.assertEqual(json.asString($doc, "/talks/0/versions/1/title"), "Zwei Sprachen <de>");
     testing.assertFalse(json.asBool($doc, "/talks/0/versions/1/primary"));
+}
+
+/** The sample with one talk per level, the advanced one first by title. */
+func mixed() {
+    def out as list of Talk init sample();
+    $out[0].meta.level = "advanced";
+    $out[1].meta.level = "intermediate";
+    return $out;
+}
+
+func testCardsGoByLevelThenTitle() {
+    testing.assertEqual(topicsOf(shown(mixed())), ["xss", "new", "zeta", "old"]);
+    def page as string init indexPage(sorted(mixed()));
+    testing.assertTrue(
+        strings.indexOf($page, "href=\"ada/new/\"") < strings.indexOf($page, "href=\"ada/zeta/\""));
+    testing.assertTrue(
+        strings.indexOf($page, "href=\"ada/zeta/\"") < strings.indexOf($page, "href=\"ada/old/\""));
+    testing.assertContains($page, "<option value=\"newest\">Newest first</option>");
+    testing.assertContains($page, "data-month=\"2026-11\"");
+}
+
+func testSearchAndLevelRoutes() {
+    def all as list of Talk init sorted(mixed());
+    def index as string init indexPage($all);
+    # The header search: on the front page it filters, elsewhere it goes there with ?q=.
+    testing.assertContains($index, "<form class=\"search\" action=\"\" method=\"get\"");
+    testing.assertContains(tagPage($all, "zeta"), "<form class=\"search\" action=\"../../\"");
+    testing.assertContains($index, '"urlTemplate":"' + SITE_URL + '?q={search_term_string}"');
+    testing.assertContains($index, "<a class=\"level\" href=\"levels/advanced/\">Advanced</a>");
+    testing.assertEqual(levelsOf($all), ["beginner", "intermediate", "advanced"]);
+    def advanced as string init levelPage($all, "advanced");
+    testing.assertContains($advanced, "<h1>Advanced talks</h1>");
+    # A count and the way to the other levels; the current one is not a link.
+    testing.assertContains(
+        $advanced,
+        "<nav class=\"levels\" aria-label=\"Levels\"><p class=\"count\">1 talk</p>" +
+            "<a href=\"../../\">All talks</a><a href=\"../beginner/\">Beginner</a>" +
+            "<a href=\"../intermediate/\">Intermediate</a>" +
+            "<span aria-current=\"page\">Advanced</span></nav>");
+    # Every card there has the same level, so it carries no label.
+    testing.assertFalse(strings.contains($advanced, "class=\"level\""));
+    testing.assertContains(tagPage($all, "zeta"), "<a class=\"level\" href=\"../../levels/");
+    testing.assertContains($advanced, "href=\"../../ada/old/\"");
+    testing.assertFalse(strings.contains($advanced, "href=\"../../ada/new/\""));
+    testing.assertContains(
+        $advanced,
+        "<link rel=\"canonical\" href=\"" + SITE_URL + "levels/advanced/\">");
+    testing.assertContains(sitemap($all), "<loc>" + SITE_URL + "levels/intermediate/</loc>");
+    def llms as string init llmsTxt($all);
+    testing.assertTrue(strings.startsWith($llms, "# Jennifer Academy\n\n> "));
+    testing.assertContains($llms, "## Intermediate talks\n\n- [Zeta](" + SITE_URL + "ada/zeta/): ");
+    testing.assertContains($llms, "Tags: basics, zeta. PDF: " + SITE_URL + "ada/zeta/zeta.pdf");
+}
+
+func testGitDayIsWhatMachinesSee() {
+    def all as list of Talk init sorted(sample());
+    $all[0].modified = "2026-11-17";
+    testing.assertEqual(modifiedOf($all[0]), "2026-11-17");
+    testing.assertEqual(modifiedOf($all[1]), meta.latest($all[1].meta));
+    def urls as string init sitemap($all);
+    testing.assertContains(
+        $urls,
+        "<loc>" + SITE_URL + "ada/new/</loc><lastmod>2026-11-17</lastmod>");
+    testing.assertContains($urls, "<loc>" + SITE_URL + "ada/new/new.pdf</loc><lastmod>2026-11-17");
+    testing.assertContains(indexPage($all), "\"dateModified\":\"2026-11-17\"");
+    def doc as json.Value init json.decode(catalogue($all));
+    testing.assertEqual(json.asString($doc, "/talks/0/modified"), "2026-11-17");
+    testing.assertEqual(json.asString($doc, "/talks/0/updated"), "");
+    # Readers keep seeing the author's month.
+    testing.assertContains(indexPage($all), "<time datetime=\"2026-11\">2026-11</time>");
 }

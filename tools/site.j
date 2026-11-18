@@ -9,7 +9,7 @@
  * Everything shown comes from the talks' academy.toml files and is escaped
  * with the `html` module; the JSON-LD and talks.json go through `json`. The
  * pages load nothing from outside the site, and work without JavaScript: the
- * filter chips are the only script, and they start hidden.
+ * filter bar is the only script, and it starts hidden.
  * @module site
  * @author mplx <mplx@jennifer-lang.dev>
  * @license LGPL-3.0-only
@@ -52,11 +52,17 @@ def const STYLE as string init ':root {
   color-scheme: light dark;
   --bg: #fbf9f7; --fg: #1b1420; --muted: #5d5462; --card: #ffffff;
   --line: #e6dfe3; --accent: #c63d2e; --accent-fg: #ffffff; --chip: #f3ecef;
+  --beginner: #23784a; --beginner-bg: #e3f3e9;
+  --intermediate: #1d65a6; --intermediate-bg: #e2edf8;
+  --advanced: #8a3aa3; --advanced-bg: #f2e6f6;
 }
 @media (prefers-color-scheme: dark) {
   :root {
     --bg: #1b1420; --fg: #f3eef1; --muted: #b9adb4; --card: #251c2b;
     --line: #3a2e40; --accent: #ec5c4b; --accent-fg: #1b1420; --chip: #30253a;
+    --beginner: #6fd09a; --beginner-bg: #1d3328;
+    --intermediate: #72b4f0; --intermediate-bg: #1c2c3f;
+    --advanced: #cf93ea; --advanced-bg: #33223d;
   }
 }
 * { box-sizing: border-box; }
@@ -68,34 +74,62 @@ a { color: var(--accent); }
 kbd { font: 0.85em ui-monospace, monospace; padding: 0.05rem 0.35rem;
   border: 1px solid var(--line); border-radius: 0.3rem; background: var(--card); }
 .wrap { max-width: 60rem; margin: 0 auto; padding: 0 16px; }
-header { padding: 2.5rem 0 1rem; }
+header { padding: 2rem 0 1rem; display: flex; flex-wrap: wrap; align-items: center;
+  gap: 1rem 1.5rem; }
+.search { flex: 1 1 18rem; margin: 0; }
+.search input { width: 100%; font: inherit; font-size: 1.05rem; color: var(--fg);
+  background: var(--card); border: 1px solid var(--line); border-radius: 999px;
+  height: 2.9rem; padding: 0 1.2rem; }
+.search input:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
 .brand { display: flex; align-items: center; gap: 0.9rem; text-decoration: none; color: inherit; }
 .brand img { width: 3rem; height: 3rem; border-radius: 26%;
   box-shadow: 0 0 0 1px var(--line); }
 .brand span { font-size: 1.6rem; font-weight: 700; letter-spacing: -0.01em; }
 .intro { max-width: 44rem; color: var(--muted); margin-bottom: 0.4rem; }
 .links { display: flex; flex-wrap: wrap; gap: 0.3rem 1.1rem; margin: 0; font-size: 0.95rem; }
+.levels { display: flex; flex-wrap: wrap; align-items: center; gap: 0.3rem 1rem;
+  margin: 0.8rem 0 1.4rem; font-size: 0.95rem; }
+.levels .count { margin: 0; line-height: inherit; color: var(--muted); }
+.levels [aria-current] { font-weight: 600; }
 h1 { font-size: 1.25rem; margin: 2rem 0 1rem; }
-.filters { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 0 0 1rem; }
+.filters { display: flex; flex-wrap: wrap; align-items: flex-end; gap: 0.6rem 0.8rem;
+  margin: 0 0 1.2rem; padding: 0.8rem 1rem; background: var(--card);
+  border: 1px solid var(--line); border-radius: 0.75rem; }
 .filters[hidden] { display: none; }
-.filters .label { font-size: 0.85rem; color: var(--muted); align-self: center; }
-.chip { font: inherit; font-size: 0.85rem; padding: 0.2rem 0.75rem; border-radius: 999px;
+.field { display: flex; flex-direction: column; gap: 0.2rem; font-size: 0.8rem;
+  color: var(--muted); min-width: 0; }
+.field input, .field select { font: inherit; font-size: 0.95rem; color: var(--fg);
+  background: var(--bg); border: 1px solid var(--line); border-radius: 0.45rem;
+  height: 2.3rem; padding: 0 0.55rem; min-width: 0; max-width: 100%; }
+.field input:focus-visible, .field select:focus-visible, .reset:focus-visible {
+  outline: 2px solid var(--accent); outline-offset: 1px; }
+.reset { font: inherit; font-size: 0.9rem; height: 2.3rem; padding: 0 0.9rem; border-radius: 999px;
   border: 1px solid var(--line); background: var(--chip); color: var(--fg); cursor: pointer; }
-.chip[aria-pressed="true"] { background: var(--accent); color: var(--accent-fg);
-  border-color: var(--accent); }
-.talks { list-style: none; margin: 0; padding: 0; display: grid; gap: 1rem;
-  grid-template-columns: repeat(auto-fill, minmax(17rem, 1fr)); }
-.talk { background: var(--card); border: 1px solid var(--line); border-radius: 0.75rem;
-  padding: 1.1rem 1.2rem; display: flex; flex-direction: column; gap: 0.5rem; }
+.count { margin: 0 0 0 auto; font-size: 0.85rem; color: var(--muted); line-height: 2.3rem; }
+.talks { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.9rem;
+  grid-template-columns: repeat(auto-fill, minmax(16rem, 1fr)); }
+.talk { --level: var(--muted); --level-bg: var(--chip);
+  background: var(--card); border: 1px solid var(--line); border-top: 4px solid var(--level);
+  border-radius: 0.75rem; padding: 0.9rem 1.1rem 1rem;
+  display: flex; flex-direction: column; gap: 0.45rem; }
+.talk.beginner { --level: var(--beginner); --level-bg: var(--beginner-bg); }
+.talk.intermediate { --level: var(--intermediate); --level-bg: var(--intermediate-bg); }
+.talk.advanced { --level: var(--advanced); --level-bg: var(--advanced-bg); }
 .talk[hidden] { display: none; }
-.talk h2 { font-size: 1.1rem; margin: 0; line-height: 1.3; }
+.level { align-self: flex-start; text-decoration: none; font-size: 0.72rem; font-weight: 700;
+  letter-spacing: 0.04em; text-transform: uppercase; padding: 0.1rem 0.5rem; border-radius: 999px;
+  color: var(--level); background: var(--level-bg); }
+a.level:hover { text-decoration: underline; }
+.talk h2 { font-size: 1.05rem; margin: 0; line-height: 1.3; }
 .talk h2 a { color: inherit; text-decoration: none; }
 .talk h2 a:hover { text-decoration: underline; }
-.talk p { margin: 0; color: var(--muted); font-size: 0.95rem; overflow-wrap: anywhere; }
-.meta { font-size: 0.85rem; color: var(--muted); display: flex; flex-wrap: wrap;
+.talk p { margin: 0; color: var(--muted); font-size: 0.9rem; overflow-wrap: anywhere;
+  display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 3;
+  line-clamp: 3; overflow: hidden; }
+.meta { font-size: 0.8rem; color: var(--muted); display: flex; flex-wrap: wrap;
   gap: 0.2rem 0.8rem; }
 .tags { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 0.3rem; }
-.tags a { font-size: 0.78rem; padding: 0.05rem 0.55rem; border-radius: 999px;
+.tags a { font-size: 0.75rem; padding: 0.05rem 0.5rem; border-radius: 999px;
   background: var(--chip); color: var(--fg); text-decoration: none; }
 .langs { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap;
   gap: 0.3rem 0.9rem; font-size: 0.85rem; }
@@ -114,50 +148,106 @@ footer { margin: 3rem 0 2rem; padding-top: 1rem; border-top: 1px solid var(--lin
 footer .fine { font-size: 0.75rem; }
 ';
 
-# The filter: chips toggle a level, a tag and a language; a card shows when it
-# matches all three.
+# The live search: the search box in the header and the filter bar's dropdowns
+# (level, topic and, with several languages, language). A card shows when it
+# matches every dropdown and contains every word searched for, in its title,
+# description, level, tags or author. The choice is kept in the address as a
+# query (?q=...&level=...&tag=...), the same one the header's form submits from
+# other pages and the search engines' SearchAction names.
 def const SCRIPT as string init '(function () {
   var box = document.getElementById("filters");
-  if (!box) { return; }
+  var search = document.getElementById("filter-q");
+  if (!box || !search) { return; }
   box.hidden = false;
-  var on = { level: "", tag: "", lang: "" };
-  function has(list, v) { return (" " + list + " ").indexOf(" " + v + " ") >= 0; }
-  var cards = document.querySelectorAll(".talks > li");
+  var selects = box.querySelectorAll("select[data-kind]");
+  var sort = box.querySelector("select[data-sort]");
+  var cards = Array.prototype.slice.call(document.querySelectorAll(".talks > li"));
+  cards.forEach(function (c, i) { c.dataset.at = i; });
+  function title(c) { return c.querySelector("h2").textContent.toLowerCase(); }
+  function order() {
+    var how = sort.value;
+    cards.slice().sort(function (a, b) {
+      if (how === "newest" && a.dataset.month !== b.dataset.month) {
+        return a.dataset.month < b.dataset.month ? 1 : -1;
+      }
+      if (how !== "level") { return title(a) < title(b) ? -1 : title(a) > title(b) ? 1 : 0; }
+      return a.dataset.at - b.dataset.at;
+    }).forEach(function (c) { c.parentNode.appendChild(c); });
+  }
   var none = document.getElementById("none");
+  var count = document.getElementById("count");
+  function has(list, v) { return (" " + list + " ").indexOf(" " + v + " ") >= 0; }
+  function chosen(kind) {
+    var s = box.querySelector("select[data-kind=\"" + kind + "\"]");
+    return s ? s.value : "";
+  }
+  function talks(n) { return n + (n === 1 ? " talk" : " talks"); }
   function apply() {
+    var level = chosen("level"), tag = chosen("tag"), lang = chosen("lang");
+    var words = search.value.toLowerCase().split(/\s+/).filter(Boolean);
     var shown = 0;
     cards.forEach(function (c) {
-      var ok = (!on.level || c.dataset.level === on.level) &&
-        (!on.tag || has(c.dataset.tags, on.tag)) && (!on.lang || has(c.dataset.langs, on.lang));
+      var text = c.textContent.toLowerCase();
+      var ok = (!level || c.dataset.level === level) && (!tag || has(c.dataset.tags, tag)) &&
+        (!lang || has(c.dataset.langs, lang)) &&
+        words.every(function (w) { return text.indexOf(w) >= 0; });
       c.hidden = !ok;
       if (ok) { shown++; }
     });
     none.hidden = shown > 0;
-    box.querySelectorAll(".chip").forEach(function (b) {
-      b.setAttribute("aria-pressed", String(on[b.dataset.kind] === b.dataset.value));
-    });
+    count.textContent = shown === cards.length ? talks(shown) :
+      shown + " of " + talks(cards.length);
+    var p = new URLSearchParams();
+    if (search.value.trim()) { p.set("q", search.value.trim()); }
+    selects.forEach(function (s) { if (s.value) { p.set(s.dataset.kind, s.value); } });
+    if (sort.value !== "level") { p.set("sort", sort.value); }
+    var q = p.toString();
+    history.replaceState(null, "", location.pathname + (q ? "?" + q : ""));
   }
-  var m = /^#(level|tag|lang)=([a-z0-9-]+)$/.exec(location.hash);
-  if (m) { on[m[1]] = m[2]; }
-  box.addEventListener("click", function (e) {
-    var b = e.target.closest(".chip");
-    if (!b) { return; }
-    var k = b.dataset.kind;
-    on[k] = on[k] === b.dataset.value ? "" : b.dataset.value;
-    var h = k && on[k] ? "#" + k + "=" + on[k] : "";
-    history.replaceState(null, "", h || location.pathname);
-    apply();
+  var start = new URLSearchParams(location.search || location.hash.slice(1));
+  selects.forEach(function (s) {
+    var v = start.get(s.dataset.kind);
+    for (var i = 0; v && i < s.options.length; i++) {
+      if (s.options[i].value === v) { s.value = v; }
+    }
+  });
+  search.value = start.get("q") || "";
+  if (["newest", "title"].indexOf(start.get("sort")) >= 0) { sort.value = start.get("sort"); }
+  sort.addEventListener("change", order);
+  order();
+  search.form.addEventListener("submit", function (e) { e.preventDefault(); apply(); });
+  search.addEventListener("input", apply);
+  box.addEventListener("change", apply);
+  box.addEventListener("submit", function (e) { e.preventDefault(); });
+  box.addEventListener("reset", function () {
+    search.value = "";
+    setTimeout(function () { order(); apply(); }, 0);
   });
   apply();
 })();
 ';
 
-/** A talk in the catalogue: where it lives and its entry. */
+/**
+ * A talk in the catalogue: where it lives, its entry, and the day its
+ * directory last changed in git (`YYYY-MM-DD`, "" when unknown).
+ */
 export def struct Talk {
     user as string,
     topic as string,
-    meta as meta.Meta
+    meta as meta.Meta,
+    modified as string
 };
+
+/**
+ * When the published talk last changed, for machines: the git day when known,
+ * else the author's month (`updated`, else `date`). Readers see the month.
+ */
+export func modifiedOf(t as Talk) {
+    if ($t.modified != "") {
+        return $t.modified;
+    }
+    return meta.latest($t.meta);
+}
 
 /** HTML-escape a value. */
 func esc(s as string) {
@@ -176,6 +266,22 @@ func newestFirst(t as Talk) {
         }
     }
     return $key + "\n" + strings.lower($t.meta.title);
+}
+
+/** The display key: the level in the order of meta.LEVELS, then the title. */
+func levelFirst(t as Talk) {
+    def at as int init lists.indexOf(meta.LEVELS, $t.meta.level);
+    return convert.toString($at) + "\n" + strings.lower($t.meta.title);
+}
+
+/**
+ * Order talks for a list page: beginner first, then intermediate, then
+ * advanced, each by title, so the colours form bands.
+ * @param {list of Talk} talks the talks in any order
+ * @return {list of Talk} sorted
+ */
+export func shown(talks as list of Talk) {
+    return lists.sortBy($talks, levelFirst);
 }
 
 /**
@@ -237,7 +343,7 @@ func badges(t as Talk, base as string) {
 }
 
 /** One talk's card; `base` leads from the page to the site root. */
-func card(t as Talk, base as string) {
+func card(t as Talk, base as string, withLevel as bool) {
     def m as meta.Meta init $t.meta;
     def href as string init esc($base + talkPath($t));
     def profile as string init esc(html.safeUrl("https://github.com/" + $m.author));
@@ -247,14 +353,19 @@ func card(t as Talk, base as string) {
     }
     def tags as string init strings.join($m.tags, " ");
     def langs as string init strings.join(langsOf($t), " ");
-    def out as string init "<li class=\"talk\" lang=\"" + esc($m.lang) + "\" data-level=\"";
+    def out as string init "<li class=\"talk " + esc($m.level) + "\" lang=\"" + esc($m.lang);
+    $out = $out + "\" data-level=\"";
     $out = $out + esc($m.level) + "\" data-tags=\"" + esc($tags) + "\" data-langs=\"";
-    $out = $out + esc($langs) + "\">\n";
+    $out = $out + esc($langs) + "\" data-month=\"" + esc(meta.latest($m)) + "\">\n";
+    if ($withLevel) {
+        $out = $out + "<a class=\"level\" href=\"" + esc($base + "levels/" + $m.level + "/");
+        $out = $out + "\">" + esc(levelName($m.level)) + "</a>\n";
+    }
     $out = $out + "<h2><a href=\"" + $href + "\">" + esc($m.title) + "</a></h2>\n";
     $out = $out + "<p>" + esc($m.description) + "</p>\n";
     def month as string init esc(meta.latest($m));
-    $out = $out + "<div class=\"meta\"><span>" + $who + "</span><span>" + esc($m.level);
-    $out = $out + "</span><span>Jennifer " + esc($m.jennifer) + "</span>";
+    $out = $out + "<div class=\"meta\"><span>" + $who + "</span>";
+    $out = $out + "<span>Jennifer " + esc($m.jennifer) + "</span>";
     $out = $out + "<span><time datetime=\"" + $month + "\">" + $month + "</time></span></div>\n";
     $out = $out + "<ul class=\"tags\">";
     for (def tag in $m.tags) {
@@ -271,11 +382,14 @@ func card(t as Talk, base as string) {
     return $out;
 }
 
-/** The list of cards, and the line shown when a filter leaves none. */
-func cards(talks as list of Talk, base as string) {
+/**
+ * The list of cards, and the line shown when a filter leaves none. A level's
+ * own page leaves the level label off: there every card has the same one.
+ */
+func cards(talks as list of Talk, base as string, withLevel as bool) {
     def out as string init "<ul class=\"talks\">\n";
-    for (def t in $talks) {
-        $out = $out + card($t, $base);
+    for (def t in shown($talks)) {
+        $out = $out + card($t, $base, $withLevel);
     }
     return $out + "</ul>\n<p id=\"none\" class=\"empty\" hidden>No talk matches this filter.</p>\n";
 }
@@ -293,30 +407,72 @@ export func tagsOf(talks as list of Talk) {
     return lists.sort($out);
 }
 
-/** The filter chips: the levels in use, then the tags. Hidden until the script runs. */
+/** A level as shown: "beginner" becomes "Beginner". */
+func levelName(level as string) {
+    if ($level == "") {
+        return "";
+    }
+    return strings.upper($level[0..1]) + $level[1..];
+}
+
+/**
+ * The filter bar under the header's search box: a dropdown of the levels in use, of the tags
+ * and, with several languages, of the languages, each option with its number
+ * of talks. Hidden until the script runs, so without it every talk shows.
+ */
 func filters(talks as list of Talk) {
-    def out as string init "<div class=\"filters\" id=\"filters\" hidden>";
-    $out = $out + "<span class=\"label\">Filter:</span>";
+    def out as string init "<form class=\"filters\" id=\"filters\" hidden>\n";
+    def levels as list of string;
     for (def level in meta.LEVELS) {
+        def n as int init 0;
         for (def t in $talks) {
             if ($t.meta.level == $level) {
-                $out = $out + chip("level", $level);
-                break;
+                $n = $n + 1;
             }
         }
-    }
-    def langs as list of string init langsIn($talks);
-    if (len($langs) > 1) {
-        $out = $out + "<span class=\"label\">|</span>";
-        for (def lang in $langs) {
-            $out = $out + chip("lang", $lang);
+        if ($n > 0) {
+            $levels[] = option($level, levelName($level), $n);
         }
     }
-    $out = $out + "<span class=\"label\">|</span>";
+    $out = $out + dropdown("level", "Level", "All levels", $levels);
+    def tags as list of string;
     for (def tag in tagsOf($talks)) {
-        $out = $out + chip("tag", $tag);
+        $tags[] = option($tag, $tag, len(byTag($talks, $tag)));
     }
-    return $out + "</div>\n";
+    $out = $out + dropdown("tag", "Topic", "All topics", $tags);
+    def langs as list of string init langsIn($talks);
+    if (len($langs) > 1) {
+        def items as list of string;
+        for (def lang in $langs) {
+            def n as int init 0;
+            for (def t in $talks) {
+                if (lists.contains(langsOf($t), $lang)) {
+                    $n = $n + 1;
+                }
+            }
+            $items[] = option($lang, strings.upper($lang), $n);
+        }
+        $out = $out + dropdown("lang", "Language", "All languages", $items);
+    }
+    $out = $out + "<label class=\"field\">Sort<select data-sort>";
+    $out = $out +
+        "<option value=\"level\">By level</option><option value=\"newest\">Newest first</option>";
+    $out = $out + "<option value=\"title\">By title</option></select></label>\n";
+    $out = $out + "<button type=\"reset\" class=\"reset\">Reset</button>\n";
+    return $out + "<p class=\"count\" id=\"count\" aria-live=\"polite\"></p>\n</form>\n";
+}
+
+/** One labelled dropdown of the filter bar, its first option meaning "any". */
+func dropdown(kind as string, label as string, any as string, options as list of string) {
+    def out as string init "<label class=\"field\">" + $label + "<select data-kind=\"" + $kind;
+    $out = $out + "\"><option value=\"\">" + $any + "</option>";
+    return $out + strings.join($options, "") + "</select></label>\n";
+}
+
+/** One dropdown option: the value, the text shown and how many talks have it. */
+func option(value as string, shown as string, n as int) {
+    return "<option value=\"" + esc($value) + "\">" + esc($shown) + " (" + convert.toString($n) +
+        ")</option>";
 }
 
 /** Every language a talk is in, sorted. */
@@ -332,22 +488,11 @@ export func langsIn(talks as list of Talk) {
     return lists.sort($out);
 }
 
-/** One filter chip. */
-func chip(kind as string, value as string) {
-    def v as string init esc($value);
-    def shown as string init $v;
-    if ($kind == "lang") {
-        $shown = strings.upper($v);
-    }
-    def out as string init "<button type=\"button\" class=\"chip\" data-kind=\"" + $kind;
-    return $out + "\" data-value=\"" + $v + "\" aria-pressed=\"false\">" + $shown + "</button>";
-}
-
 /** The JSON-LD description of a list of talks, for search engines. */
 export func jsonLd(talks as list of Talk) {
     def items as json.Value init json.list([]);
     def n as int init 0;
-    for (def t in $talks) {
+    for (def t in shown($talks)) {
         $n = $n + 1;
         def m as meta.Meta init $t.meta;
         def doc as json.Value init json.map({});
@@ -359,7 +504,7 @@ export func jsonLd(talks as list of Talk) {
         $doc = json.set($doc, "/license", LICENSE_URL);
         $doc = json.set($doc, "/keywords", strings.join($m.tags, ", "));
         $doc = json.set($doc, "/datePublished", $m.date);
-        $doc = json.set($doc, "/dateModified", meta.latest($m));
+        $doc = json.set($doc, "/dateModified", modifiedOf($t));
         $doc = json.set($doc, "/educationalLevel", $m.level);
         def person as json.Value init json.map({});
         $person = json.set($person, "/@type", "Person");
@@ -412,7 +557,10 @@ func page(
     $head = $head + "<style>\n" + STYLE + "</style>\n</head>\n<body>\n<div class=\"wrap\">\n";
     def top as string init "<header><a class=\"brand\" href=\"" + $b + "\"><img src=\"" + $b;
     $top = $top + "jennifer.svg\" alt=\"\" width=\"48\" height=\"48\"><span>" + SITE_TITLE;
-    $top = $top + "</span></a></header>\n";
+    $top = $top + "</span></a>\n<form class=\"search\" action=\"" + $b + "\" method=\"get\" ";
+    $top = $top + "role=\"search\"><input type=\"search\" name=\"q\" id=\"filter-q\" ";
+    $top = $top + "placeholder=\"Search talks: topic, keyword, level\" ";
+    $top = $top + "aria-label=\"Search talks\" autocomplete=\"off\"></form>\n</header>\n";
     def foot as string init "<footer>\n<p>Talks are licensed under CC BY 4.0 by their authors. ";
     $foot = $foot + "<a href=\"" + REPO_URL + "\">Source and contributions</a> · ";
     $foot = $foot + "<a href=\"https://jennifer-lang.dev/\">jennifer-lang.dev</a> · ";
@@ -421,7 +569,7 @@ func page(
     return $head + $top + "<main>\n" + $body + "</main>\n" + $foot;
 }
 
-/** The end of a page: the filter script when there are chips, then the closing tags. */
+/** The end of a page: the filter script on the front page, then the closing tags. */
 func pageEnd(withScript as bool) {
     if ($withScript) {
         return "<script>\n" + SCRIPT + "</script>\n</body>\n</html>\n";
@@ -447,7 +595,7 @@ func keywordsOf(talks as list of Talk) {
 }
 
 /**
- * The front page: the intro, the filter chips and every talk.
+ * The front page: the intro, the filter bar and every talk.
  * @param {list of Talk} talks sorted talks
  * @return {string} index.html
  */
@@ -459,8 +607,8 @@ export func indexPage(talks as list of Talk) {
     $links = $links + "<a href=\"https://docs.jennifer-lang.dev/\">Documentation</a>";
     $links = $links + "<a href=\"talks.json\">talks.json</a></p>\n";
     def body as string init INTRO + $links + "<h1>Talks</h1>\n" + filters($talks) +
-        cards($talks, "");
-    $body = $body + jsonLd($talks);
+        cards($talks, "", true);
+    $body = $body + websiteLd() + jsonLd($talks);
     def out as string init page(
         SITE_TITLE,
         SITE_DESCRIPTION,
@@ -469,6 +617,125 @@ export func indexPage(talks as list of Talk) {
         "",
         $body);
     return $out + pageEnd(true);
+}
+
+/**
+ * The site as a schema.org WebSite whose SearchAction is the front page's
+ * `?q=` search, so a search engine can offer it.
+ */
+func websiteLd() {
+    def target as json.Value init json.map({});
+    $target = json.set($target, "/@type", "EntryPoint");
+    $target = json.set($target, "/urlTemplate", SITE_URL + '?q={search_term_string}');
+    def action as json.Value init json.map({});
+    $action = json.set($action, "/@type", "SearchAction");
+    $action = json.set($action, "/target", $target);
+    $action = json.set($action, "/query-input", "required name=search_term_string");
+    def doc as json.Value init json.map({});
+    $doc = json.set($doc, "/@context", "https://schema.org");
+    $doc = json.set($doc, "/@type", "WebSite");
+    $doc = json.set($doc, "/name", SITE_TITLE);
+    $doc = json.set($doc, "/url", SITE_URL);
+    $doc = json.set($doc, "/potentialAction", $action);
+    return "<script type=\"application/ld+json\">" + json.encode($doc) + "</script>\n";
+}
+
+/** Only the talks of this level. */
+func byLevel(talks as list of Talk, level as string) {
+    def out as list of Talk;
+    for (def t in $talks) {
+        if ($t.meta.level == $level) {
+            $out[] = $t;
+        }
+    }
+    return $out;
+}
+
+/** Every level that has a talk, in the order of meta.LEVELS. */
+export func levelsOf(talks as list of Talk) {
+    def out as list of string;
+    for (def level in meta.LEVELS) {
+        if (len(byLevel($talks, $level)) > 0) {
+            $out[] = $level;
+        }
+    }
+    return $out;
+}
+
+/** Who a level's talks are for, one sentence for its page. */
+func levelIntro(level as string) {
+    if ($level == "beginner") {
+        return "Talks for people new to Jennifer, or new to programming.";
+    }
+    if ($level == "intermediate") {
+        return "Talks for people who write Jennifer and want to build real programs with it.";
+    }
+    return "Talks that go deep: the language's corners, its runtime and larger systems.";
+}
+
+/**
+ * The line under a level page's intro: how many talks it lists, then links to
+ * all talks and to the other levels, the current one marked, not linked.
+ */
+func levelNav(talks as list of Talk, level as string, n as int) {
+    def count as string init convert.toString($n) + " talks";
+    if ($n == 1) {
+        $count = "1 talk";
+    }
+    def out as string init "<nav class=\"levels\" aria-label=\"Levels\"><p class=\"count\">" +
+        $count + "</p><a href=\"../../\">All talks</a>";
+    for (def other in levelsOf($talks)) {
+        if ($other == $level) {
+            $out = $out + "<span aria-current=\"page\">" + esc(levelName($other)) + "</span>";
+        } else {
+            $out = $out + "<a href=\"../" + esc($other) + "/\">" + esc(levelName($other)) + "</a>";
+        }
+    }
+    return $out + "</nav>\n";
+}
+
+/**
+ * One level's page, `/levels/<level>/`.
+ * @param {list of Talk} talks all sorted talks
+ * @param {string} level one of meta.LEVELS
+ * @return {string} index.html
+ */
+export func levelPage(talks as list of Talk, level as string) {
+    def mine as list of Talk init byLevel($talks, $level);
+    def name as string init levelName($level);
+    def body as string init "<h1>" + esc($name) + " talks</h1>\n<p class=\"intro\">" +
+        esc(levelIntro($level)) + "</p>\n" + levelNav($talks, $level, len($mine)) +
+        cards($mine, "../../", false) + jsonLd($mine);
+    def description as string init $name + " talks about the Jennifer programming language. " +
+        levelIntro($level);
+    def url as string init SITE_URL + "levels/" + $level + "/";
+    def title as string init $name + " talks - " + SITE_TITLE;
+    return page($title, $description, keywordsOf($mine), $url, "../../", $body) + pageEnd(false);
+}
+
+/**
+ * llms.txt (llmstxt.org): the site and every talk as Markdown links, for
+ * language-model crawlers that read text rather than run the page's script.
+ * @param {list of Talk} talks all sorted talks
+ * @return {string} llms.txt
+ */
+export func llmsTxt(talks as list of Talk) {
+    def out as string init "# " + SITE_TITLE + "\n\n> " + SITE_DESCRIPTION + "\n\n";
+    $out = $out +
+        "Each talk is a slideshow (HTML, with speaker notes) and a PDF, licensed CC BY 4.0 ";
+    $out = $out + "by its author. The whole catalogue as JSON: " + SITE_URL + "talks.json\n";
+    for (def level in levelsOf($talks)) {
+        $out = $out + "\n## " + levelName($level) + " talks\n\n";
+        for (def t in byLevel($talks, $level)) {
+            def m as meta.Meta init $t.meta;
+            $out = $out + "- [" + $m.title + "](" + SITE_URL + talkPath($t) + "): " +
+                $m.description + " Tags: " + strings.join($m.tags, ", ") + ". PDF: " + SITE_URL +
+                pdfPath($t) + "\n";
+        }
+    }
+    $out = $out + "\n## Optional\n\n";
+    $out = $out + "- [Contributing a talk](" + REPO_URL + "/blob/main/CONTRIBUTING.md)\n";
+    return $out + "- [The Jennifer documentation](https://docs.jennifer-lang.dev/)\n";
 }
 
 /** Only the talks with this author. */
@@ -504,7 +771,7 @@ export func userPage(talks as list of Talk, user as string) {
     def profile as string init esc(html.safeUrl("https://github.com/" + $user));
     def body as string init "<h1>Talks by <a href=\"" + $profile + "\">@" + esc($user) +
         "</a></h1>\n";
-    $body = $body + cards($mine, "../") + jsonLd($mine);
+    $body = $body + cards($mine, "../", true) + jsonLd($mine);
     def description as string init "Talks about the Jennifer programming language by @" + $user +
         ".";
     def title as string init "@" + $user + " - " + SITE_TITLE;
@@ -520,8 +787,8 @@ export func userPage(talks as list of Talk, user as string) {
  */
 export func tagPage(talks as list of Talk, tag as string) {
     def mine as list of Talk init byTag($talks, $tag);
-    def body as string init "<h1>Talks tagged " + esc($tag) + "</h1>\n" + cards($mine, "../../") +
-        jsonLd($mine);
+    def body as string init "<h1>Talks tagged " + esc($tag) + "</h1>\n" +
+        cards($mine, "../../", true) + jsonLd($mine);
     def description as string init "Talks about the Jennifer programming language tagged " + $tag +
         ".";
     def url as string init SITE_URL + "tags/" + $tag + "/";
@@ -574,13 +841,16 @@ export func sitemap(talks as list of Talk) {
         }
     }
     for (def t in $talks) {
-        def month as string init meta.latest($t.meta);
+        def month as string init modifiedOf($t);
         def alt as string init alternatesXml($t);
         for (def v in meta.versionsOf($t.meta)) {
             def url as string init esc(SITE_URL + versionPath($t, $v));
             $out = $out + "<url><loc>" + $url + "</loc><lastmod>" + esc($month) + "</lastmod>";
             $out = $out + $alt + "</url>\n" + loc(SITE_URL + versionPdf($t, $v), $month);
         }
+    }
+    for (def level in levelsOf($talks)) {
+        $out = $out + loc(SITE_URL + "levels/" + $level + "/", "");
     }
     for (def tag in tagsOf($talks)) {
         $out = $out + loc(SITE_URL + "tags/" + $tag + "/", "");
@@ -627,6 +897,7 @@ export func catalogue(talks as list of Talk) {
         $doc = json.set($doc, "/jennifer", $m.jennifer);
         $doc = json.set($doc, "/date", $m.date);
         $doc = json.set($doc, "/updated", $m.updated);
+        $doc = json.set($doc, "/modified", modifiedOf($t));
         $doc = json.set($doc, "/level", $m.level);
         $doc = json.set($doc, "/tags", $m.tags);
         $doc = json.set($doc, "/url", SITE_URL + talkPath($t));
