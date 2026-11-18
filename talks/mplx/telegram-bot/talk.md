@@ -50,7 +50,8 @@ it is the one the deck supports.
 3. Add the deck:
 
 ```sh
-jvc add @jennifer/telegram     # into vendor/jennifer/telegram/
+jvc add @jennifer/telegram     # records it in deck.toml
+jvc install                    # into vendor/jennifer/telegram/
 export TELEGRAM_BOT_TOKEN=...  # from a secret store, never in git
 ```
 
