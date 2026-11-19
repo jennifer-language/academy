@@ -1,0 +1,9 @@
+title = "Dynamic workloads: autoscaling Resque workers with Jennifer"
+description = "A Jennifer controller that watches Resque queues and scales workers on Docker, VirtualBox, Proxmox or VMware: the scaling rule, hysteresis and cooldown, draining without losing jobs, reconciliation, limits, typed errors and retries, with a real run. Based on Jennifer 0.26.0."
+author = "mplx"
+license = "CC-BY-4.0"
+lang = "en"
+jennifer = "0.26.0"
+date = "2026-11"
+level = "advanced"
+tags = ["docker", "proxmox", "messaging", "automation", "errors", "decks", "concurrency"]

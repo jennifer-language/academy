@@ -1,0 +1,29 @@
+[package]
+name = "autoscale"
+version = "0.1.0"
+description = "Autoscaling Resque workers: the programs of the academy talk"
+license = "LGPL-3.0-only"
+authors = ["mplx <mplx@jennifer-lang.dev>"]
+keywords = []
+capabilities = ["net", "exec", "fs"]
+bin = ""
+bin-dir = ""
+
+[package.urls]
+
+[engines]
+jennifer = ">=0.26.0"
+
+[decks]
+"@deckyard/docker" = "0.2.0"
+"@deckyard/proxmox" = "0.2.0"
+"@deckyard/virtualbox" = "0.1.0"
+"@deckyard/vmware" = "0.3.0"
+
+[dev-decks]
+
+[conflicts]
+
+[sources]
+
+[registries]
