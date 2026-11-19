@@ -1,0 +1,14 @@
+<?php
+// The PHP column of "No type juggling" and "Numbers keep their promises".
+// Run: docker run --rm -i php:8.3-cli php < juggling.php.txt
+var_dump("10" == 10);
+var_dump("5" + 1);
+$count = 3;
+if ($count) {
+    echo "truthy\n";
+}
+var_dump((int) "42");
+var_dump(7 / 2);
+var_dump(intdiv(7, 2));
+var_dump(-7 % 3);
+var_dump(PHP_INT_MAX + 1);

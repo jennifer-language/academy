@@ -94,7 +94,8 @@ Built in, no setup. Every finding has a position, a reason and a rule code.
 <!-- notes:
 These are the mistakes students actually make: a typo in a library name, a
 variable they meant to use and forgot, a line after the return that will never
-run. The program still runs, so without a linter none of this is visible. Each
+run. Only the typo stops the program, and only when it runs; without a
+linter the other two are never visible. Each
 warning says where, what and why, and names its rule so it can be looked up.
 The typo even gets a suggestion.
 -->
@@ -172,6 +173,7 @@ $ jennifer test grade_test.j
 PASS testBoundary (0 ms)
 FAIL testFail (0 ms)
      [assertion] grade_test.j:12:5 assertEqual: C != B
+PASS testTop (0 ms)
 2 passed, 1 failed, 3 total
 ```
 
@@ -187,6 +189,7 @@ from the first week: hand out the tests, let students make them pass.
 ## Conditions must be bool
 
 ```jennifer
+use io;
 def count as int init 3;
 if ($count) {
     io.printf("non-empty\n");
@@ -218,7 +221,7 @@ def label as string init "total: " + $total;
 ```
 
 ```text
-runtime error at conv.j:3:26: operator + requires numeric operands, got string and int
+runtime error at conv.j:2:26: operator + requires numeric operands, got string and int
 ```
 
 ```jennifer excerpt

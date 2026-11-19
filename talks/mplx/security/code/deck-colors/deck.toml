@@ -1,0 +1,12 @@
+# The manifest of the deck on "Deck capabilities: a label, not a fence".
+# It declares no capabilities, although src/colors.j runs a program.
+[package]
+name = "@demo/colors"
+version = "0.1.0"
+description = "Names a colour and the system it runs on"
+license = "LGPL-3.0-only"
+authors = ["demo <demo@example.com>"]
+capabilities = []
+
+[engines]
+jennifer = ">=0.26.0"

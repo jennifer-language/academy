@@ -1,0 +1,11 @@
+<?php
+// The PHP snippets from "Declare before you use" and "Strings".
+// Run: docker run --rm -i php:8.3-cli php < basics.php.txt
+$count = 0;
+$count = $count + 1;
+echo $count, "\n";
+
+$name = "Ada";
+$greeting = "Hello, " . $name . "!";
+echo "Hello, {$name}!\n";
+echo $greeting, "\n";

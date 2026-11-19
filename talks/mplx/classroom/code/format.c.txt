@@ -1,0 +1,7 @@
+/* The C line from "Formatting you can read", for comparison (not run here;
+   the shell's printf gives the same text: printf '%-8s %6d %.1f%%\n' Ada 42 97.2). */
+#include <stdio.h>
+int main(void) {
+    printf("%-8s %6d %.1f%%\n", "Ada", 42, 97.2);
+    return 0;
+}

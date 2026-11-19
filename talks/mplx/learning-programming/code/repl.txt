@@ -1,0 +1,4 @@
+def x as int init 6 * 7;
+$x;
+$x > 40;
+"Hello, " + "Ada";
