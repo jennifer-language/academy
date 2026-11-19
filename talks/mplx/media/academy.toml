@@ -1,0 +1,9 @@
+title = "Your media library with Jennifer"
+description = "Tidy MP3 tags and cover art with a small batch tool, look films up on TMDB, sign in to a Jellyfin server, search it and start a library scan, count the Steam pile of shame, then build a what-to-watch-tonight picker. Based on Jennifer 0.26.0."
+author = "mplx"
+license = "CC-BY-4.0"
+lang = "en"
+jennifer = "0.26.0"
+date = "2026-11"
+level = "beginner"
+tags = ["media", "mp3", "jellyfin", "decks", "errors", "automation"]

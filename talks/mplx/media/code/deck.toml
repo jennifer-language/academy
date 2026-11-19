@@ -1,0 +1,30 @@
+[package]
+name = "media-talk"
+version = "0.1.0"
+description = "The programs of the academy talk Your media library with Jennifer"
+license = "CC-BY-4.0"
+authors = ["mplx"]
+keywords = []
+capabilities = ["net"]
+bin = ""
+bin-dir = ""
+
+[package.urls]
+
+[engines]
+jennifer = ">=0.26.0"
+
+[decks]
+# 0.1.0 calls encoding.decode in the pre-0.26.0 argument order
+"@deckyard/mp3" = ">=0.2.0"
+"@deckyard/tmdb" = ">=0.2.0"
+"@deckyard/jellyfin" = ">=0.2.0"
+"@deckyard/steam" = ">=0.2.0"
+
+[dev-decks]
+
+[conflicts]
+
+[sources]
+
+[registries]
