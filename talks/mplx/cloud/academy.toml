@@ -1,0 +1,9 @@
+title = "Storing data in the cloud: S3, WebDAV, Koofr and Seafile"
+description = "Object storage, WebDAV and file sync from Jennifer: the s3 and webdav modules and the Koofr and Seafile decks, multipart uploads, presigned URLs, If-Match, encrypted libraries, error kinds, retries, limits, checksums, credentials, and a backup job that mirrors a folder."
+author = "mplx"
+license = "CC-BY-4.0"
+lang = "en"
+jennifer = "0.26.0"
+date = "2026-11"
+level = "intermediate"
+tags = ["s3", "webdav", "decks", "errors", "http", "automation"]
