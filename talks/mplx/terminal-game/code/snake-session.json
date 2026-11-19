@@ -1,0 +1,4 @@
+{"cmd": ["jennifer", "run", "snake.j"], "env": {"SNAKE_SEED": "7"}, "rows": 16, "cols": 40,
+ "steps": [["sleep", 0.6], ["key", "up"], ["sleep", 0.32], ["key", "right"], ["sleep", 1.0], ["snap", "b"],
+  ["sleep", 0.85], ["key", "up"], ["sleep", 0.08], ["key", "right"], ["sleep", 0.5], ["snap", "e"],
+  ["sleep", 2.0], ["snap", "c"], ["key", "x"], ["sleep", 1.0]], "tail": 1}

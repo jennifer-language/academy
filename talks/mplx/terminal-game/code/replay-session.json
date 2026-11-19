@@ -1,0 +1,2 @@
+{"cmd": ["sh", "-c", "SNAKE_SEED=7 jennifer run snake.j < moves.txt"], "rows": 16, "cols": 40,
+ "steps": [], "tail": 10}

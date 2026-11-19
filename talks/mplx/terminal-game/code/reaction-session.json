@@ -1,0 +1,2 @@
+{"cmd": ["jennifer", "run", "reaction.j"], "rows": 10, "cols": 40,
+ "steps": [["waitfor", "GO!\n"], ["sleep", 0.26], ["key", " "], ["sleep", 0.5]], "tail": 1}
