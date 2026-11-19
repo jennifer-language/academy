@@ -1,0 +1,28 @@
+[package]
+name = "alerting"
+version = "0.1.0"
+description = ""
+license = ""
+authors = []
+keywords = []
+capabilities = []
+bin = ""
+bin-dir = ""
+
+[package.urls]
+
+[engines]
+
+[decks]
+"@jennifer/gotify" = "*"
+"@jennifer/telegram" = "*"
+"@jennifer/slack" = "*"
+"@jennifer/discord" = "*"
+
+[dev-decks]
+
+[conflicts]
+
+[sources]
+
+[registries]

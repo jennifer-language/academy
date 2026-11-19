@@ -1,0 +1,25 @@
+[package]
+name = "csv-sheets"
+version = "0.1.0"
+description = ""
+license = ""
+authors = []
+keywords = []
+capabilities = []
+bin = ""
+bin-dir = ""
+
+[package.urls]
+
+[engines]
+
+[decks]
+"@deckyard/sheets" = "*"
+
+[dev-decks]
+
+[conflicts]
+
+[sources]
+
+[registries]

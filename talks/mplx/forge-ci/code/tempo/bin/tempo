@@ -1,0 +1,16 @@
+#!/usr/bin/env -S jennifer run
+# SPDX-License-Identifier: LGPL-3.0-only
+# pragma-jennifer-version: >=0.26.0
+#
+# tempo - add up durations: `tempo 1h30m 45m` prints `2h15m`.
+
+use io;
+use os;
+import "../src/parse.j" as parse;
+import "../src/format.j" as format;
+
+def total as int init 0;
+for (def arg in os.ARGS[1..len(os.ARGS)]) {
+    $total = $total + parse.seconds($arg);
+}
+io.printf("%s\n", format.duration($total));

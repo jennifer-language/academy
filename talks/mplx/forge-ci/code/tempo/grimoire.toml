@@ -1,0 +1,8 @@
+[book]
+title = "tempo"
+description = "Add up durations on the command line."
+language = "en"
+src = "docs"
+
+[html]
+theme = "carbon"

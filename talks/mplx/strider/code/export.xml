@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- INVENTED numbers in the STRidER shape; not real population data -->
+<frequencies created_timestamp="2026-11-01T09:00:00+01:00" validity="2026-11-01T00:00:00+01:00">
+  <marker>
+    <name>D3S1358</name>
+    <alleles>14, 15, 16, 17, 18</alleles>
+    <origin name="Entire Database" n="12000">
+      <frequency allele="14">1.20000e-01</frequency>
+      <frequency allele="15">2.60000e-01</frequency>
+      <frequency allele="16">2.50000e-01</frequency>
+      <frequency allele="17">2.10000e-01</frequency>
+      <frequency allele="18">1.60000e-01</frequency>
+    </origin>
+    <origin name="NORTHLAND" n="800">
+      <frequency allele="14">1.10000e-01</frequency>
+      <frequency allele="15">2.80000e-01</frequency>
+      <frequency allele="16">2.40000e-01</frequency>
+      <frequency allele="17">2.20000e-01</frequency>
+      <frequency allele="18">1.50000e-01</frequency>
+    </origin>
+    <origin name="SOUTHLAND" n="150">
+      <frequency allele="15">3.10000e-01</frequency>
+      <frequency allele="16">2.90000e-01</frequency>
+      <frequency allele="17">2.30000e-01</frequency>
+      <frequency allele="18">1.70000e-01</frequency>
+    </origin>
+  </marker>
+  <marker>
+    <name>vWA</name>
+    <alleles>15, 16, 17, 18, 19</alleles>
+    <origin name="Entire Database" n="12000">
+      <frequency allele="15">1.00000e-01</frequency>
+      <frequency allele="16">2.10000e-01</frequency>
+      <frequency allele="17">2.70000e-01</frequency>
+      <frequency allele="18">2.20000e-01</frequency>
+      <frequency allele="19">2.00000e-01</frequency>
+    </origin>
+    <origin name="NORTHLAND" n="800">
+      <frequency allele="15">9.00000e-02</frequency>
+      <frequency allele="16">2.20000e-01</frequency>
+      <frequency allele="17">2.80000e-01</frequency>
+      <frequency allele="18">2.10000e-01</frequency>
+      <frequency allele="19">2.00000e-01</frequency>
+    </origin>
+    <origin name="SOUTHLAND" n="150">
+      <frequency allele="16">2.60000e-01</frequency>
+      <frequency allele="17">3.40000e-01</frequency>
+      <frequency allele="18">2.30000e-01</frequency>
+      <frequency allele="19">1.70000e-01</frequency>
+    </origin>
+  </marker>
+  <marker>
+    <name>TH01</name>
+    <alleles>6, 7, 8, 9, 9.3</alleles>
+    <origin name="Entire Database" n="12000">
+      <frequency allele="6">2.30000e-01</frequency>
+      <frequency allele="7">1.80000e-01</frequency>
+      <frequency allele="8">1.20000e-01</frequency>
+      <frequency allele="9">1.50000e-01</frequency>
+      <frequency allele="9.3">3.20000e-01</frequency>
+    </origin>
+    <origin name="NORTHLAND" n="800">
+      <frequency allele="6">2.10000e-01</frequency>
+      <frequency allele="7">1.90000e-01</frequency>
+      <frequency allele="8">1.10000e-01</frequency>
+      <frequency allele="9">1.60000e-01</frequency>
+      <frequency allele="9.3">3.30000e-01</frequency>
+    </origin>
+  </marker>
+</frequencies>

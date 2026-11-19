@@ -1,0 +1,6 @@
+# export from the till, week 44
+branch;product;qty;price
+North;"Rye bread; sliced";12;3.20
+North;Croissant;30;1.10
+ South ; "Tart ""lemon""" ;8;4.50
+South;Croissant;25;1.10
