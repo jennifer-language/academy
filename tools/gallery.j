@@ -12,7 +12,10 @@
  * `<user>/index.html` per author, one `tags/<tag>/index.html` per tag,
  * one `levels/<level>/index.html` per level, `legal/index.html` from `legal.md`,
  * `sitemap.xml`, `robots.txt`, `talks.json` and `llms.txt`, and adds canonical
- * and hreflang links to each built slideshow, one per language version. Run it
+ * and hreflang links to each built slideshow, one per language version. A
+ * talk's code/ is published at `talks/<user>/<topic>/code/` (every file, a
+ * listing with README.md rendered, a page showing each text file) and as
+ * `<topic>-code.zip`; its translations share it. Run it
  * from the repository root after `tools/build.sh` has built the talks (the
  * script calls it); it refuses a talk whose academy.toml is invalid.
  * @module gallery
@@ -20,6 +23,8 @@
  * @license LGPL-3.0-only
  */
 
+use archive;
+use convert;
 use fs;
 use io;
 use lists;
@@ -79,6 +84,48 @@ func fullHistory() {
     return true;
 }
 
+# codeOf lists the files of a talk's code folder, none when it has no code/.
+func codeOf(dir as string) {
+    def files as list of site.CodeFile;
+    def code as string init path.join($dir, rules.CODE_DIR);
+    if (not fs.isDir($code)) {
+        return $files;
+    }
+    for (def e in rules.codeFiles($code)) {
+        $files[] = site.CodeFile{path: $e.rel, size: $e.size, text: rules.isCodeText($e.rel)};
+    }
+    return $files;
+}
+
+# writeCode publishes a talk's code folder below `dest` (the talk's directory
+# in the site): the files, the listing, a page per text file, and the zip.
+func writeCode(t as site.Talk, dir as string, dest as string) {
+    def code as string init path.join($dir, rules.CODE_DIR);
+    def target as string init path.join($dest, "code");
+    def members as list of archive.Entry;
+    def readme as string init "";
+    for (def f in $t.code) {
+        def data as bytes init fs.readBytes(path.join($code, $f.path));
+        $members[] = archive.Entry{name: $f.path, data: $data, mode: 0o644, mtime: 0};
+        if (site.zipOnly($f)) {
+            continue;
+        }
+        def p as string init path.join($target, $f.path);
+        fs.mkdirAll(path.dir($p));
+        fs.writeBytes($p, $data);
+        if (not $f.text) {
+            continue;
+        }
+        def text as string init convert.stringFromBytes("utf-8", $data);
+        fs.writeString(path.join($target, site.viewPath($f)), site.codeFilePage($t, $f, $text));
+        if ($f.path == rules.CODE_README) {
+            $readme = $text;
+        }
+    }
+    fs.writeString(path.join($target, "index.html"), site.codePage($t, $readme));
+    fs.writeBytes(path.join($dest, $t.topic + "-code.zip"), site.codeZip($t, $members));
+}
+
 def history as bool init fullHistory();
 def all as list of site.Talk;
 def bad as int init 0;
@@ -100,7 +147,8 @@ for (def user in fs.list($talks)) {
             user: $user,
             topic: $topic,
             meta: $entry.meta,
-            modified: gitDay($dir, $history)
+            modified: gitDay($dir, $history),
+            code: codeOf($dir)
         };
     }
 }
@@ -113,20 +161,51 @@ $all = site.sorted($all);
 fs.mkdirAll($out);
 fs.writeString(path.join($out, "index.html"), site.indexPage($all));
 def users as list of string;
+def talksRoot as string init path.join($out, "talks");
 for (def t in $all) {
     if (not lists.contains($users, $t.user)) {
         $users[] = $t.user;
-        fs.mkdirAll(path.join($out, $t.user));
-        fs.writeString(path.join($out, $t.user, "index.html"), site.userPage($all, $t.user));
+        fs.mkdirAll(path.join($talksRoot, $t.user));
+        fs.writeString(path.join($talksRoot, $t.user, "index.html"), site.userPage($all, $t.user));
+    }
+    if (site.hasCode($t)) {
+        writeCode(
+            $t,
+            path.join($talks, $t.user, $t.topic),
+            path.join($talksRoot, $t.user, $t.topic));
     }
     for (def v in meta.versionsOf($t.meta)) {
-        def slides as string init path.join($out, $t.user, $t.topic, "index.html");
+        def rel as string init path.join($t.user, $t.topic);
         if (not $v.primary) {
-            $slides = path.join($out, $t.user, $t.topic, $v.lang, "index.html");
+            $rel = path.join($rel, $v.lang);
         }
+        def slides as string init path.join($talksRoot, $rel, "index.html");
         if (fs.isFile($slides)) {
             fs.writeString($slides, site.withHead(fs.readString($slides), $t, $v));
         }
+        # A talk published before the move keeps its old address as a redirect.
+        if (site.isLegacy($t)) {
+            fs.mkdirAll(path.join($out, $rel));
+            def target as string init site.SITE_URL + site.TALKS_DIR + $rel + "/";
+            fs.writeString(path.join($out, $rel, "index.html"), site.redirectPage($target));
+        }
+    }
+}
+for (def u in $users) {
+    if (lists.contains(site.RESERVED_NAMES, $u)) {
+        continue;
+    }
+    def legacyUser as bool init false;
+    for (def t in $all) {
+        if ($t.user == $u and site.isLegacy($t)) {
+            $legacyUser = true;
+        }
+    }
+    if ($legacyUser) {
+        fs.mkdirAll(path.join($out, $u));
+        fs.writeString(
+            path.join($out, $u, "index.html"),
+            site.redirectPage(site.SITE_URL + site.userPath($u)));
     }
 }
 def tags as list of string init site.tagsOf($all);

@@ -15,6 +15,7 @@
  * @license LGPL-3.0-only
  */
 
+use archive;
 use convert;
 use json;
 use lists;
@@ -164,14 +165,24 @@ a.level:hover { text-decoration: underline; }
   gap: 0.3rem 0.9rem; font-size: 0.85rem; }
 .langs .badge { font: 600 0.75rem ui-monospace, monospace; padding: 0.1rem 0.4rem;
   border-radius: 0.3rem; border: 1px solid var(--accent); text-decoration: none; }
-.actions { margin-top: auto; padding-top: 0.4rem; display: flex; gap: 0.6rem; }
-.actions a { font-size: 0.9rem; padding: 0.3rem 0.8rem; border-radius: 999px;
+.actions { margin-top: auto; padding-top: 0.4rem; display: flex; flex-wrap: wrap; gap: 0.4rem; }
+.actions a { font-size: 0.85rem; padding: 0.25rem 0.65rem; border-radius: 999px; white-space: nowrap;
   border: 1px solid var(--accent); text-decoration: none; }
 .actions a.primary { background: var(--accent); color: var(--accent-fg); }
+.actions a:not(.primary) { border-color: transparent; padding-left: 0.35rem; padding-right: 0.35rem; }
+.actions a:not(.primary):hover { border-color: var(--accent); }
 .empty { color: var(--muted); }
 .prose { max-width: 44rem; }
 .prose h1 { font-size: 1.5rem; }
 .prose h2 { font-size: 1.2rem; margin-top: 2rem; }
+.files { border-collapse: collapse; margin: 1rem 0 2rem; font-size: 0.9rem; max-width: 100%; }
+.files th, .files td { text-align: left; padding: 0.3rem 1.2rem 0.3rem 0;
+  border-bottom: 1px solid var(--line); overflow-wrap: anywhere; }
+.files td.size { text-align: right; color: var(--muted); white-space: nowrap; }
+.source { overflow-x: auto; background: var(--card); border: 1px solid var(--line);
+  border-radius: 0.6rem; padding: 0.9rem 1rem; font: 0.85rem/1.5 ui-monospace, monospace; }
+.prose pre { overflow-x: auto; background: var(--card); border: 1px solid var(--line);
+  border-radius: 0.6rem; padding: 0.7rem 0.9rem; }
 footer { margin: 3rem 0 2rem; padding-top: 1rem; border-top: 1px solid var(--line);
   font-size: 0.85rem; color: var(--muted); }
 footer .fine { font-size: 0.75rem; }
@@ -272,15 +283,24 @@ def const SCRIPT as string init '(function () {
  */
 def const TOPIC_MIN as int init 2;
 
+/** A file of a talk's code folder: its path below code/, its size, and whether it is text. */
+export def struct CodeFile {
+    path as string,
+    size as int,
+    text as bool
+};
+
 /**
- * A talk in the catalogue: where it lives, its entry, and the day its
- * directory last changed in git (`YYYY-MM-DD`, "" when unknown).
+ * A talk in the catalogue: where it lives, its entry, the day its directory
+ * last changed in git (`YYYY-MM-DD`, "" when unknown), and the files of its
+ * code folder, sorted by path (none when it has no code/).
  */
 export def struct Talk {
     user as string,
     topic as string,
     meta as meta.Meta,
-    modified as string
+    modified as string,
+    code as list of CodeFile
 };
 
 /**
@@ -338,14 +358,82 @@ export func sorted(talks as list of Talk) {
     return lists.sortBy($talks, newestFirst);
 }
 
+/**
+ * The directory every talk lives in, below the site root. Talks sit apart from
+ * the site's own pages (`legal/`, `levels/`, `tags/`), so no author name can
+ * collide with one.
+ */
+export def const TALKS_DIR as string init "talks/";
+
+/**
+ * Talks dated up to this month were published at `/<user>/<topic>/` before
+ * talks moved into TALKS_DIR; their old addresses redirect to the new ones.
+ */
+export def const LEGACY_UNTIL as string init "2026-11";
+
+/** Top-level names the site uses itself; never an old-style redirect. */
+export def const RESERVED_NAMES as list of string init [
+    "legal",
+    "levels",
+    "tags",
+    "talks",
+    "jennifer.svg",
+    "llms.txt",
+    "robots.txt",
+    "sitemap.xml",
+    "talks.json",
+    "CNAME"
+];
+
+/** An author's page below the site root, with a trailing slash. */
+export func userPath(user as string) {
+    return TALKS_DIR + $user + "/";
+}
+
 /** The path of a talk below the site root, with a trailing slash. */
-func talkPath(t as Talk) {
-    return $t.user + "/" + $t.topic + "/";
+export func talkPath(t as Talk) {
+    return userPath($t.user) + $t.topic + "/";
 }
 
 /** The PDF's path below the site root (the primary language's). */
 func pdfPath(t as Talk) {
     return talkPath($t) + $t.topic + ".pdf";
+}
+
+/** The handout's path below the site root (the primary language's). */
+func handoutPath(t as Talk) {
+    return talkPath($t) + $t.topic + "-handout.pdf";
+}
+
+/** A version's handout path: beside its PDF, `<topic>-handout.pdf` or `handout.pdf`. */
+func versionHandout(t as Talk, v as meta.Version) {
+    if ($v.primary) {
+        return handoutPath($t);
+    }
+    return versionPath($t, $v) + "handout.pdf";
+}
+
+/**
+ * Whether a talk had an address before talks moved into TALKS_DIR, so its old
+ * address gets a redirect.
+ */
+export func isLegacy(t as Talk) {
+    return $t.meta.date <= LEGACY_UNTIL and not lists.contains(RESERVED_NAMES, $t.user);
+}
+
+/**
+ * A page that sends a visitor and a search engine on to a talk's new address.
+ * @param {string} target the absolute URL to go to
+ * @return {string} index.html for the old address
+ */
+export func redirectPage(target as string) {
+    def dest as string init esc($target);
+    return "<!doctype html>\n<html lang=\"en\">\n<head>\n<meta charset=\"utf-8\">\n" +
+        "<title>Moved</title>\n<link rel=\"canonical\" href=\"" + $dest + "\">\n" +
+        "<meta name=\"robots\" content=\"noindex\">\n" +
+        "<meta http-equiv=\"refresh\" content=\"0; url=" + $dest + "\">\n</head>\n<body>\n" +
+        "<p>This talk has moved to <a href=\"" + $dest + "\">" + $dest + "</a>.</p>\n" +
+        "</body>\n</html>\n";
 }
 
 /** A version's slideshow path: the primary at the talk's path, a translation below it. */
@@ -382,7 +470,9 @@ func badges(t as Talk, base as string) {
         $out = $out + "<li><a class=\"badge\" href=\"" + $slides + "\" hreflang=\"" + $code;
         $out = $out + "\" title=\"" + esc($v.title) + "\">" + strings.upper($code) + "</a> ";
         $out = $out + "<a href=\"" + esc($base + versionPdf($t, $v)) + "\" hreflang=\"" + $code;
-        $out = $out + "\" type=\"application/pdf\">PDF</a></li>";
+        $out = $out + "\" type=\"application/pdf\">PDF</a> ";
+        $out = $out + "<a href=\"" + esc($base + versionHandout($t, $v)) + "\" hreflang=\"" + $code;
+        $out = $out + "\" type=\"application/pdf\">Handout</a></li>";
     }
     return $out + "</ul>\n";
 }
@@ -428,8 +518,15 @@ func card(t as Talk, base as string, withLevel as bool, currentTag as string) {
     }
     $out = $out + "<div class=\"actions\"><a class=\"primary\" href=\"" + $href;
     $out = $out + "\">Slides</a><a href=\"" + esc($base + pdfPath($t));
-    $out = $out + "\" type=\"application/pdf\">PDF</a></div>\n</li>\n";
-    return $out;
+    $out = $out + "\" type=\"application/pdf\">PDF</a><a href=\"" + esc($base + handoutPath($t));
+    $out = $out +
+        "\" type=\"application/pdf\" title=\"Three slides to an A4 page, with room for notes\">" +
+        "Handout</a>";
+    if (hasCode($t)) {
+        $out = $out + "<a href=\"" + esc($base + codePath($t)) +
+            "\" title=\"The programs behind the slides\">Code</a>";
+    }
+    return $out + "</div>\n</li>\n";
 }
 
 /**
@@ -616,7 +713,8 @@ func page(
     $top = $top + "role=\"search\"><input type=\"search\" name=\"q\" id=\"filter-q\" ";
     $top = $top + "placeholder=\"Search talks: topic, keyword, level\" ";
     $top = $top + "aria-label=\"Search talks\" autocomplete=\"off\"></form>\n</header>\n";
-    def foot as string init "<footer>\n<p>Talks are licensed under CC BY 4.0 by their authors. ";
+    def foot as string init "<footer>\n<p>Talks are licensed under CC BY 4.0 by their authors, " +
+        "their sample code under MIT-0. ";
     $foot = $foot + "<a href=\"" + REPO_URL + "\">Source and contributions</a> · ";
     $foot = $foot + "<a href=\"https://jennifer-lang.dev/\">jennifer-lang.dev</a> · ";
     $foot = $foot + "<a href=\"" + $b + "legal/\">Legal</a></p>\n";
@@ -806,7 +904,12 @@ export func llmsTxt(talks as list of Talk) {
             def m as meta.Meta init $t.meta;
             $out = $out + "- [" + $m.title + "](" + SITE_URL + talkPath($t) + "): " +
                 $m.description + " Tags: " + strings.join($m.tags, ", ") + ". PDF: " + SITE_URL +
-                pdfPath($t) + "\n";
+                pdfPath($t) + ". Handout: " + SITE_URL + handoutPath($t);
+            if (hasCode($t)) {
+                $out = $out + ". Code: " + SITE_URL + codePath($t) + " (zip: " + SITE_URL +
+                    zipPath($t) + ")";
+            }
+            $out = $out + "\n";
         }
     }
     $out = $out + "\n## Optional\n\n";
@@ -837,7 +940,7 @@ func byTag(talks as list of Talk, tag as string) {
 }
 
 /**
- * One author's page, `/<user>/`.
+ * One author's page, `/talks/<user>/`.
  * @param {list of Talk} talks all sorted talks
  * @param {string} user the namespace
  * @return {string} index.html
@@ -847,11 +950,17 @@ export func userPage(talks as list of Talk, user as string) {
     def profile as string init esc(html.safeUrl("https://github.com/" + $user));
     def body as string init "<h1>Talks by <a href=\"" + $profile + "\">@" + esc($user) +
         "</a></h1>\n";
-    $body = $body + cards($mine, "../", true, "") + jsonLd($mine);
+    $body = $body + cards($mine, "../../", true, "") + jsonLd($mine);
     def description as string init "Talks about the Jennifer programming language by @" + $user +
         ".";
     def title as string init "@" + $user + " - " + SITE_TITLE;
-    return page($title, $description, keywordsOf($mine), SITE_URL + $user + "/", "../", $body) +
+    return page(
+        $title,
+        $description,
+        keywordsOf($mine),
+        SITE_URL + userPath($user),
+        "../../",
+        $body) +
         pageEnd(false);
 }
 
@@ -915,7 +1024,7 @@ export func sitemap(talks as list of Talk) {
     for (def t in $talks) {
         if (not lists.contains($users, $t.user)) {
             $users[] = $t.user;
-            $out = $out + loc(SITE_URL + $t.user + "/", "");
+            $out = $out + loc(SITE_URL + userPath($t.user), "");
         }
     }
     for (def t in $talks) {
@@ -925,6 +1034,9 @@ export func sitemap(talks as list of Talk) {
             def url as string init esc(SITE_URL + versionPath($t, $v));
             $out = $out + "<url><loc>" + $url + "</loc><lastmod>" + esc($month) + "</lastmod>";
             $out = $out + $alt + "</url>\n" + loc(SITE_URL + versionPdf($t, $v), $month);
+        }
+        if (hasCode($t)) {
+            $out = $out + loc(SITE_URL + codePath($t), $month);
         }
     }
     for (def level in levelsOf($talks)) {
@@ -980,6 +1092,11 @@ export func catalogue(talks as list of Talk) {
         $doc = json.set($doc, "/tags", $m.tags);
         $doc = json.set($doc, "/url", SITE_URL + talkPath($t));
         $doc = json.set($doc, "/pdf", SITE_URL + pdfPath($t));
+        $doc = json.set($doc, "/handout", SITE_URL + handoutPath($t));
+        if (hasCode($t)) {
+            $doc = json.set($doc, "/code", SITE_URL + codePath($t));
+            $doc = json.set($doc, "/codeZip", SITE_URL + zipPath($t));
+        }
         def versions as json.Value init json.list([]);
         for (def v in meta.versionsOf($m)) {
             def one as json.Value init json.map({});
@@ -989,6 +1106,7 @@ export func catalogue(talks as list of Talk) {
             $one = json.set($one, "/description", $v.description);
             $one = json.set($one, "/url", SITE_URL + versionPath($t, $v));
             $one = json.set($one, "/pdf", SITE_URL + versionPdf($t, $v));
+            $one = json.set($one, "/handout", SITE_URL + versionHandout($t, $v));
             $versions = json.append($versions, "", $one);
         }
         $doc = json.set($doc, "/versions", $versions);
@@ -1026,4 +1144,173 @@ export func withHead(page as string, t as Talk, v as meta.Version) {
         $page,
         $at + 6,
         len($page));
+}
+
+# ---------------------------------------------------------------------------
+# A talk's code folder: published at <talk>/code/, with a listing, a page per
+# text file, and the whole folder as <topic>-code.zip.
+# ---------------------------------------------------------------------------
+
+/** The modification time of every zip member: 1980-01-01 UTC, the first a zip can store. */
+export def const ZIP_MTIME as int init 315532800;
+
+/** Does the talk have a code folder? */
+export func hasCode(t as Talk) {
+    return len($t.code) > 0;
+}
+
+/** The code folder's listing below the site root, with a trailing slash. */
+export func codePath(t as Talk) {
+    return talkPath($t) + "code/";
+}
+
+/** The code folder's zip below the site root. */
+export func zipPath(t as Talk) {
+    return talkPath($t) + $t.topic + "-code.zip";
+}
+
+/**
+ * The page that shows a text file of the code folder, beside the file:
+ * `code/<path>.html`. GitHub Pages serves a `.j` as a download, so each text
+ * file gets a page that shows it; the file itself stays the raw copy.
+ */
+export func viewPath(f as CodeFile) {
+    return $f.path + ".html";
+}
+
+/**
+ * Is this file published in the zip only? A path with a hidden part (`.env`,
+ * `app/.github/...`) is: the Pages upload leaves `.github` out and other hosts
+ * refuse dotfiles, so the listing names it without a link.
+ */
+export func zipOnly(f as CodeFile) {
+    return strings.startsWith($f.path, ".") or strings.contains($f.path, "/.");
+}
+
+/** The way from a page at `code/<rel>` back to the site root. */
+func codeBase(rel as string) {
+    return strings.repeat("../", 4 + strings.count($rel, "/"));
+}
+
+/** A size as people read it: "812 B", "3.4 KiB". */
+export func sizeText(n as int) {
+    if ($n < 1024) {
+        return convert.toString($n) + " B";
+    }
+    def tenths as int init $n * 10 // 1024;
+    return convert.toString($tenths // 10) + "." + convert.toString($tenths % 10) + " KiB";
+}
+
+/** The links above a code page: the slides, the PDF, the zip. */
+func codeLinks(t as Talk, base as string) {
+    def out as string init "<nav class=\"pagenav\" aria-label=\"Talk\"><a href=\"" +
+        esc($base + talkPath($t)) + "\">Slides</a><a href=\"" + esc($base + pdfPath($t)) +
+        "\" type=\"application/pdf\">PDF</a><a href=\"" + esc($base + zipPath($t)) +
+        "\" download>All files as zip</a>";
+    return $out + "</nav>\n";
+}
+
+/**
+ * The code folder's listing, `code/index.html`: its README.md rendered, then
+ * every file with its size, a text file linking the page that shows it and its
+ * raw copy, an image linking itself.
+ * @param {Talk} t the talk, with its code files
+ * @param {string} readme the text of code/README.md ("" when there is none)
+ * @return {string} index.html
+ */
+export func codePage(t as Talk, readme as string) {
+    def base as string init codeBase("index.html");
+    def m as meta.Meta init $t.meta;
+    def body as string init "<h1>Code: " + esc($m.title) + "</h1>\n" + codeLinks($t, $base);
+    if ($readme != "") {
+        $body = $body + "<div class=\"prose\">\n" + markdown.toHtml($readme) + "</div>\n";
+    }
+    $body = $body + "<table class=\"files\">\n<thead><tr><th>File</th><th>Size</th><th></th>" +
+        "</tr></thead>\n<tbody>\n";
+    for (def f in $t.code) {
+        def raw as string init esc($f.path);
+        def shown as string init "<a href=\"" + $raw + "\">" + esc($f.path) + "</a>";
+        def extra as string init "";
+        if (zipOnly($f)) {
+            $shown = esc($f.path);
+            $extra = "in the zip";
+        } elseif ($f.text) {
+            $shown = "<a href=\"" + esc(viewPath($f)) + "\">" + esc($f.path) + "</a>";
+            $extra = "<a href=\"" + $raw + "\">raw</a>";
+        }
+        $body = $body + "<tr><td>" + $shown + "</td><td class=\"size\">" + sizeText($f.size) +
+            "</td><td>" + $extra + "</td></tr>\n";
+    }
+    $body = $body + "</tbody>\n</table>\n";
+    def description as string init "The programs behind the talk \"" + $m.title + "\" by @" +
+        $m.author + ".";
+    def title as string init "Code: " + $m.title + " - " + SITE_TITLE;
+    return page(
+        $title,
+        $description,
+        strings.join($m.tags, ", "),
+        SITE_URL + codePath($t),
+        $base,
+        $body) + pageEnd(false);
+}
+
+/**
+ * The page that shows one text file of the code folder, as plain text.
+ * @param {Talk} t the talk
+ * @param {CodeFile} f the file
+ * @param {string} text its contents
+ * @return {string} the page for `code/<path>.html`
+ */
+export func codeFilePage(t as Talk, f as CodeFile, text as string) {
+    def base as string init codeBase($f.path);
+    def up as string init strings.repeat("../", strings.count($f.path, "/"));
+    if ($up == "") {
+        $up = "./";
+    }
+    def body as string init "<h1>" + esc($f.path) + "</h1>\n";
+    $body = $body + "<nav class=\"pagenav\" aria-label=\"Code\"><a href=\"" + esc($up) +
+        "\">All files</a><a href=\"" +
+        esc(path2base($f.path)) + "\">raw</a><span class=\"count\">" + sizeText($f.size) +
+        "</span></nav>\n";
+    $body = $body + "<pre class=\"source\"><code>" + esc($text) + "</code></pre>\n";
+    def description as string init $f.path + " from the code of the talk \"" + $t.meta.title +
+        "\".";
+    return page(
+        $f.path + " - " + SITE_TITLE,
+        $description,
+        strings.join($t.meta.tags, ", "),
+        SITE_URL + codePath($t) + viewPath($f),
+        $base,
+        $body) + pageEnd(false);
+}
+
+/** The last part of a path: the raw file seen from its page beside it. */
+func path2base(p as string) {
+    def parts as list of string init strings.split($p, "/");
+    return $parts[len($parts) - 1];
+}
+
+/** The sort key of a zip member: its name. */
+func memberName(e as archive.Entry) {
+    return $e.name;
+}
+
+/**
+ * The code folder as a zip, the same bytes for the same files: the members in
+ * path order below a `<topic>/` folder, each with mode 0644 and ZIP_MTIME.
+ * @param {Talk} t the talk
+ * @param {list of archive.Entry} files each file's path below code/ and contents
+ * @return {bytes} the zip
+ */
+export func codeZip(t as Talk, files as list of archive.Entry) {
+    def out as list of archive.Entry;
+    for (def e in lists.sortBy($files, memberName)) {
+        $out[] = archive.Entry{
+            name: $t.topic + "/" + $e.name,
+            data: $e.data,
+            mode: 0o644,
+            mtime: ZIP_MTIME
+        };
+    }
+    return archive.pack("zip", $out);
 }

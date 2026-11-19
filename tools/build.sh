@@ -2,7 +2,8 @@
 # SPDX-License-Identifier: LGPL-3.0-only
 # SPDX-FileCopyrightText: Copyright (C) 2026 mplx <mplx@jennifer-lang.dev>
 #
-# Build the whole site into site/: every talk as a slideshow and a PDF, then
+# Build the whole site into site/: every talk as a slideshow, a PDF and a
+# handout (and its code/ folder with a listing and a zip, written by gallery.j), then
 # the front page, the author and tag pages, the legal page, sitemap.xml,
 # robots.txt, talks.json and CNAME. Run tools/check.j first; this script
 # trusts the layout it checks.
@@ -55,29 +56,40 @@ for meta in talks/*/*/academy.toml; do
     dir="$(dirname "$meta")"
     topic="$(basename "$dir")"
     user="$(basename "$(dirname "$dir")")"
-    out="$SITE/$user/$topic"
+    out="$SITE/talks/$user/$topic"
     mkdir -p "$out"
     # academy.toml's title, description, author, ... go into a copy of each
     # language's talk file, so cantrip writes them into the HTML and PDF
-    # metadata. The primary language is built at /<user>/<topic>/ (PDF
-    # <topic>.pdf), each translation at /<user>/<topic>/<lang>/ (index.pdf).
+    # metadata. The primary language is built at /talks/<user>/<topic>/ (PDF
+    # <topic>.pdf, handout <topic>-handout.pdf), each translation at
+    # /talks/<user>/<topic>/<lang>/ (index.pdf, handout.pdf).
     "$JENNIFER" run tools/prepare.j "$dir" "$work/$user/$topic" > "$work/versions"
     while read -r lang kind prepared; do
         if [ "$kind" = primary ]; then
             dest="$out"
             pdf="$out/$topic.pdf"
+            handout="$out/$topic-handout.pdf"
         else
             dest="$out/$lang"
             pdf="$dest/index.pdf"
+            handout="$dest/handout.pdf"
         fi
         mkdir -p "$dest"
         cantrip html "$prepared" --out "$dest/index.html"
         cantrip pdf "$prepared" --out "$pdf"
+        # The handout's footer says where the slides live, for a printed copy.
+        if [ "$kind" = primary ]; then
+            url="https://$DOMAIN/talks/$user/$topic/"
+        else
+            url="https://$DOMAIN/talks/$user/$topic/$lang/"
+        fi
+        cantrip handout "$prepared" --out "$handout" --footer "Jennifer Academy, $url"
         # The slideshow keeps image paths as written, so a talk's images
         # sit beside each version's index.html, as they sit beside talk.md.
+        # Its code/ is published once, by gallery.j, for every version.
         for file in "$dir"/*; do
             case "$(basename "$file")" in
-                talk.md | talk.*.md | academy.toml) continue ;;
+                talk.md | talk.*.md | academy.toml | code) continue ;;
             esac
             cp "$file" "$dest/"
         done
@@ -87,6 +99,21 @@ for meta in talks/*/*/academy.toml; do
 done
 
 "$JENNIFER" run tools/gallery.j talks "$SITE"
+# A talk published before talks moved into /talks/ keeps its old address:
+# gallery.j wrote a redirect page there, and a PDF cannot redirect, so its old
+# PDF URL gets a copy of the file.
+for dir in "$SITE"/talks/*/*/; do
+    topic="$(basename "$dir")"
+    user="$(basename "$(dirname "$dir")")"
+    old="$SITE/$user/$topic"
+    [ -f "$old/index.html" ] || continue
+    [ -f "$dir$topic.pdf" ] && cp "$dir$topic.pdf" "$old/$topic.pdf"
+    for lang in "$dir"*/; do
+        [ -f "${lang}index.pdf" ] || continue
+        l="$(basename "$lang")"
+        [ -d "$old/$l" ] && cp "${lang}index.pdf" "$old/$l/index.pdf"
+    done
+done
 cp tools/jennifer.svg "$SITE/jennifer.svg"
 echo "$DOMAIN" > "$SITE/CNAME"
 : > "$SITE/.nojekyll"

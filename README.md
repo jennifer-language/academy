@@ -13,12 +13,13 @@ talks/<github-user>/<topic>/talk.md        the slides (talk.<lang>.md per langua
                                            for a talk in several languages)
 talks/<github-user>/<topic>/academy.toml   the catalogue entry
 talks/<github-user>/<topic>/*.png          its images
+talks/<github-user>/<topic>/code/          the programs behind the slides (optional)
 ```
 
 A translation is published below its talk, at `/<github-user>/<topic>/<lang>/`.
 
 The talk `talks/mplx/classroom/` is at
-<https://academy.jennifer-lang.dev/mplx/classroom/>.
+<https://academy.jennifer-lang.dev/talks/mplx/classroom/>.
 
 **Contributing a talk:** see [CONTRIBUTING.md](CONTRIBUTING.md), with the
 [content policy](CONTRIBUTING.md#content-policy) and the
@@ -32,8 +33,8 @@ All written in Jennifer, under `tools/`:
 
 | File | What it does |
 | --- | --- |
-| `check.j` | Checks every talk against the rules in CONTRIBUTING.md (`--fast` skips parsing code and building). |
-| `build.sh` | Builds the site into `site/`: every talk (HTML and PDF), the front page, author, level and tag pages, the legal page (from `legal.md`), `sitemap.xml`, `robots.txt`, `talks.json`, `llms.txt`, `CNAME`. |
+| `check.j` | Checks every talk against the rules in CONTRIBUTING.md, its `code/` folder too, linting each program (`--fast` skips parsing and linting code, and building). |
+| `build.sh` | Builds the site into `site/`: every talk under `talks/` (HTML, PDF and an A4 handout, and its `code/` folder with a listing, a page per text file and a zip), redirects from the addresses talks had before they moved there, the front page, author, level and tag pages, the legal page (from `legal.md`), `sitemap.xml`, `robots.txt`, `talks.json`, `llms.txt`, `CNAME`. |
 | `rules.j`, `meta.j` | The rules and the `academy.toml` schema, as a module (`rules_test.j` holds the negative cases). |
 | `site.j`, `gallery.j` | The academy's own pages (`site_test.j` tests order and escaping). |
 | `prepare.j` | Injects a talk's `academy.toml` fields into a copy of `talk.md` for cantrip. |
@@ -76,16 +77,18 @@ other sites and tools:
       "modified": "2026-11-18",
       "level": "beginner",
       "tags": ["teaching", "education"],
-      "url": "https://academy.jennifer-lang.dev/mplx/classroom/",
-      "pdf": "https://academy.jennifer-lang.dev/mplx/classroom/classroom.pdf",
+      "url": "https://academy.jennifer-lang.dev/talks/mplx/classroom/",
+      "pdf": "https://academy.jennifer-lang.dev/talks/mplx/classroom/classroom.pdf",
+      "handout": "https://academy.jennifer-lang.dev/talks/mplx/classroom/classroom-handout.pdf",
       "versions": [
         {
           "lang": "en",
           "primary": true,
           "title": "Jennifer for the classroom",
           "description": "...",
-          "url": "https://academy.jennifer-lang.dev/mplx/classroom/",
-          "pdf": "https://academy.jennifer-lang.dev/mplx/classroom/classroom.pdf"
+          "url": "https://academy.jennifer-lang.dev/talks/mplx/classroom/",
+          "pdf": "https://academy.jennifer-lang.dev/talks/mplx/classroom/classroom.pdf",
+          "handout": "https://academy.jennifer-lang.dev/talks/mplx/classroom/classroom-handout.pdf"
         }
       ]
     }
@@ -94,13 +97,17 @@ other sites and tools:
 ```
 
 The talks are sorted newest first (`updated`, else `date`), then by title.
-`name` and `updated` are `""` when the talk does not set them. `modified` is
+`name` and `updated` are `""` when the talk does not set them. A talk with a
+`code/` folder also has `code` (the URL of its listing,
+`.../<topic>/code/`) and `codeZip` (`.../<topic>/<topic>-code.zip`); a talk
+without one has neither field. `modified` is
 the day the talk's directory last changed in git (any change, a typo fix too),
 or the `updated` / `date` month when the build has no git history; `updated` is
 the author's own "this changed substantially", the date readers see. The top-level
-`title`, `description`, `lang`, `url` and `pdf` are the primary language's;
-`versions` lists every language, the primary first, a translation with its
-own `url` (`.../<lang>/`) and `pdf` (`.../<lang>/index.pdf`). `version` goes
+`title`, `description`, `lang`, `url`, `pdf` and `handout` are the primary
+language's; `versions` lists every language, the primary first, a translation
+with its own `url` (`.../<lang>/`), `pdf` (`.../<lang>/index.pdf`) and `handout`
+(`.../<lang>/handout.pdf`). `version` goes
 up when a field changes meaning or goes away; new fields may be added.
 
 ## CI and publishing
@@ -156,5 +163,9 @@ ever wanted, it goes into that file.
 ## Licences
 
 - Talks (`talks/`): [CC BY 4.0](LICENSE), by their authors.
+- Sample code (each talk's `code/` folder, and the code on its slides):
+  [MIT-0](LICENSE-code), so it can be copied into any project without
+  attribution. Every `code/` folder carries its own `LICENSE` with the MIT-0
+  text, and CI checks it on every push and pull request.
 - Tools (`tools/`, `.github/`): [LGPL-3.0-only](LICENSE-tools), with SPDX
   headers.
