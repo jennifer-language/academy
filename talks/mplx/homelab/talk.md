@@ -407,7 +407,7 @@ if ($warnings > 0) { exit 1; }
 ```
 
 - Unraid's notification agents forward it: e-mail, push, chat
-- Or a bot: see [How to code a Telegram bot](https://academy.jennifer-lang.dev/mplx/telegram-bot/)
+- Or a bot: see [How to code a Telegram bot](https://academy.jennifer-lang.dev/talks/mplx/telegram-bot/)
 - Exit code 1 marks the run failed for systemd and for any other monitor
 
 <!-- notes:
@@ -479,11 +479,11 @@ show a talk: no real camera events, no real host names.
 - Read-only credentials; never print a `Client`
 - More decks for the lab: `@deckyard/jellyfin`, `@deckyard/vmware`,
   `@deckyard/virtualbox`, `@deckyard/onvif`
-- Decks: [proxmox](https://github.com/deckyard/deck-proxmox),
-  [synology](https://github.com/deckyard/deck-synology),
-  [unraid](https://github.com/deckyard/deck-unraid),
-  [frigate](https://github.com/deckyard/deck-frigate),
-  [docker](https://github.com/deckyard/deck-docker)
+- Decks: [proxmox](https://registry.jennifer-lang.dev/deck/deckyard/proxmox),
+  [synology](https://registry.jennifer-lang.dev/deck/deckyard/synology),
+  [unraid](https://registry.jennifer-lang.dev/deck/deckyard/unraid),
+  [frigate](https://registry.jennifer-lang.dev/deck/deckyard/frigate),
+  [docker](https://registry.jennifer-lang.dev/deck/deckyard/docker)
 - The language: [jennifer-lang.dev](https://jennifer-lang.dev/)
 
 Based on Jennifer 0.26.0, November 2026.

@@ -555,11 +555,11 @@ the same way.
 - Every channel in its own `try`; check `$r.status` on the webhook decks
 - Wait as long as a `429` asks; give up after a few tries
 - Secrets in the environment, tests against a loopback mock
-- Decks: [deck-gotify](https://github.com/jennifer-language/deck-gotify),
-  [deck-telegram](https://github.com/jennifer-language/deck-telegram),
-  [deck-slack](https://github.com/jennifer-language/deck-slack),
-  [deck-discord](https://github.com/jennifer-language/deck-discord)
-- [The Telegram bot talk](https://academy.jennifer-lang.dev/mplx/telegram-bot/),
+- Decks: [deck-gotify](https://registry.jennifer-lang.dev/deck/jennifer/gotify),
+  [deck-telegram](https://registry.jennifer-lang.dev/deck/jennifer/telegram),
+  [deck-slack](https://registry.jennifer-lang.dev/deck/jennifer/slack),
+  [deck-discord](https://registry.jennifer-lang.dev/deck/jennifer/discord)
+- [The Telegram bot talk](https://academy.jennifer-lang.dev/talks/mplx/telegram-bot/),
   [the registry](https://registry.jennifer-lang.dev/),
   [jennifer-lang.dev](https://jennifer-lang.dev/)
 

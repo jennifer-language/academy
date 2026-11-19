@@ -533,7 +533,7 @@ further.
 - Error kinds: `docs/user-guide/control-flow.md`
 - Server limits: `docs/libraries/httpd.md`; client: `docs/modules/http.md`
 - Decks: [jvc](https://jvc.jennifer-lang.dev/) and the [registry](https://registry.jennifer-lang.dev/)
-- Companion: [Errors done right](https://academy.jennifer-lang.dev/mplx/errors/)
+- Companion: [Errors done right](https://academy.jennifer-lang.dev/talks/mplx/errors/)
 
 Based on Jennifer 0.26.0, November 2026.
 
