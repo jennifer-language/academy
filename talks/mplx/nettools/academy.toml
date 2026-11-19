@@ -1,0 +1,9 @@
+title = "Network toolbox: SNMP, NTP, LDAP and IP addresses"
+description = "The network modules bundled with Jennifer: IP addresses and subnets with ipnet, international domain names with idna, SNMP polling and a small agent, NTP clock checks, LDAP search and password checks over TLS, and a network health report. Based on Jennifer 0.26.0."
+author = "mplx"
+license = "CC-BY-4.0"
+lang = "en"
+jennifer = "0.26.0"
+date = "2026-11"
+level = "intermediate"
+tags = ["networking", "snmp", "ntp", "ldap", "monitoring", "security"]

@@ -1,0 +1,327 @@
+dn: ou=people,dc=example,dc=org
+objectClass: organizationalUnit
+ou: people
+
+dn: ou=groups,dc=example,dc=org
+objectClass: organizationalUnit
+ou: groups
+
+dn: uid=alice,ou=people,dc=example,dc=org
+objectClass: inetOrgPerson
+uid: alice
+cn: Alice Adams
+givenName: Alice
+sn: Adams
+mail: alice@example.org
+userPassword: alice-pw-2026
+
+dn: uid=bob,ou=people,dc=example,dc=org
+objectClass: inetOrgPerson
+uid: bob
+cn: Bob Brown
+givenName: Bob
+sn: Brown
+mail: bob@example.org
+userPassword: bob-pw-2026
+
+dn: uid=carol,ou=people,dc=example,dc=org
+objectClass: inetOrgPerson
+uid: carol
+cn: Carol Clark
+givenName: Carol
+sn: Clark
+mail: carol@example.org
+userPassword: carol-pw-2026
+
+dn: uid=user01,ou=people,dc=example,dc=org
+objectClass: inetOrgPerson
+uid: user01
+cn: Test User 01
+sn: User
+mail: user01@example.org
+
+dn: uid=user02,ou=people,dc=example,dc=org
+objectClass: inetOrgPerson
+uid: user02
+cn: Test User 02
+sn: User
+mail: user02@example.org
+
+dn: uid=user03,ou=people,dc=example,dc=org
+objectClass: inetOrgPerson
+uid: user03
+cn: Test User 03
+sn: User
+mail: user03@example.org
+
+dn: uid=user04,ou=people,dc=example,dc=org
+objectClass: inetOrgPerson
+uid: user04
+cn: Test User 04
+sn: User
+mail: user04@example.org
+
+dn: uid=user05,ou=people,dc=example,dc=org
+objectClass: inetOrgPerson
+uid: user05
+cn: Test User 05
+sn: User
+mail: user05@example.org
+
+dn: uid=user06,ou=people,dc=example,dc=org
+objectClass: inetOrgPerson
+uid: user06
+cn: Test User 06
+sn: User
+mail: user06@example.org
+
+dn: uid=user07,ou=people,dc=example,dc=org
+objectClass: inetOrgPerson
+uid: user07
+cn: Test User 07
+sn: User
+mail: user07@example.org
+
+dn: uid=user08,ou=people,dc=example,dc=org
+objectClass: inetOrgPerson
+uid: user08
+cn: Test User 08
+sn: User
+mail: user08@example.org
+
+dn: uid=user09,ou=people,dc=example,dc=org
+objectClass: inetOrgPerson
+uid: user09
+cn: Test User 09
+sn: User
+mail: user09@example.org
+
+dn: uid=user10,ou=people,dc=example,dc=org
+objectClass: inetOrgPerson
+uid: user10
+cn: Test User 10
+sn: User
+mail: user10@example.org
+
+dn: uid=user11,ou=people,dc=example,dc=org
+objectClass: inetOrgPerson
+uid: user11
+cn: Test User 11
+sn: User
+mail: user11@example.org
+
+dn: uid=user12,ou=people,dc=example,dc=org
+objectClass: inetOrgPerson
+uid: user12
+cn: Test User 12
+sn: User
+mail: user12@example.org
+
+dn: uid=user13,ou=people,dc=example,dc=org
+objectClass: inetOrgPerson
+uid: user13
+cn: Test User 13
+sn: User
+mail: user13@example.org
+
+dn: uid=user14,ou=people,dc=example,dc=org
+objectClass: inetOrgPerson
+uid: user14
+cn: Test User 14
+sn: User
+mail: user14@example.org
+
+dn: uid=user15,ou=people,dc=example,dc=org
+objectClass: inetOrgPerson
+uid: user15
+cn: Test User 15
+sn: User
+mail: user15@example.org
+
+dn: uid=user16,ou=people,dc=example,dc=org
+objectClass: inetOrgPerson
+uid: user16
+cn: Test User 16
+sn: User
+mail: user16@example.org
+
+dn: uid=user17,ou=people,dc=example,dc=org
+objectClass: inetOrgPerson
+uid: user17
+cn: Test User 17
+sn: User
+mail: user17@example.org
+
+dn: uid=user18,ou=people,dc=example,dc=org
+objectClass: inetOrgPerson
+uid: user18
+cn: Test User 18
+sn: User
+mail: user18@example.org
+
+dn: uid=user19,ou=people,dc=example,dc=org
+objectClass: inetOrgPerson
+uid: user19
+cn: Test User 19
+sn: User
+mail: user19@example.org
+
+dn: uid=user20,ou=people,dc=example,dc=org
+objectClass: inetOrgPerson
+uid: user20
+cn: Test User 20
+sn: User
+mail: user20@example.org
+
+dn: uid=user21,ou=people,dc=example,dc=org
+objectClass: inetOrgPerson
+uid: user21
+cn: Test User 21
+sn: User
+mail: user21@example.org
+
+dn: uid=user22,ou=people,dc=example,dc=org
+objectClass: inetOrgPerson
+uid: user22
+cn: Test User 22
+sn: User
+mail: user22@example.org
+
+dn: uid=user23,ou=people,dc=example,dc=org
+objectClass: inetOrgPerson
+uid: user23
+cn: Test User 23
+sn: User
+mail: user23@example.org
+
+dn: uid=user24,ou=people,dc=example,dc=org
+objectClass: inetOrgPerson
+uid: user24
+cn: Test User 24
+sn: User
+mail: user24@example.org
+
+dn: uid=user25,ou=people,dc=example,dc=org
+objectClass: inetOrgPerson
+uid: user25
+cn: Test User 25
+sn: User
+mail: user25@example.org
+
+dn: uid=user26,ou=people,dc=example,dc=org
+objectClass: inetOrgPerson
+uid: user26
+cn: Test User 26
+sn: User
+mail: user26@example.org
+
+dn: uid=user27,ou=people,dc=example,dc=org
+objectClass: inetOrgPerson
+uid: user27
+cn: Test User 27
+sn: User
+mail: user27@example.org
+
+dn: uid=user28,ou=people,dc=example,dc=org
+objectClass: inetOrgPerson
+uid: user28
+cn: Test User 28
+sn: User
+mail: user28@example.org
+
+dn: uid=user29,ou=people,dc=example,dc=org
+objectClass: inetOrgPerson
+uid: user29
+cn: Test User 29
+sn: User
+mail: user29@example.org
+
+dn: uid=user30,ou=people,dc=example,dc=org
+objectClass: inetOrgPerson
+uid: user30
+cn: Test User 30
+sn: User
+mail: user30@example.org
+
+dn: uid=user31,ou=people,dc=example,dc=org
+objectClass: inetOrgPerson
+uid: user31
+cn: Test User 31
+sn: User
+mail: user31@example.org
+
+dn: uid=user32,ou=people,dc=example,dc=org
+objectClass: inetOrgPerson
+uid: user32
+cn: Test User 32
+sn: User
+mail: user32@example.org
+
+dn: uid=user33,ou=people,dc=example,dc=org
+objectClass: inetOrgPerson
+uid: user33
+cn: Test User 33
+sn: User
+mail: user33@example.org
+
+dn: uid=user34,ou=people,dc=example,dc=org
+objectClass: inetOrgPerson
+uid: user34
+cn: Test User 34
+sn: User
+mail: user34@example.org
+
+dn: uid=user35,ou=people,dc=example,dc=org
+objectClass: inetOrgPerson
+uid: user35
+cn: Test User 35
+sn: User
+mail: user35@example.org
+
+dn: uid=user36,ou=people,dc=example,dc=org
+objectClass: inetOrgPerson
+uid: user36
+cn: Test User 36
+sn: User
+mail: user36@example.org
+
+dn: uid=user37,ou=people,dc=example,dc=org
+objectClass: inetOrgPerson
+uid: user37
+cn: Test User 37
+sn: User
+mail: user37@example.org
+
+dn: uid=user38,ou=people,dc=example,dc=org
+objectClass: inetOrgPerson
+uid: user38
+cn: Test User 38
+sn: User
+mail: user38@example.org
+
+dn: uid=user39,ou=people,dc=example,dc=org
+objectClass: inetOrgPerson
+uid: user39
+cn: Test User 39
+sn: User
+mail: user39@example.org
+
+dn: uid=user40,ou=people,dc=example,dc=org
+objectClass: inetOrgPerson
+uid: user40
+cn: Test User 40
+sn: User
+mail: user40@example.org
+
+dn: cn=netops,ou=groups,dc=example,dc=org
+objectClass: groupOfNames
+cn: netops
+member: uid=alice,ou=people,dc=example,dc=org
+member: uid=bob,ou=people,dc=example,dc=org
+
+dn: cn=helpdesk,ou=groups,dc=example,dc=org
+objectClass: groupOfNames
+cn: helpdesk
+member: uid=carol,ou=people,dc=example,dc=org
+member: uid=alice,ou=people,dc=example,dc=org
+

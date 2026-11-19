@@ -1,0 +1,4 @@
+dn: olcDatabase={1}mdb,cn=config
+changetype: modify
+replace: olcLimits
+olcLimits: dn.exact="cn=reader,dc=example,dc=org" size.soft=20 size.hard=20 size.pr=25 size.prtotal=unlimited
