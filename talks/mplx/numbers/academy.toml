@@ -1,0 +1,9 @@
+title = "Numbers and data: decimal, stats, linalg, ml, plot and dot"
+description = "Exact arithmetic with decimal and explicit rounding, currency amounts with the @deckyard/money deck, numbers for a locale with intl, statistics, a regression with stats, linalg and ml, clustering, SVG charts with plot, Graphviz graphs with dot and strict numeric limits. Based on Jennifer 0.26.0."
+author = "mplx"
+license = "CC-BY-4.0"
+lang = "en"
+jennifer = "0.26.0"
+date = "2026-11"
+level = "intermediate"
+tags = ["statistics", "decimal", "charts", "stdlib", "limits", "errors", "money"]

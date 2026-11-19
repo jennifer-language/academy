@@ -1,0 +1,25 @@
+[package]
+name = "numbersmoney"
+version = "0.1.0"
+description = ""
+license = ""
+authors = []
+keywords = []
+capabilities = []
+bin = ""
+bin-dir = ""
+
+[package.urls]
+
+[engines]
+
+[decks]
+"@deckyard/money" = "*"
+
+[dev-decks]
+
+[conflicts]
+
+[sources]
+
+[registries]
