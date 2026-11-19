@@ -1,0 +1,9 @@
+title = "Crypto, tokens and certificates with Jennifer"
+description = "Hashes, MACs, encryption and signatures with hash and crypto, password storage with argon2id, TOTP two-factor login, JWT with algorithm pinning, OAuth2 with PKCE, certificates over ACME, sealed secrets with @deckyard/sealbox, and how to keep keys. Based on Jennifer 0.26.0."
+author = "mplx"
+license = "CC-BY-4.0"
+lang = "en"
+jennifer = "0.26.0"
+date = "2026-11"
+level = "advanced"
+tags = ["security", "crypto", "auth", "http", "errors", "decks"]
