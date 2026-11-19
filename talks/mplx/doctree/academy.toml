@@ -1,0 +1,9 @@
+title = "Inside a document pipeline: doctree, MyST, reST and fonts"
+description = "For people extending Grimoire- or Cantrip-like tools: the doctree model and its selectors, Markdown, MyST and reStructuredText read into one tree, writing transforms, HTML and PDF rendering, embedding TrueType fonts, hostile input and profiling."
+author = "mplx"
+license = "CC-BY-4.0"
+lang = "en"
+jennifer = "0.26.0"
+date = "2026-11"
+level = "advanced"
+tags = ["documentation", "markdown", "pdf", "parsing", "limits", "internals", "grimoire"]
