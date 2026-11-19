@@ -36,9 +36,9 @@ bridge   --FHIR R4 transaction over HTTPS-------->  FHIR server
 | Program | Lines | Decks |
 | --- | --- | --- |
 | `analyzer.j`, a stand-in for the instrument | 16 | astm |
-| `lis.j`, the laboratory information system | 70 | astm, hl7 |
-| `bridge.j`, HL7 in, FHIR out | 77 | hl7, fhir |
-| `fhirfake.j`, the server, for the demo only | 79 | none |
+| `lis.j`, the laboratory information system | 76 | astm, hl7 |
+| `bridge.j`, HL7 in, FHIR out | 86 | hl7, fhir |
+| `fhirfake.j`, the server, for the demo only | 115 | none |
 
 <!-- notes:
 Lab analyzers speak ASTM, a record format from the 1990s, usually over a
@@ -452,11 +452,11 @@ because every hop retries: an Observation posted twice is a duplicate result.
 
 ## Read more
 
-- [deckyard/deck-astm](https://github.com/deckyard/deck-astm): records,
+- [deckyard/deck-astm](https://registry.jennifer-lang.dev/deck/deckyard/astm): records,
   results, orders, host queries, the link
-- [deckyard/deck-hl7](https://github.com/deckyard/deck-hl7): paths, escapes,
+- [deckyard/deck-hl7](https://registry.jennifer-lang.dev/deck/deckyard/hl7): paths, escapes,
   character sets, acknowledgements, MLLP
-- [deckyard/deck-fhir](https://github.com/deckyard/deck-fhir): read, search,
+- [deckyard/deck-fhir](https://registry.jennifer-lang.dev/deck/deckyard/fhir): read, search,
   write, transactions, operations, SMART
 - The language: [jennifer-lang.dev](https://jennifer-lang.dev/), more talks
   in the [Jennifer Academy](https://academy.jennifer-lang.dev/)

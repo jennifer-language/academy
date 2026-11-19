@@ -1,0 +1,17 @@
+# desired state of branch-10: nothing listens on its port (unreachable)
+name = "branch-10"
+host = "127.0.0.1"
+port = 18710
+tls = false
+identity = "branch-10"
+dns = "9.9.9.9,149.112.112.112"
+[[item]]
+path = "/ip/address"
+comment = "iac:lan"
+address = "10.10.0.1/24"
+interface = "bridge"
+[[item]]
+path = "/ip/firewall/address-list"
+comment = "iac:mgmt"
+list = "mgmt"
+address = "10.0.0.0/24"

@@ -1,0 +1,24 @@
+# the fake branch-08: already matches devices/branch-08.toml
+name = "branch-08"
+port = 18708
+identity = "branch-08"
+dns = "9.9.9.9,149.112.112.112"
+interfaces = ["ether1", "ether2", "ether3", "ether4", "ether5", "bridge"]
+
+[[row]]
+path = "/ip/address"
+comment = "defconf"
+address = "192.168.88.1/24"
+interface = "bridge"
+
+[[row]]
+path = "/ip/address"
+comment = "iac:lan"
+address = "10.8.0.1/24"
+interface = "bridge"
+
+[[row]]
+path = "/ip/firewall/address-list"
+comment = "iac:mgmt"
+list = "mgmt"
+address = "10.0.0.0/24"

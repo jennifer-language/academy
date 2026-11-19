@@ -247,7 +247,7 @@ is the proof that the router now matches the file.
 ## Rollback in action
 
 ```text
-$ MT_VERBOSE=1 jennifer run converge.j
+$ MT_VERBOSE=1 jennifer run converge.j devices/branch-09.toml
 mt> /system/backup/save name=iac-20261116-225017 password=<redacted>
 mt> /file/print
 mt< 1 row
@@ -366,8 +366,8 @@ them too. The second run's lines for those two are cut from the slide.
 - Desired state in files, secrets in the environment, ownership by comment
 - Read, plan, dry run, back up, apply with undo, verify: the same every time
 - Branch on the error's kind, read its fields
-- The deck: [deckyard/deck-routeros](https://github.com/deckyard/deck-routeros),
-  the wire client: [jennifer-language/deck-mikrotik](https://github.com/jennifer-language/deck-mikrotik)
+- The deck: [deckyard/deck-routeros](https://registry.jennifer-lang.dev/deck/deckyard/routeros),
+  the wire client: [jennifer-language/deck-mikrotik](https://registry.jennifer-lang.dev/deck/jennifer/mikrotik)
 - The language: [jennifer-lang.dev](https://jennifer-lang.dev/), this talk in
   the [Jennifer Academy](https://academy.jennifer-lang.dev/)
 

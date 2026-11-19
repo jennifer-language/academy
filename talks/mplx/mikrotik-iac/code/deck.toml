@@ -1,0 +1,26 @@
+[package]
+name = "mikrotikiac"
+version = "0.1.0"
+description = "MikroTik infrastructure as code: the programs of the academy talk"
+license = "LGPL-3.0-only"
+authors = ["mplx <mplx@jennifer-lang.dev>"]
+keywords = []
+capabilities = ["net", "fs"]
+bin = ""
+bin-dir = ""
+
+[package.urls]
+
+[engines]
+jennifer = ">=0.26.0"
+
+[decks]
+"@deckyard/routeros" = "0.3.0"
+
+[dev-decks]
+
+[conflicts]
+
+[sources]
+
+[registries]

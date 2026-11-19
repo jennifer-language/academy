@@ -1,0 +1,27 @@
+[package]
+name = "retrocomputing"
+version = "0.1.0"
+description = "Retro computing: the programs of the academy talk"
+license = "LGPL-3.0-only"
+authors = ["mplx <mplx@jennifer-lang.dev>"]
+keywords = []
+capabilities = ["fs"]
+bin = ""
+bin-dir = ""
+
+[package.urls]
+
+[engines]
+jennifer = ">=0.26.0"
+
+[decks]
+"@deckyard/d64" = "0.2.0"
+"@deckyard/zmachine" = "0.1.0"
+
+[dev-decks]
+
+[conflicts]
+
+[sources]
+
+[registries]

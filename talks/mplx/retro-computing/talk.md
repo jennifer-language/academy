@@ -339,7 +339,7 @@ Taken.
 Garden
 An overgrown garden. The hall is to the south.
 ...
-status:  Garden            Turns: 4
+>status:  Garden            Turns: 4
 ```
 
 <!-- notes:
@@ -460,9 +460,9 @@ which is a one-liner widely published as a program listing.
 
 ## Read more
 
-- [deckyard/deck-d64](https://github.com/deckyard/deck-d64): formatting,
+- [deckyard/deck-d64](https://registry.jennifer-lang.dev/deck/deckyard/d64): formatting,
   BAM, PETSCII, the speeder DOS layouts
-- [deckyard/deck-zmachine](https://github.com/deckyard/deck-zmachine):
+- [deckyard/deck-zmachine](https://registry.jennifer-lang.dev/deck/deckyard/zmachine):
   playing, saving, the screen, what is supported
 - The language: [jennifer-lang.dev](https://jennifer-lang.dev/), more talks
   in the [Jennifer Academy](https://academy.jennifer-lang.dev/)

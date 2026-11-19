@@ -1,0 +1,30 @@
+[package]
+name = "homelab"
+version = "0.1.0"
+description = "Homelab automation: the programs of the academy talk"
+license = "LGPL-3.0-only"
+authors = ["mplx <mplx@jennifer-lang.dev>"]
+keywords = []
+capabilities = ["net"]
+bin = ""
+bin-dir = ""
+
+[package.urls]
+
+[engines]
+jennifer = ">=0.26.0"
+
+[decks]
+"@deckyard/docker" = "0.2.0"
+"@deckyard/frigate" = "0.4.0"
+"@deckyard/proxmox" = "0.2.0"
+"@deckyard/synology" = "0.2.0"
+"@deckyard/unraid" = "0.2.0"
+
+[dev-decks]
+
+[conflicts]
+
+[sources]
+
+[registries]
