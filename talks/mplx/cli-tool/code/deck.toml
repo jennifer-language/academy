@@ -1,0 +1,27 @@
+[package]
+name = "tidy"
+version = "0.1.0"
+description = ""
+license = ""
+authors = []
+keywords = []
+capabilities = []
+bin = ""
+bin-dir = ""
+
+[package.urls]
+
+[engines]
+jennifer = ">=0.26.0"
+
+[decks]
+"@mplx/xformat" = "^0.1.0"
+"@mplx/clispinner" = "^0.2.0"
+
+[dev-decks]
+
+[conflicts]
+
+[sources]
+
+[registries]

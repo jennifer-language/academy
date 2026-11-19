@@ -1,0 +1,9 @@
+title = "Your first command-line tool"
+description = "Build a small, useful file-renaming tool step by step: arguments and --help with args, friendly errors, exit codes, stdout versus stderr, colour with NO_COLOR, logging levels, a spinner, case conversion from a deck, and installing it as a command."
+author = "mplx"
+license = "CC-BY-4.0"
+lang = "en"
+jennifer = "0.26.0"
+date = "2026-11"
+level = "beginner"
+tags = ["cli", "basics", "errors", "decks", "tooling"]
