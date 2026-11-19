@@ -1,0 +1,20 @@
+# The book of the talk: what most books set and the printed book. Every
+# key is optional; grimoire-epub.toml adds the EPUB.
+[book]
+title = "My Book"
+src = "docs"
+
+[html]
+theme = "nordic"            # grimoire themes lists all eleven
+editUrl = "https://github.com/me/book/edit/main/docs/{path}"
+
+[highlight]
+enabled = true              # Jennifer code coloured at build time
+
+[pdf]
+output = "my-book.pdf"
+paper = "a4"                # or "letter"
+pageNumbers = true          # page/total in the footer
+footerLeft = "My Book {version} {commit}"
+bookmarkLevel = 3
+exclude = ["reference/"]    # on the site, not on paper

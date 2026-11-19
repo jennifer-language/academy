@@ -1,0 +1,9 @@
+# A book that names two of the plugins that ship with Grimoire.
+[book]
+title = "Plugins"
+src = "docs"
+
+[preprocessor.include]
+
+[renderer.sitemap]
+baseUrl = "https://docs.example.org/"

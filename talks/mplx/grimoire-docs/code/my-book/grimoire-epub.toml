@@ -1,0 +1,23 @@
+# grimoire.toml plus the EPUB renderer. cover and stylesheet are optional:
+# cover = "assets/cover.png" and stylesheet = "assets/epub.css", relative to docs/.
+[book]
+title = "My Book"
+src = "docs"
+
+[html]
+theme = "nordic"            # grimoire themes lists all eleven
+editUrl = "https://github.com/me/book/edit/main/docs/{path}"
+
+[highlight]
+enabled = true              # Jennifer code coloured at build time
+
+[pdf]
+output = "my-book.pdf"
+paper = "a4"                # or "letter"
+pageNumbers = true          # page/total in the footer
+footerLeft = "My Book {version} {commit}"
+bookmarkLevel = 3
+exclude = ["reference/"]    # on the site, not on paper
+
+[renderer.epub]
+output = "my-book.epub"

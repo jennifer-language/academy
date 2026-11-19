@@ -27,8 +27,8 @@ Cantrip 0.4.0.
 
 ```text
 $ cantrip build talk.md -v
-wrote talk.html (4 slide(s), 29496 bytes)
-wrote talk.pdf (4 slide(s), 3761 bytes)
+wrote talk.html (4 slide(s), 31831 bytes)
+wrote talk.pdf (4 slide(s), 3199 bytes)
 ```
 
 - **HTML**: one file, styles and script inlined, nothing fetched; works over
@@ -251,7 +251,7 @@ deck from a stranger cannot pull a private file into the PDF it builds. Use
 - Callouts: `> [!NOTE]`, `TIP`, `IMPORTANT`, `WARNING`, `CAUTION`
 - `~~struck~~`, `==marked==`, H~2~O, x^2^, key caps <kbd>Esc</kbd>
 - Raw HTML is shown as text unless you build with `--raw-html`
-- Not supported: bare URLs in text, footnotes
+- Not supported: bare URLs in text
 
 <!-- notes:
 Rendering goes through the markdown module that ships with Jennifer, a small

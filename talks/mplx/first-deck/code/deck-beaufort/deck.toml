@@ -1,0 +1,16 @@
+[package]
+name = "@mplx/beaufort"
+version = "0.1.0"
+description = "Wind speed to Beaufort force"
+license = "LGPL-3.0-only"
+authors = ["someone <myname@example.com>"]
+capabilities = []
+keywords = ["jennifer", "deck"]
+
+[package.urls]
+deck = "https://raw.githubusercontent.com/mplx/deck-beaufort/main/deck.toml"
+homepage = "https://github.com/mplx/deck-beaufort"
+manual = "https://mplx.github.io/deck-beaufort/"
+
+[engines]
+jennifer = ">=0.26.0"

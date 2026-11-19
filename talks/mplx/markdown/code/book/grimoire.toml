@@ -1,0 +1,4 @@
+# A small Grimoire book: every key not set here keeps its default.
+[book]
+title = "Markdown by example"
+src = "docs"

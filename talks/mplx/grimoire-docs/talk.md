@@ -368,8 +368,8 @@ a plugin that adds a timestamp breaks that promise for the whole book.
 
 ```sh
 # preview with live reload
-docker run --rm -p 8080:8080 -v "$PWD:/work" \
-    ghcr.io/jennifer-language/grimoire:0.5.0 \
+docker run --rm --user "$(id -u):$(id -g)" -p 8080:8080 \
+    -v "$PWD:/work" ghcr.io/jennifer-language/grimoire:0.5.0 \
     serve --watch --addr 0.0.0.0:8080
 ```
 

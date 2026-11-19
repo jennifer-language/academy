@@ -1,0 +1,6 @@
+# Only docs/reference, as a book of its own (outline from the folders)
+[book]
+title = "My Book: Reference"
+src = "docs/reference"
+[pdf]
+output = "my-book-reference.pdf"

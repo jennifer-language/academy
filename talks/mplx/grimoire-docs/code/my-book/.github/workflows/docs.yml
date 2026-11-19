@@ -1,0 +1,26 @@
+# Publish the book to GitHub Pages from the highest release tag; a pull
+# request is built and checked but never published. Needs Pages set to
+# "GitHub Actions" and the github-pages environment allowed to deploy tags.
+name: docs
+
+on:
+  push:
+    tags: ["[0-9]+.[0-9]+.[0-9]+"]
+  pull_request:
+jobs:
+  pages:
+    permissions: { contents: read, pages: write, id-token: write }
+    uses: jennifer-language/grimoire/.github/workflows/docs-pages.yml@0.5.0
+    with:
+      image: ghcr.io/jennifer-language/grimoire:0.5.0
+      args: --pdf
+      # The second book, rendered into docs/reference before the build, so
+      # the site copies its PDF next to the reference pages.
+      prepare: |
+        docker run --rm --user "$(id -u):$(id -g)" \
+          -v "$PWD:/work" -w /work \
+          "$IMAGE" pdf -c grimoire-ref.toml --out /work/docs/reference
+      # Fail before publishing when a PDF is missing.
+      check: |
+        test -s "$SITE/my-book.pdf"
+        test -s "$SITE/reference/my-book-reference.pdf"

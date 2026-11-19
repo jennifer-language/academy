@@ -351,7 +351,7 @@ $doc = pdf.bookmark($doc, 0, 550, "Linz", 1); # page from 0
 ```
 
 - `render` writes **no timestamp** of its own: same input, same bytes
-- Our report: 4 pages, 8,776 bytes, `qpdf --check` finds no errors
+- Our report: 4 pages, 9,312 bytes, `qpdf --check` finds no errors
 
 <!-- notes:
 Info entries are what a viewer shows under document properties; they are not

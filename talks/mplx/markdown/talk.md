@@ -219,23 +219,23 @@ Curly braces after a heading give it a fixed anchor, so a link to it keeps
 working when the heading text changes. On a link or an image, a dot and a name
 add a CSS class; only the class is passed through, for safety. The kbd tag
 draws a key cap in Cantrip, the one bit of HTML it accepts in a slide. In a
-Grimoire book it is escaped like any other HTML unless raw HTML is switched on.
+Grimoire book it is escaped like all inline HTML, whatever the settings.
 -->
 
 ---
 
 ## What is not supported
 
-- Footnotes: `[^1]` stays as written
-- Raw HTML is escaped unless the book or deck allows it
+- Footnotes: Grimoire shows `[^1]` as a bare number, no link
+- Inline HTML is escaped (Cantrip: unless built with `--raw-html`)
 - Cantrip: a bare `https://` address in text is not linked
 - Cantrip: `---` separates slides, so it is not a rule or a heading underline
 
 <!-- notes:
 Knowing the limits saves time. Footnotes are the one common extension that is
-missing. HTML in the text is shown as text, unless a Grimoire book sets raw
-HTML on or a deck is built with raw-html, because a page should not run code
-its author did not mean to. In Cantrip, wrap an address in angle brackets to
+missing in Grimoire. HTML in the text is shown as text, in Grimoire always
+and in Cantrip unless a deck is built with raw-html, because a page should not
+run code its author did not mean to. In Cantrip, wrap an address in angle brackets to
 link it, and use three stars for a horizontal rule.
 -->
 

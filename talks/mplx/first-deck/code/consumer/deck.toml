@@ -1,0 +1,12 @@
+# A project that uses the deck. The [sources] line makes jvc read the deck
+# from a git repository instead of the registry, where @mplx/beaufort is
+# not published; point it at your own copy (make-deck.sh prints the path).
+[package]
+name = "consumer"
+version = "0.1.0"
+
+[decks]
+"@mplx/beaufort" = "^0.1.0"
+
+[sources]
+"@mplx/beaufort" = "../deck-beaufort-built"
