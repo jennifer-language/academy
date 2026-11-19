@@ -97,9 +97,51 @@ func codeOf(dir as string) {
     return $files;
 }
 
+# highlightAll runs `cantrip highlight` once over every text file a code page
+# shows, into a new temporary directory it returns ("" when there is no code):
+# the fragment of talks/<user>/<topic>/code/<path> is <dir>/<that path>.html.
+# CANTRIP names the cantrip launcher (tools/build.sh sets it), run with
+# JENNIFER; the talks directory must be relative, as cantrip writes below --out.
+func highlightAll(talksDir as string, all as list of site.Talk) {
+    def files as list of string;
+    for (def t in $all) {
+        for (def f in $t.code) {
+            if ($f.text and not site.zipOnly($f)) {
+                $files[] = path.join($talksDir, $t.user, $t.topic, rules.CODE_DIR, $f.path);
+            }
+        }
+    }
+    if (len($files) == 0) {
+        return "";
+    }
+    def cantrip as string init os.getEnv("CANTRIP");
+    if ($cantrip == "") {
+        io.eprintf("gallery: CANTRIP names the cantrip launcher (tools/build.sh sets it)\n");
+        exit 1;
+    }
+    def jennifer as string init os.getEnv("JENNIFER");
+    if ($jennifer == "") {
+        $jennifer = "jennifer";
+    }
+    def dir as string init fs.makeTempDir();
+    def cmd as list of string init [$jennifer, "run", $cantrip, "highlight", "--out", $dir];
+    for (def f in $files) {
+        $cmd[] = $f;
+    }
+    def r as os.Result init os.run($cmd);
+    if ($r.exitCode != 0) {
+        io.eprintf("%s", $r.stderr);
+        io.eprintf("gallery: cantrip highlight failed\n");
+        fs.removeAll($dir);
+        exit 1;
+    }
+    return $dir;
+}
+
 # writeCode publishes a talk's code folder below `dest` (the talk's directory
-# in the site): the files, the listing, a page per text file, and the zip.
-func writeCode(t as site.Talk, dir as string, dest as string) {
+# in the site): the files, the listing, a page per text file with the fragment
+# highlightAll wrote below `hl`, and the zip.
+func writeCode(t as site.Talk, dir as string, dest as string, hl as string) {
     def code as string init path.join($dir, rules.CODE_DIR);
     def target as string init path.join($dest, "code");
     def members as list of archive.Entry;
@@ -117,7 +159,8 @@ func writeCode(t as site.Talk, dir as string, dest as string) {
             continue;
         }
         def text as string init convert.stringFromBytes("utf-8", $data);
-        fs.writeString(path.join($target, site.viewPath($f)), site.codeFilePage($t, $f, $text));
+        def shown as string init fs.readString(path.join($hl, $code, $f.path + ".html"));
+        fs.writeString(path.join($target, site.viewPath($f)), site.codeFilePage($t, $f, $shown));
         if ($f.path == rules.CODE_README) {
             $readme = $text;
         }
@@ -158,6 +201,8 @@ if ($bad > 0) {
 }
 $all = site.sorted($all);
 
+def hl as string init highlightAll($talks, $all);
+
 fs.mkdirAll($out);
 fs.writeString(path.join($out, "index.html"), site.indexPage($all));
 def users as list of string;
@@ -172,7 +217,8 @@ for (def t in $all) {
         writeCode(
             $t,
             path.join($talks, $t.user, $t.topic),
-            path.join($talksRoot, $t.user, $t.topic));
+            path.join($talksRoot, $t.user, $t.topic),
+            $hl);
     }
     for (def v in meta.versionsOf($t.meta)) {
         def rel as string init path.join($t.user, $t.topic);
@@ -190,6 +236,9 @@ for (def t in $all) {
             fs.writeString(path.join($out, $rel, "index.html"), site.redirectPage($target));
         }
     }
+}
+if ($hl != "") {
+    fs.removeAll($hl);
 }
 for (def u in $users) {
     if (lists.contains(site.RESERVED_NAMES, $u)) {

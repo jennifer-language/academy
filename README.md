@@ -34,7 +34,7 @@ All written in Jennifer, under `tools/`:
 | File | What it does |
 | --- | --- |
 | `check.j` | Checks every talk against the rules in CONTRIBUTING.md, its `code/` folder too, linting each program (`--fast` skips parsing and linting code, and building). |
-| `build.sh` | Builds the site into `site/`: every talk under `talks/` (HTML, PDF and an A4 handout, and its `code/` folder with a listing, a page per text file and a zip), redirects from the addresses talks had before they moved there, the front page, author, level and tag pages, the legal page (from `legal.md`), `sitemap.xml`, `robots.txt`, `talks.json`, `llms.txt`, `CNAME`. |
+| `build.sh` | Builds the site into `site/`: every talk under `talks/` (HTML, PDF and an A4 handout, and its `code/` folder with a listing, a highlighted page per text file and a zip), redirects from the addresses talks had before they moved there, the front page, author, level and tag pages, the legal page (from `legal.md`), `sitemap.xml`, `robots.txt`, `talks.json`, `llms.txt`, `CNAME`. |
 | `rules.j`, `meta.j` | The rules and the `academy.toml` schema, as a module (`rules_test.j` holds the negative cases). |
 | `site.j`, `gallery.j` | The academy's own pages (`site_test.j` tests order and escaping). |
 | `prepare.j` | Injects a talk's `academy.toml` fields into a copy of `talk.md` for cantrip. |

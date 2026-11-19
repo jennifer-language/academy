@@ -98,7 +98,7 @@ for meta in talks/*/*/academy.toml; do
     count=$((count + 1))
 done
 
-"$JENNIFER" run tools/gallery.j talks "$SITE"
+JENNIFER="$JENNIFER" CANTRIP="$CANTRIP" "$JENNIFER" run tools/gallery.j talks "$SITE"
 # A talk published before talks moved into /talks/ keeps its old address:
 # gallery.j wrote a redirect page there, and a PDF cannot redirect, so its old
 # PDF URL gets a copy of the file.

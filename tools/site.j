@@ -56,6 +56,9 @@ def const STYLE as string init ':root {
   --beginner: #23784a; --beginner-bg: #e3f3e9;
   --intermediate: #1d65a6; --intermediate-bg: #e2edf8;
   --advanced: #8a3aa3; --advanced-bg: #f2e6f6;
+  --syn-comment: #6b6f76; --syn-keyword: #a626a4; --syn-type: #0172a3;
+  --syn-literal: #8a5a00; --syn-string: #3b7d3a; --syn-variable: #c4372b;
+  --syn-builtin: #8a5d00; --syn-title: #2c5fd6;
 }
 @media (prefers-color-scheme: dark) {
   :root {
@@ -64,6 +67,9 @@ def const STYLE as string init ':root {
     --beginner: #6fd09a; --beginner-bg: #1d3328;
     --intermediate: #72b4f0; --intermediate-bg: #1c2c3f;
     --advanced: #cf93ea; --advanced-bg: #33223d;
+    --syn-comment: #959ba5; --syn-keyword: #d18ce6; --syn-type: #5ec4d0;
+    --syn-literal: #dba574; --syn-string: #a3cd85; --syn-variable: #ec7b84;
+    --syn-builtin: #e8c785; --syn-title: #74b9f2;
   }
 }
 * { box-sizing: border-box; }
@@ -173,6 +179,7 @@ a.level:hover { text-decoration: underline; }
 .actions a:not(.primary):hover { border-color: var(--accent); }
 .empty { color: var(--muted); }
 .prose { max-width: 44rem; }
+.prose.wide { max-width: none; }
 .prose h1 { font-size: 1.5rem; }
 .prose h2 { font-size: 1.2rem; margin-top: 2rem; }
 .files { border-collapse: collapse; margin: 1rem 0 2rem; font-size: 0.9rem; max-width: 100%; }
@@ -181,6 +188,15 @@ a.level:hover { text-decoration: underline; }
 .files td.size { text-align: right; color: var(--muted); white-space: nowrap; }
 .source { overflow-x: auto; background: var(--card); border: 1px solid var(--line);
   border-radius: 0.6rem; padding: 0.9rem 1rem; font: 0.85rem/1.5 ui-monospace, monospace; }
+.source .hljs-comment, .source .hljs-meta { color: var(--syn-comment); }
+.source .hljs-comment { font-style: italic; }
+.source .hljs-keyword, .source .hljs-name { color: var(--syn-keyword); }
+.source .hljs-type { color: var(--syn-type); }
+.source .hljs-literal, .source .hljs-number { color: var(--syn-literal); }
+.source .hljs-string { color: var(--syn-string); }
+.source .hljs-variable { color: var(--syn-variable); }
+.source .hljs-symbol, .source .hljs-attr, .source .hljs-built_in { color: var(--syn-builtin); }
+.source .hljs-title, .source .hljs-section { color: var(--syn-title); }
 .prose pre { overflow-x: auto; background: var(--card); border: 1px solid var(--line);
   border-radius: 0.6rem; padding: 0.7rem 0.9rem; }
 footer { margin: 3rem 0 2rem; padding-top: 1rem; border-top: 1px solid var(--line);
@@ -1223,7 +1239,7 @@ export func codePage(t as Talk, readme as string) {
     def m as meta.Meta init $t.meta;
     def body as string init "<h1>Code: " + esc($m.title) + "</h1>\n" + codeLinks($t, $base);
     if ($readme != "") {
-        $body = $body + "<div class=\"prose\">\n" + markdown.toHtml($readme) + "</div>\n";
+        $body = $body + "<div class=\"prose wide\">\n" + markdown.toHtml($readme) + "</div>\n";
     }
     $body = $body + "<table class=\"files\">\n<thead><tr><th>File</th><th>Size</th><th></th>" +
         "</tr></thead>\n<tbody>\n";
@@ -1255,13 +1271,14 @@ export func codePage(t as Talk, readme as string) {
 }
 
 /**
- * The page that shows one text file of the code folder, as plain text.
+ * The page that shows one text file of the code folder, highlighted.
  * @param {Talk} t the talk
  * @param {CodeFile} f the file
- * @param {string} text its contents
+ * @param {string} code its contents as `cantrip highlight` writes them: the
+ *   text already escaped, with highlight.js class names; it goes in as it is
  * @return {string} the page for `code/<path>.html`
  */
-export func codeFilePage(t as Talk, f as CodeFile, text as string) {
+export func codeFilePage(t as Talk, f as CodeFile, code as string) {
     def base as string init codeBase($f.path);
     def up as string init strings.repeat("../", strings.count($f.path, "/"));
     if ($up == "") {
@@ -1272,7 +1289,7 @@ export func codeFilePage(t as Talk, f as CodeFile, text as string) {
         "\">All files</a><a href=\"" +
         esc(path2base($f.path)) + "\">raw</a><span class=\"count\">" + sizeText($f.size) +
         "</span></nav>\n";
-    $body = $body + "<pre class=\"source\"><code>" + esc($text) + "</code></pre>\n";
+    $body = $body + "<pre class=\"source\"><code>" + $code + "</code></pre>\n";
     def description as string init $f.path + " from the code of the talk \"" + $t.meta.title +
         "\".";
     return page(

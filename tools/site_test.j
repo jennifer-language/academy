@@ -426,9 +426,10 @@ func testCodeFilePage() {
     def t as Talk init withCode();
     def f as CodeFile init $t.code[2];
     testing.assertEqual(viewPath($f), "srv/main.j.html");
-    def page as string init codeFilePage($t, $f, 'if ($a < $b) { io.printf("&"); }');
-    testing.assertContains($page, "<pre class=\"source\"><code>if ($a &lt; $b)");
-    testing.assertContains($page, "&quot;&amp;&quot;");
+    # The highlighted fragment goes in as cantrip wrote it, escaped already.
+    def code as string init '<span class="hljs-keyword">if</span> ($a &lt; $b) {}';
+    def page as string init codeFilePage($t, $f, $code);
+    testing.assertContains($page, "<pre class=\"source\"><code>" + $code + "</code></pre>");
     # One level deeper than the listing: the way back and to the raw file.
     testing.assertContains($page, "<a href=\"../\">All files</a><a href=\"main.j\">raw</a>");
     testing.assertContains($page, "href=\"../../../../../jennifer.svg\"");
