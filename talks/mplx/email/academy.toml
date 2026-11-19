@@ -1,0 +1,9 @@
+title = "Email with Jennifer: SMTP, IMAP and POP3"
+description = "Sending and reading mail with Jennifer's bundled modules: composing with mime, SMTP sessions and envelopes, IMAP search, flags, move and IDLE, POP3 with UIDL, safe attachment handling, an inbox filter, typed errors and TLS, app passwords and XOAUTH2."
+author = "mplx"
+license = "CC-BY-4.0"
+lang = "en"
+jennifer = "0.26.0"
+date = "2026-11"
+level = "intermediate"
+tags = ["email", "smtp", "imap", "mime", "security", "modules", "automation"]
