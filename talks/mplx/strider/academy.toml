@@ -5,5 +5,5 @@ license = "CC-BY-4.0"
 lang = "en"
 jennifer = "0.26.0"
 date = "2026-11"
-level = "advanced"
+level = "intermediate"
 tags = ["forensics", "genetics", "statistics", "xml", "decks", "errors"]

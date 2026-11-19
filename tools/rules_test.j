@@ -926,5 +926,388 @@ func testTooManySlidesFail() {
     def found as list of Finding init checked($text + "\n---\n\n## One too many\n\n" + LONG_NOTE +
         "\n");
     testing.assertEqual(rulesOf($found), ["length"]);
-    testing.assertContains($found[0].message, "21 slides; at most 20");
+    testing.assertContains($found[0].message, "26 slides; at most 25");
+}
+
+/** A code folder's README that passes. */
+def const CODE_README_TEXT as string init '# Programs
+
+- `hello.j` (slides 3 to 5): `jennifer run hello.j`. Needs `jvc install` for the deck.
+- See [the docs](https://docs.jennifer-lang.dev/) and `http://localhost:8080` in code.
+';
+
+/** A program that passes lint: it includes a helper and imports a deck that is not installed. */
+def const CODE_PROGRAM as string init 'use io;
+import "@jennifer/slack/" as slack;
+include "helper.inc.j";
+
+io.printf("%d %s\n", helper(), slack.name());
+';
+
+/** The include of CODE_PROGRAM. */
+def const CODE_INCLUDE as string init 'func helper() {
+    return 42;
+}
+';
+
+/** A talk (GOOD) with a code folder holding these files (relative path to text). */
+func makeCodeTalk(files as map of string to string) {
+    def dir as string init makeTalk("ada", "talk", GOOD);
+    for (def rel in $files) {
+        def p as string init path.join($dir, "code", $rel);
+        fs.mkdirAll(path.dir($p));
+        fs.writeString($p, $files[$rel]);
+    }
+    return $dir;
+}
+
+/** The files of a code folder that passes every rule. */
+func goodCode() {
+    return {
+        "README.md": CODE_README_TEXT,
+        "LICENSE": mit0("2026 Ada Example"),
+        "hello.j": CODE_PROGRAM,
+        "helper.inc.j": CODE_INCLUDE,
+        "deck.toml": "[decks]\n",
+        "data/people.csv": "name,age\nAda,36\n",
+        "web/page.tmpl": "<p>x</p>\n",
+        "web/style.css": 'p { color: red; }' + "\n",
+        "logo.png": "x"
+    };
+}
+
+/** The layout and code findings of a talk with these code files (fast: no lint). */
+func checkedCode(files as map of string to string) {
+    def dir as string init makeCodeTalk($files);
+    defer fs.removeAll(path.dir(path.dir(path.dir($dir))));
+    def out as list of Finding init checkLayout(path.dir(path.dir($dir)));
+    for (def f in checkTalk($dir, "ada", fast())) {
+        $out[] = $f;
+    }
+    return $out;
+}
+
+/** goodCode with one file added or replaced. */
+func codeWith(rel as string, text as string) {
+    def files as map of string to string init goodCode();
+    $files[$rel] = $text;
+    return $files;
+}
+
+func testCodeFolderPasses() {
+    testing.assertEqual(checkedCode(goodCode()), []);
+}
+
+func testCodeFolderNeedsReadme() {
+    def files as map of string to string init goodCode();
+    $files = maps.delete($files, "README.md");
+    def found as list of Finding init checkedCode($files);
+    testing.assertEqual(rulesOf($found), ["code-folder"]);
+    testing.assertContains($found[0].message, "needs a README.md");
+}
+
+/** The MIT-0 licence text with this copyright holder line. */
+func mit0(holder as string) {
+    return MIT0_TITLE + "\n\nCopyright " + $holder + "\n\n" + MIT0_BODY;
+}
+
+/** A code folder needs its MIT-0 LICENSE. */
+func testCodeFolderNeedsLicense() {
+    def files as map of string to string init goodCode();
+    $files = maps.delete($files, "LICENSE");
+    def found as list of Finding init checkedCode($files);
+    testing.assertEqual(rulesOf($found), ["code-license"]);
+    testing.assertContains($found[0].message, "MIT-0");
+}
+
+/** Only the MIT-0 text passes; spacing and line breaks may differ. */
+func testMit0Problem() {
+    testing.assertEqual(mit0Problem(mit0("2026 Ada Example")), "");
+    testing.assertEqual(mit0Problem(mit0("(c) 2025-2026, Ada Example")), "");
+    def reflowed as string init strings.replace(
+        mit0("2026 Ada"),
+        "\nsoftware and",
+        " software   and");
+    testing.assertEqual(mit0Problem($reflowed), "");
+    testing.assertContains(
+        mit0Problem("MIT License\n\nCopyright 2026 Ada\n"),
+        "MIT No Attribution");
+    testing.assertContains(mit0Problem(mit0("Ada")), "Copyright <year> <holder>");
+    def withAttribution as string init strings.replace(
+        mit0("2026 Ada"),
+        "furnished to do so.",
+        "furnished to do so, subject to the following conditions:");
+    testing.assertContains(mit0Problem($withAttribution), "word for word");
+    testing.assertContains(mit0Problem(mit0("2026 Ada") + "Extra terms.\n"), "word for word");
+}
+
+/** A wrong licence text is reported at the LICENSE file. */
+func testCodeFolderWrongLicense() {
+    def files as map of string to string init goodCode();
+    $files["LICENSE"] = "MIT License\n\nCopyright 2026 Ada\n";
+    def found as list of Finding init checkedCode($files);
+    testing.assertEqual(rulesOf($found), ["code-license"]);
+}
+
+func testOtherSubdirectoryFails() {
+    def dir as string init makeTalk("ada", "talk", GOOD);
+    def talks as string init path.dir(path.dir($dir));
+    defer fs.removeAll(path.dir($talks));
+    fs.mkdirAll(path.join($dir, "img"));
+    def found as list of Finding init checkLayout($talks);
+    testing.assertEqual(rulesOf($found), ["layout"]);
+    testing.assertContains($found[0].message, "only subdirectory of a talk is code/");
+}
+
+func testCodeFolderFileTypes() {
+    for (def rel in ["Makefile", "tool.exe", "notes.docx"]) {
+        def found as list of Finding init checkedCode(codeWith($rel, "x"));
+        testing.assertEqual(rulesOf($found), ["code-folder"]);
+        testing.assertContains($found[0].message, "is not a file type code/ may hold");
+    }
+    for (def rel in ["out.pdf", "slides.html", "run.log"]) {
+        def found as list of Finding init checkedCode(codeWith($rel, "x"));
+        testing.assertEqual(rulesOf($found), ["code-folder"]);
+        testing.assertContains($found[0].message, "no build output or logs");
+    }
+    for (def rel in ["server.pem", "server.key", "ca.crt", "id.p12"]) {
+        def found as list of Finding init checkedCode(codeWith($rel, "x"));
+        testing.assertEqual(rulesOf($found), ["code-folder"]);
+        testing.assertContains($found[0].message, "no private keys or certificates");
+    }
+    for (def rel in [".gitignore", ".envrc", "app/.vscode/settings.json"]) {
+        def hidden as list of Finding init checkedCode(codeWith($rel, "x\n"));
+        testing.assertEqual(rulesOf($hidden), ["code-folder"]);
+        testing.assertContains($hidden[0].message, "no hidden files");
+    }
+}
+
+/** A forbidden directory is reported once, not once per file inside it. */
+func testCodeFolderForbiddenDirectories() {
+    def files as map of string to string init goodCode();
+    $files["vendor/@jennifer/slack/src/slack.j"] = "x";
+    $files["vendor/@jennifer/slack/deck.toml"] = "x";
+    $files["build/a.txt"] = "x";
+    $files["out/b.txt"] = "x";
+    $files[".git/config"] = "x";
+    def found as list of Finding init checkedCode($files);
+    def four as list of string init ["code-folder", "code-folder", "code-folder", "code-folder"];
+    testing.assertEqual(rulesOf($found), $four);
+    def messages as string init messagesOf($found);
+    testing.assertContains($messages, "code/.git: code-folder: no hidden files");
+    testing.assertContains($messages, "code/build: code-folder: no build output");
+    testing.assertContains($messages, "code/out: code-folder: no build output");
+    testing.assertContains($messages, "code/vendor: code-folder: no vendor/");
+}
+
+func testCodeFolderDepth() {
+    testing.assertEqual(checkedCode(codeWith("a/b/c/deep.txt", "x\n")), []);
+    def found as list of Finding init checkedCode(codeWith("a/b/c/d/deeper.txt", "x\n"));
+    testing.assertEqual(rulesOf($found), ["code-folder"]);
+    testing.assertContains($found[0].message, "lies 5 levels below code/; at most 4");
+}
+
+/** An example app may bring its .github/ folder and dotenv files. */
+func testCodeFolderDotenvAndGithub() {
+    def files as map of string to string init goodCode();
+    $files[".env"] = "TOKEN=placeholder\n";
+    $files[".env.test"] = "TOKEN=test\n";
+    $files["app/.env.local.example"] = "TOKEN=x\n";
+    $files["app/.github/workflows/ci.yml"] = "on: push\n";
+    testing.assertEqual(checkedCode($files), []);
+    def key as string init "-----BEGIN " + "PRIVATE KEY-----\n";
+    testing.assertEqual(rulesOf(checkedCode(codeWith(".env", $key))), ["code-folder"]);
+    testing.assertTrue(isDotenv(".env.broken"));
+    testing.assertFalse(isDotenv(".env."));
+    testing.assertFalse(isDotenv(".envrc"));
+}
+
+/** A file without an extension is allowed in bin/ only, and only as a #! launcher. */
+func testCodeFolderLaunchers() {
+    def files as map of string to string init codeWith(
+        "app/bin/tool",
+        "#!/usr/bin/env -S jennifer run\nuse io;\n");
+    testing.assertEqual(checkedCode($files), []);
+    def plain as list of Finding init checkedCode(codeWith("app/bin/tool", "no shebang\n"));
+    testing.assertEqual(rulesOf($plain), ["code-folder"]);
+    testing.assertContains($plain[0].message, "its first line is #!");
+    def outside as list of Finding init checkedCode(codeWith("app/tool", "#!/bin/sh\n"));
+    testing.assertEqual(rulesOf($outside), ["code-folder"]);
+    testing.assertContains($outside[0].message, "is not a file type");
+    def binary as bytes init convert.bytesFromString("utf-8", "#!x");
+    $binary[] = 0;
+    def dir as string init makeCodeTalk(goodCode());
+    defer fs.removeAll(path.dir(path.dir(path.dir($dir))));
+    fs.mkdirAll(path.join($dir, "code", "bin"));
+    fs.writeBytes(path.join($dir, "code", "bin", "tool"), $binary);
+    testing.assertContains(checkTalk($dir, "ada", fast())[0].message, "NUL bytes");
+    testing.assertTrue(isLauncher("app/bin/tool"));
+    testing.assertFalse(isLauncher("bin/tool.sh"));
+    testing.assertFalse(isLauncher("tool"));
+}
+
+func testCodeFolderSymlinkFails() {
+    def dir as string init makeCodeTalk(goodCode());
+    defer fs.removeAll(path.dir(path.dir(path.dir($dir))));
+    fs.symlink("../talk.md", path.join($dir, "code", "talk.md"));
+    def found as list of Finding init checkTalk($dir, "ada", fast());
+    testing.assertEqual(rulesOf($found), ["code-folder"]);
+    testing.assertContains($found[0].message, "no symbolic links");
+}
+
+func testCodeFolderSizes() {
+    def big as string init strings.repeat("x", MAX_CODE_FILE_BYTES);
+    testing.assertEqual(checkedCode(codeWith("big.txt", $big)), []);
+    def found as list of Finding init checkedCode(codeWith("big.txt", $big + "x"));
+    testing.assertEqual(rulesOf($found), ["code-folder"]);
+    testing.assertContains($found[0].message, "is 262145 bytes");
+    def files as list of string init ["1", "2", "3", "4", "5", "6", "7", "8"];
+    def many as map of string to string init goodCode();
+    for (def n in $files) {
+        $many["part" + $n + ".txt"] = $big;
+    }
+    def total as list of Finding init checkedCode($many);
+    testing.assertEqual(rulesOf($total), ["code-folder"]);
+    testing.assertContains($total[0].message, "at most 2097152 (2 MiB)");
+}
+
+func testCodeFolderForbiddenText() {
+    def scratch as list of Finding init checkedCode(codeWith(
+        "paths.txt",
+        "ok\nsee /tmp/claude-1000/abc/scratchpad/x.j\n"));
+    testing.assertEqual(rulesOf($scratch), ["code-folder"]);
+    testing.assertEqual($scratch[0].line, 2);
+    testing.assertContains($scratch[0].message, "absolute scratch path");
+    def key as string init "-----BEGIN " + "OPENSSH PRIVATE KEY-----\nabc\n";
+    def keys as list of Finding init checkedCode(codeWith("id.txt", $key));
+    testing.assertContains($keys[0].message, "contains a private key");
+    def pkcs8 as string init "-----BEGIN " + "PRIVATE KEY-----\n";
+    testing.assertEqual(rulesOf(checkedCode(codeWith("k.txt", $pkcs8))), ["code-folder"]);
+    def token as string init "token = \"ghp_" + strings.repeat("a1", 18) + "\"\n";
+    testing.assertEqual(rulesOf(checkedCode(codeWith("cfg.toml", $token))), ["code-folder"]);
+    # AWS's documented placeholder is fine, a real-looking key is not.
+    testing.assertEqual(checkedCode(codeWith("aws.ini", "key = AKIAIOSFODNN7EXAMPLE\n")), []);
+    testing.assertEqual(
+        rulesOf(checkedCode(codeWith("aws.ini", "key = AKIAIOSFODNN7ABCDEFG\n"))),
+        ["code-folder"]);
+}
+
+func testCodeFolderEncodingAndDashes() {
+    def dir as string init makeCodeTalk(goodCode());
+    defer fs.removeAll(path.dir(path.dir(path.dir($dir))));
+    def broken as bytes init convert.bytesFromString("utf-8", "abc");
+    $broken[] = 0xff;
+    fs.writeBytes(path.join($dir, "code", "data.txt"), $broken);
+    testing.assertEqual(rulesOf(checkTalk($dir, "ada", fast())), ["encoding"]);
+    def nul as bytes init convert.bytesFromString("utf-8", "abc");
+    $nul[] = 0;
+    fs.writeBytes(path.join($dir, "code", "data.txt"), $nul);
+    def found as list of Finding init checkTalk($dir, "ada", fast());
+    testing.assertEqual(rulesOf($found), ["code-folder"]);
+    testing.assertContains($found[0].message, "NUL bytes");
+    # Any script is fine in code/ (no Windows-1252 rule there); dashes are not.
+    def greek as string init "Greek alpha " + convert.fromCodepoint(0x3b1);
+    fs.writeString(path.join($dir, "code", "data.txt"), $greek);
+    testing.assertEqual(checkTalk($dir, "ada", fast()), []);
+    def em as string init convert.fromCodepoint(0x2014);
+    fs.writeString(path.join($dir, "code", "README.md"), CODE_README_TEXT + "a " + $em + " b\n");
+    fs.writeString(path.join($dir, "code", "hello.j"), CODE_PROGRAM + "# a " + $em + " b\n");
+    testing.assertEqual(rulesOf(checkTalk($dir, "ada", fast())), ["dashes", "dashes"]);
+}
+
+func testCodeReadmeLinks() {
+    def found as list of Finding init checkedCode(codeWith(
+        "README.md",
+        CODE_README_TEXT + "\nSee [this](https://example.com/).\n"));
+    testing.assertEqual(rulesOf($found), ["links"]);
+    testing.assertContains($found[0].file, "code/README.md");
+    # The reader's own machine is fine there, not in talk.md.
+    def local as string init CODE_README_TEXT + "\nOpen http://127.0.0.1:8080/ or " +
+        "<http://localhost:3000/x>.\n";
+    testing.assertEqual(checkedCode(codeWith("README.md", $local)), []);
+    testing.assertTrue(isLoopback("http://[::1]:8080"));
+    testing.assertFalse(isLoopback("http://127.0.0.1.example.com/"));
+    testing.assertFalse(isLoopback("http://localhost@example.com/"));
+    testing.assertEqual(rulesOf(checked(GOOD + "\nSee http://127.0.0.1:8080/ too.\n")), ["links"]);
+    # Links in other files are not links: a program may name any URL.
+    testing.assertEqual(checkedCode(codeWith("urls.txt", "https://example.com/\n")), []);
+}
+
+func testCodeImports() {
+    def ok as string init 'import "html.j";
+import "./lib/util.j" as util;
+';
+    def files as map of string to string init codeWith("main.j", $ok);
+    $files["lib/util.j"] = 'export func f() {
+    return 1;
+}
+';
+    testing.assertEqual(checkedCode($files), []);
+    def missing as list of Finding init checkedCode(codeWith(
+        "main.j",
+        "use io;\nimport \"./nope.j\" as nope;\n"));
+    testing.assertEqual(rulesOf($missing), ["code-folder"]);
+    testing.assertEqual($missing[0].line, 2);
+    testing.assertContains($missing[0].message, "import \"./nope.j\" is not a file in code/");
+    def out as list of Finding init checkedCode(codeWith("main.j", 'include "../talk.md";\n'));
+    testing.assertContains($out[0].message, "leads out of code/");
+    def abs as list of Finding init checkedCode(codeWith("main.j", 'import "/etc/x.j" as x;\n'));
+    testing.assertContains($abs[0].message, "an absolute path");
+}
+
+/** Lint runs on every program but an include; warnings fail, info does not. */
+func testCodeLint() {
+    def dir as string init makeCodeTalk(goodCode());
+    defer fs.removeAll(path.dir(path.dir(path.dir($dir))));
+    def opts as Options init fast();
+    $opts.parseCode = true;
+    # The deck import resolves nowhere (no vendor/), and lint accepts that.
+    testing.assertEqual(checkTalk($dir, "ada", $opts), []);
+    def long as string init "use io;\nio.printf(\"%s\\n\", \"" + strings.repeat("x", 120) +
+        "\");\n";
+    fs.writeString(path.join($dir, "code", "long.j"), $long);
+    testing.assertEqual(checkTalk($dir, "ada", $opts), []);
+    def unused as string init "use io;\nuse strings;\nio.printf(\"x\\n\");\n";
+    fs.writeString(path.join($dir, "code", "unused.j"), $unused);
+    def found as list of Finding init checkTalk($dir, "ada", $opts);
+    testing.assertEqual(rulesOf($found), ["code-lint"]);
+    testing.assertEqual($found[0].line, 2);
+    testing.assertTrue(strings.endsWith($found[0].file, "code/unused.j"));
+    testing.assertContains($found[0].message, "[L106]");
+    fs.writeString(path.join($dir, "code", "unused.j"), "use io\nio.printf(\"x\\n\");\n");
+    testing.assertContains(checkTalk($dir, "ada", $opts)[0].message, "[L002]");
+    fs.remove(path.join($dir, "code", "unused.j"));
+    # An include is checked through its program, not on its own.
+    def bad as string init 'func g() {
+    return $undefined;
+}
+';
+    fs.writeString(path.join($dir, "code", "other.inc.j"), $bad);
+    testing.assertEqual(checkTalk($dir, "ada", $opts), []);
+    testing.assertEqual(deckPrograms($dir), [path.join($dir, "code", "hello.j")]);
+}
+
+func testCodeFiles() {
+    def dir as string init makeCodeTalk(goodCode());
+    defer fs.removeAll(path.dir(path.dir(path.dir($dir))));
+    def rels as list of string;
+    for (def e in codeFiles(path.join($dir, "code"))) {
+        $rels[] = $e.rel;
+    }
+    testing.assertEqual(
+        $rels,
+        [
+            "LICENSE",
+            "README.md",
+            "data/people.csv",
+            "deck.toml",
+            "hello.j",
+            "helper.inc.j",
+            "logo.png",
+            "web/page.tmpl",
+            "web/style.css"
+        ]);
+    testing.assertTrue(isProgram("a/hello.j"));
+    testing.assertFalse(isProgram("helper.inc.j"));
+    testing.assertFalse(isCodeText("logo.png"));
 }

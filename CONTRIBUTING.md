@@ -22,10 +22,12 @@ must meet. Every rule is checked by `tools/check.j`, locally and in CI.
 talks/<github-user>/<topic>/talk.md        the slides (or talk.<lang>.md per language)
 talks/<github-user>/<topic>/academy.toml   the catalogue entry
 talks/<github-user>/<topic>/*.png|jpg|gif  its images, beside talk.md
+talks/<github-user>/<topic>/code/          optional: the programs behind the slides
 ```
 
-The talk is published at `https://academy.jennifer-lang.dev/<github-user>/<topic>/`,
-its PDF at `.../<topic>/<topic>.pdf`. A talk in several languages is described
+The talk is published at `https://academy.jennifer-lang.dev/talks/<github-user>/<topic>/`,
+its PDF at `.../<topic>/<topic>.pdf` and a handout (three slides to an A4 page)
+at `.../<topic>/<topic>-handout.pdf`. A talk in several languages is described
 in [Talks in several languages](#talks-in-several-languages).
 
 - **The namespace is your personal GitHub account**, written in lower case.
@@ -33,8 +35,9 @@ in [Talks in several languages](#talks-in-several-languages).
   published, so organisations are not accepted as namespaces.
 - **The topic** is a slug: lowercase `a-z`, `0-9` and single inner hyphens
   (`intro-to-tasks`). It is the last part of the URL, so keep it short.
-- **One talk per directory**, holding its talk file(s), `academy.toml` and
-  images (`.png`, `.jpg`, `.jpeg`, `.gif`) only: no subdirectories, no
+- **One talk per directory**, holding its talk file(s), `academy.toml`,
+  images (`.png`, `.jpg`, `.jpeg`, `.gif`) and optionally a `code/` folder
+  (see [The code folder](#the-code-folder)) only: no other subdirectories, no
   symbolic links, no other files.
 - **Images are read only from the talk's own directory.** Cantrip refuses an
   image outside it, and the checker does too. If several of your talks show the
@@ -175,6 +178,57 @@ them). The build sets Cantrip's `notes: open` for that, so a talk does not set
 `notes` itself, and since the notes are part of what readers see, write them
 for readers as well as for yourself.
 
+## The code folder
+
+A talk should ship the full programs its slides show in
+`talks/<github-user>/<topic>/code/`, so readers can run them. The site
+publishes the folder at `.../<topic>/code/` (a listing with the README, and a
+page showing each text file) and as one zip, `.../<topic>/<topic>-code.zip`.
+Every language version of a talk shares the one folder. A file with a hidden
+part in its path (`.env`, `app/.github/...`) is published in the zip only.
+
+- **`code/LICENSE` is required**: the MIT-0 text, with a
+  `Copyright <year> <holder>` line naming you (see [Licences](#licences));
+  copy `LICENSE-code` from the repository root and change that line.
+- **`code/README.md` is required**: one line per program saying what it shows
+  (which slides), how to run it (`jennifer run hello.j`), and the exact setup
+  it needs: the `docker run ... -p 127.0.0.1:...` line for a server,
+  `jvc install` for decks, environment variables with placeholder values.
+  Plain Markdown in English. Its links follow rule 1, as in `talk.md`, except
+  that an address on the reader's own machine (`http://localhost:8080/`,
+  `http://127.0.0.1:...`, `http://[::1]:...`) is allowed too.
+- **What it may hold:** programs (`.j`, includes as `.inc.j`), helper and
+  interoperability scripts (`.sh`, `.py`, `.rb`), small data, config and
+  template files (`.json`, `.toml`, `.yml`, `.yaml`, `.csv`, `.txt`, `.xml`,
+  `.ics`, `.vcf`, `.sql`, `.conf`, `.md`, `.ini`, `.tsv`, `.fasta`, `.fastq`,
+  `.tmpl`, `.css`, `.ldif`), a `deck.toml` when the programs use decks (so
+  `jvc install` recreates `vendor/`), and small sample images (`.png`, `.jpg`,
+  `.jpeg`, `.gif`). Also dotenv files named `.env` or `.env.<name>`
+  (placeholder values only), an example app's `.github/` folder, and in a
+  `bin/` folder launchers without an extension (text whose first line is
+  `#!`). Subfolders are allowed, a file at most four levels below `code/`
+  (`code/app/.github/workflows/ci.yml`).
+- **What it never holds:** `vendor/`, build output (`out/`, `build/`, `.pdf`,
+  `.html`), logs (`.log`), other hidden files and directories (`.git`,
+  `.gitignore`), binaries or any other file type, private keys and certificates (`.pem`,
+  `.key`, `.crt`, `.p12`, `.pfx`), symbolic links, real secrets or personal
+  data. Credentials are obvious placeholders.
+- **Sizes:** each file at most 256 KiB, the whole folder at most 2 MiB.
+- **Text files** are UTF-8 without a byte-order mark and without NUL bytes, and
+  have no em-dashes or en-dashes (rule 6, as everywhere in the repository).
+  The Windows-1252 rule (rule 9) is for talk files only: a program may print
+  any script. No file may contain a scratch path from your machine
+  (`/tmp/claude-...`; paths in programs are relative to `code/`), a private key
+  block (`-----BEGIN ... PRIVATE KEY-----`) or a GitHub, Slack or AWS token.
+- **Programs:** every `.j` except an `.inc.j` must pass `jennifer lint` without
+  a warning (info is fine), which also parses it; an `.inc.j` is checked
+  through the program that includes it. A local `import` or `include` must
+  name a file inside `code/`. `jennifer fmt` is not required. Decks are not
+  installed for the check: lint accepts an `@scope/deck/` import it cannot
+  resolve and leaves the calls into the deck unchecked (`check.j` says how
+  many programs that concerns). The programs target the talk's Jennifer
+  version.
+
 ## Who you are
 
 Every talk names its author, in the talk itself, in one of two ways:
@@ -221,12 +275,13 @@ each problem.
 | 3 | **Every slide has speaker notes of at least 40 words**, a `<!-- notes: ... -->` comment. Write what you would say: the explanation, the example you would give, the question you would ask the room. A reader of the published talk has only the slides and the notes. A closing imprint slide needs notes, but they may be short. | The slides are split the way Cantrip splits them; each needs a notes comment outside code, and its words are counted. |
 | 4 | **The talk builds with Cantrip without a warning.** A warning means a slide overflowed its page. | The talk is built with Cantrip; any `cantrip: warning:` line fails. |
 | 5 | **Every `jennifer` code block parses**, unless it is marked as an excerpt. | Each block is written to a file and run through `jennifer ast` (parse and name resolution); an excerpt through `jennifer tokens` (it must lex). |
-| 6 | **UTF-8 without a byte-order mark, and no em-dashes (U+2014) or en-dashes (U+2013).** | The bytes of `talk.md` and `academy.toml` are checked; the dash rule also covers the repository's own Markdown, tools and workflows. |
+| 6 | **UTF-8 without a byte-order mark, and no em-dashes (U+2014) or en-dashes (U+2013).** | The bytes of `talk.md`, `academy.toml` and every text file in `code/` are checked; the dash rule also covers the repository's own Markdown, tools and workflows. |
 | 7 | **One talk per directory**, with valid names (see [Where a talk lives](#where-a-talk-lives)): `talk.md` or `talk.<lang>.md` files, never both. | The tree under `talks/` is walked. |
 | 8 | **The talk names its author** (see [Who you are](#who-you-are)). | The first slide is searched for `@<namespace>` or a link to its GitHub profile; the last for an Imprint. |
 | 9 | **Every character can be shown in the PDF.** Cantrip's PDF fonts cover Windows-1252 only; anything else (an arrow `→`, an emoji, Greek or Cyrillic letters) would print as `?`. This applies to text, notes and code alike: write `->` or "gives" instead of an arrow. `ä ö ü ß é ² €` and typographic quotes are fine. | Each line of every talk file is matched against the Windows-1252 set; each other character is reported with its code point. |
 | 10 | **Languages match** (see [Talks in several languages](#talks-in-several-languages)). | File names are checked against ISO 639-1, and the files against academy.toml's `lang` and `[translations.<lang>]` tables. |
-| 11 | **At most 20 slides.** A longer subject is two talks, each of which can be given on its own. | The slides are counted the way Cantrip splits them. |
+| 11 | **At most 25 slides; aim for 15 to 20.** A longer subject is two talks, each of which can be given on its own. | The slides are counted the way Cantrip splits them. |
+| 12 | **The code folder** follows [its rules](#the-code-folder): a README.md, an MIT-0 LICENSE, allowed file types only, sizes, no secrets, and programs that pass `jennifer lint`. | `code/` is walked; each text file is read; every program but an `.inc.j` goes through `jennifer lint --format=json` (not with `--fast`). |
 
 ### The link allowlist
 
@@ -275,11 +330,11 @@ git clone https://github.com/jennifer-language/cantrip.git ../cantrip
 export CANTRIP=../cantrip/bin/cantrip
 jennifer run tools/check.j                        # every rule, every talk
 jennifer run tools/check.j talks/octocat/my-talk  # one talk
-jennifer run tools/check.j --fast                 # skip parsing code and building
+jennifer run tools/check.j --fast                 # skip parsing and linting code, and building
 tools/build.sh                                    # the whole site, into site/
 ```
 
-Open `site/<your-github-user>/<topic>/index.html` to see your slides; press
+Open `site/talks/<your-github-user>/<topic>/index.html` to see your slides; press
 <kbd>?</kbd> for the keys and <kbd>s</kbd> for your notes.
 
 ## The declaration
@@ -347,8 +402,13 @@ Reported talks are taken offline promptly while the report is checked.
 
 - **Talks** (everything under `talks/`) are licensed under the
   [Creative Commons Attribution 4.0 International licence](LICENSE)
-  (CC BY 4.0), by their authors. Code samples in a talk are also available
-  under the repository's tool licence, LGPL-3.0-only.
+  (CC BY 4.0), by their authors.
+- **Sample code** - a talk's `code/` folder and the code shown on its slides -
+  is licensed under the [MIT No Attribution licence](LICENSE-code) (MIT-0), so
+  readers can copy it into their own projects without attribution. Every
+  `code/` folder must hold a `LICENSE` file with the MIT-0 text and a
+  `Copyright <year> <holder>` line naming the talk's author; `tools/check.j`
+  refuses any other text, in CI on every push and pull request.
 - **Tools** (everything under `tools/` and `.github/`) are licensed under the
   [GNU Lesser General Public License v3.0 only](LICENSE-tools)
   (LGPL-3.0-only); each file carries an SPDX header.

@@ -17,6 +17,7 @@
 
 use convert;
 use fs;
+use json;
 use lists;
 use maps;
 use os;
@@ -54,14 +55,125 @@ export def const FRONT_REQUIRED as list of string init ["theme"];
 /** File extensions a talk directory may hold besides `talk.md`. */
 export def const IMAGE_EXTENSIONS as list of string init [".png", ".jpg", ".jpeg", ".gif"];
 
-/** The most slides a talk may have (rule 11). */
-export def const MAX_SLIDES as int init 20;
+/** The most slides a talk may have (rule 11); 15 to 20 is the aim. */
+export def const MAX_SLIDES as int init 25;
 
 /** The fewest words of speaker notes a slide needs; a closing imprint is exempt (rule 3). */
 export def const MIN_NOTE_WORDS as int init 40;
 
 /** The word in a fence's info string that marks a block as an excerpt. */
 export def const EXCERPT as string init "excerpt";
+
+# ---------------------------------------------------------------------------
+# The code folder (rule 12): a talk's runnable programs in `code/`. These
+# lists are the one place its rules are defined; CONTRIBUTING.md documents
+# them.
+# ---------------------------------------------------------------------------
+
+/** The one subdirectory a talk may have: its programs. */
+export def const CODE_DIR as string init "code";
+
+/** The file every code folder starts with: what each program shows and how to run it. */
+export def const CODE_README as string init "README.md";
+
+/** The licence file every code folder carries: the sample code is MIT-0. */
+export def const CODE_LICENSE as string init "LICENSE";
+
+/** The SPDX id of the one licence code/ accepts. */
+export def const CODE_LICENSE_ID as string init "MIT-0";
+
+/** The first line of the MIT-0 licence text. */
+export def const MIT0_TITLE as string init "MIT No Attribution";
+
+/** The MIT-0 licence text after its copyright line, compared word for word. */
+export def const MIT0_BODY as string init 'Permission is hereby granted, free of charge, to any person obtaining a copy of this
+software and associated documentation files (the "Software"), to deal in the Software
+without restriction, including without limitation the rights to use, copy, modify,
+merge, publish, distribute, sublicense, and/or sell copies of the Software, and to
+permit persons to whom the Software is furnished to do so.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
+INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
+PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
+OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+';
+
+/** Text file extensions a code folder may hold (`.inc.j` is a `.j`). */
+export def const CODE_TEXT_EXTENSIONS as list of string init [
+    ".j",
+    ".sh",
+    ".py",
+    ".json",
+    ".toml",
+    ".yml",
+    ".yaml",
+    ".csv",
+    ".txt",
+    ".xml",
+    ".ics",
+    ".vcf",
+    ".sql",
+    ".conf",
+    ".md",
+    ".ini",
+    ".tsv",
+    ".fasta",
+    ".fastq",
+    ".tmpl",
+    ".css",
+    ".ldif",
+    ".rb"
+];
+
+/** Directory names a code folder never holds: dependencies and build output. */
+export def const CODE_FORBIDDEN_DIRS as list of string init ["vendor", "out", "build"];
+
+/** Extensions of build output and logs, refused with their own message. */
+export def const CODE_OUTPUT_EXTENSIONS as list of string init [".pdf", ".html", ".htm", ".log"];
+
+/** Extensions of private keys and certificates, refused with their own message. */
+export def const CODE_KEY_EXTENSIONS as list of string init [
+    ".pem",
+    ".key",
+    ".crt",
+    ".p12",
+    ".pfx"
+];
+
+/** How deep a file may sit below code/: `code/app/.github/workflows/ci.yml` is depth 4. */
+export def const MAX_CODE_DEPTH as int init 4;
+
+/** The one hidden directory a code folder may hold: an example app's CI. */
+export def const CODE_HIDDEN_DIR as string init ".github";
+
+/**
+ * The directory whose files may have no extension: launchers, text files
+ * whose first line is `#!`.
+ */
+export def const CODE_LAUNCHER_DIR as string init "bin";
+
+/** The largest file a code folder may hold, in bytes (256 KiB). */
+export def const MAX_CODE_FILE_BYTES as int init 262144;
+
+/** The most a whole code folder may hold, in bytes (2 MiB). */
+export def const MAX_CODE_BYTES as int init 2097152;
+
+/**
+ * Text no file in a code folder may contain, each with why: a scratch path
+ * from the machine it was written on, and private keys and tokens. A pattern
+ * matches one line; a match that contains "EXAMPLE" (AWS's documented
+ * placeholder key) is allowed.
+ */
+export def const CODE_FORBIDDEN_TEXT as list of list of string init [
+    ['/tmp/claude-', "an absolute scratch path; paths in programs are relative to code/"],
+    ['-----BEGIN ([A-Z0-9]+ )*PRIVATE KEY( BLOCK)?-----', "a private key"],
+    ['\b(ghp|gho|ghu|ghs|ghr)_[A-Za-z0-9]{30,}', "a GitHub token"],
+    ['\bgithub_pat_[A-Za-z0-9_]{30,}', "a GitHub token"],
+    ['\bxox[abprs]-[A-Za-z0-9-]{10,}', "a Slack token"],
+    ['\b(AKIA|ASIA)[0-9A-Z]{16}\b', "an AWS access key"]
+];
 
 # The longer messages, kept here so the checks stay readable.
 def const MSG_NAMESPACE_DIR as string init
@@ -79,9 +191,13 @@ def const MSG_NO_TALK as string init
 def const MSG_BOTH_FORMS as string init
     "talk.md and talk.<lang>.md together: use talk.md for one language, talk.<lang>.md for several";
 def const MSG_NO_META as string init "a talk directory holds its catalogue entry, academy.toml";
-def const MSG_SUBDIR as string init "no subdirectories in a talk; keep its images beside talk.md";
+def const MSG_SUBDIR as string init
+    "the only subdirectory of a talk is code/; keep its images beside talk.md";
 def const MSG_OTHER_FILE as string init
-    "a talk directory holds its talk files, academy.toml and images (.png, .jpg, .jpeg, .gif) only";
+    "a talk directory holds its talk files, academy.toml, images (.png, .jpg, .jpeg, .gif) " +
+    "and code/ only";
+def const MSG_CODE_EXT as string init
+    "is not a file type code/ may hold (see CONTRIBUTING.md, \"The code folder\")";
 
 /** One broken rule: where, which rule, and what to do about it. */
 export def struct Finding {
@@ -284,12 +400,14 @@ func checkTalkDir(dir as string) {
     }
     for (def name in fs.list($dir)) {
         def p as string init path.join($dir, $name);
-        if (fs.isDir($p)) {
-            $out[] = finding($p, 0, "layout", MSG_SUBDIR);
-            continue;
-        }
         if (fs.realpath($p) != path.join($real, $name)) {
             $out[] = finding($p, 0, "layout", "no symbolic links in a talk");
+            continue;
+        }
+        if (fs.isDir($p)) {
+            if ($name != CODE_DIR) {
+                $out[] = finding($p, 0, "layout", MSG_SUBDIR);
+            }
             continue;
         }
         def lang as string init talkFileLang($name);
@@ -734,11 +852,26 @@ func checkImage(file as string, dir as string, ref as UrlRef) {
     return $out;
 }
 
-/** The findings for every URL in a talk (rule 1). */
-func checkLinks(file as string, dir as string, user as string, sc as Scan) {
+/**
+ * Is this an http(s) URL on the reader's own machine (`localhost`,
+ * `127.0.0.1`, `[::1]`), as a code folder's README names its servers?
+ */
+export func isLoopback(url as string) {
+    def host as string init '(localhost|127\.0\.0\.1|\[::1\])';
+    return regex.matches('^(?i)https?://' + $host + '(:[0-9]+)?([/?#].*)?$', $url);
+}
+
+/**
+ * The findings for every URL in a talk (rule 1). With `loopback`, as in a
+ * code folder's README, a link to the reader's own machine is allowed too.
+ */
+func checkLinks(file as string, dir as string, user as string, sc as Scan, loopback as bool) {
     def out as list of Finding;
     for (def ref in findUrls($sc)) {
         if (not isExternal($ref.url) and not $ref.image) {
+            continue;
+        }
+        if ($loopback and not $ref.image and isLoopback($ref.url)) {
             continue;
         }
         if (not isExternal($ref.url)) {
@@ -1179,6 +1312,409 @@ func checkMetaFile(dir as string, user as string) {
     return $out;
 }
 
+# ---------------------------------------------------------------------------
+# The code folder (rule 12)
+# ---------------------------------------------------------------------------
+
+/** One entry below a code folder: its path relative to code/, and what it is. */
+export def struct CodeEntry {
+    rel as string,
+    isDir as bool,
+    isLink as bool,
+    size as int
+};
+
+/** The sort key of a code entry: its path. */
+func entryKey(e as CodeEntry) {
+    return $e.rel;
+}
+
+/** Is `p`, at `rel` below the resolved root `real`, a symbolic link (or below one)? */
+func isLinked(p as string, real as string, rel as string) {
+    try {
+        return fs.realpath($p) != path.join($real, $rel);
+    } catch (e) {
+        return true;
+    }
+}
+
+/**
+ * Every entry below a code folder, sorted by path. A symbolic link is listed,
+ * not followed.
+ * @param {string} code the code folder
+ * @return {list of CodeEntry} files and directories, `rel` relative to it
+ */
+export func codeEntries(code as string) {
+    def out as list of CodeEntry;
+    def real as string init fs.realpath($code);
+    def pending as list of string init [""];
+    while (len($pending) > 0) {
+        def rel as string init $pending[len($pending) - 1];
+        $pending = $pending[0..len($pending) - 1];
+        for (def name in fs.list(path.join($code, $rel))) {
+            def sub as string init $name;
+            if ($rel != "") {
+                $sub = $rel + "/" + $name;
+            }
+            def p as string init path.join($code, $sub);
+            def e as CodeEntry init CodeEntry{rel: $sub, isDir: false, isLink: false, size: 0};
+            $e.isLink = isLinked($p, $real, $sub);
+            def descend as bool init (not strings.startsWith($name, ".") or
+                $name == CODE_HIDDEN_DIR) and not lists.contains(CODE_FORBIDDEN_DIRS, $name);
+            $e.isDir = not $e.isLink and fs.isDir($p);
+            if ($e.isDir and $descend) {
+                $pending[] = $sub;
+            } elseif (not $e.isLink and not $e.isDir) {
+                $e.size = fs.stat($p).size;
+            }
+            $out[] = $e;
+        }
+    }
+    return lists.sortBy($out, entryKey);
+}
+
+/**
+ * The files a code folder publishes: every regular file, sorted by path.
+ * @param {string} code the code folder
+ * @return {list of CodeEntry} the files only
+ */
+export func codeFiles(code as string) {
+    def out as list of CodeEntry;
+    for (def e in codeEntries($code)) {
+        if (not $e.isDir and not $e.isLink) {
+            $out[] = $e;
+        }
+    }
+    return $out;
+}
+
+/** Is this file name a dotenv file, `.env` or `.env.<name>`? */
+export func isDotenv(name as string) {
+    return $name == ".env" or regex.matches('^\.env\.[A-Za-z0-9_-]+(\.[A-Za-z0-9_-]+)*$', $name);
+}
+
+/** Is the file at `rel` below code/ a launcher: no extension, in a `bin/` folder? */
+export func isLauncher(rel as string) {
+    def parts as list of string init strings.split($rel, "/");
+    def name as string init $parts[len($parts) - 1];
+    return len($parts) >= 2 and $parts[len($parts) - 2] == CODE_LAUNCHER_DIR and
+        not strings.contains($name, ".");
+}
+
+/** Is the file at `rel` below code/ text (not an image)? */
+export func isCodeText(rel as string) {
+    def name as string init path.base($rel);
+    return $rel == CODE_LICENSE or isDotenv($name) or isLauncher($rel) or
+        lists.contains(CODE_TEXT_EXTENSIONS, lowerExt($name));
+}
+
+/** Is this `.j` file a program lint checks, rather than an `.inc.j` include? */
+export func isProgram(name as string) {
+    return lowerExt($name) == ".j" and not strings.endsWith(strings.lower($name), ".inc.j");
+}
+
+/** The findings for one entry's name, place, type and size. */
+func checkCodeEntry(p as string, e as CodeEntry) {
+    def out as list of Finding;
+    def name as string init path.base($e.rel);
+    if ($e.isLink) {
+        $out[] = finding($p, 0, "code-folder", "no symbolic links in code/");
+        return $out;
+    }
+    def hiddenOk as bool init ($e.isDir and $name == CODE_HIDDEN_DIR) or
+        (not $e.isDir and isDotenv($name));
+    if (strings.startsWith($name, ".") and not $hiddenOk) {
+        def why as string init "no hidden files or directories (.git, ...) but .github/ and " +
+            ".env or .env.<name>";
+        $out[] = finding($p, 0, "code-folder", $why);
+        return $out;
+    }
+    if ($e.isDir) {
+        if ($name == "vendor") {
+            def why as string init "no vendor/ in code/: ship the deck.toml, `jvc install` " +
+                "recreates it";
+            $out[] = finding($p, 0, "code-folder", $why);
+        } elseif (lists.contains(CODE_FORBIDDEN_DIRS, $name)) {
+            $out[] = finding($p, 0, "code-folder", "no build output (out/, build/) in code/");
+        }
+        return $out;
+    }
+    def depth as int init len(strings.split($e.rel, "/"));
+    if ($depth > MAX_CODE_DEPTH) {
+        def why as string init "lies {$depth} levels below code/; at most {MAX_CODE_DEPTH} " +
+            "(code/a/b/c/file)";
+        $out[] = finding($p, 0, "code-folder", $why);
+    }
+    def ext as string init lowerExt($name);
+    if (lists.contains(CODE_KEY_EXTENSIONS, $ext)) {
+        def why as string init "no private keys or certificates (.pem, .key, .crt, .p12, .pfx) " +
+            "in code/; a program that needs one creates it";
+        $out[] = finding($p, 0, "code-folder", $why);
+    } elseif (lists.contains(CODE_OUTPUT_EXTENSIONS, $ext)) {
+        def why as string init "no build output or logs (.pdf, .html, .log) in code/";
+        $out[] = finding($p, 0, "code-folder", $why);
+    } elseif (not isCodeText($e.rel) and not isImage($name)) {
+        $out[] = finding($p, 0, "code-folder", "\"{$name}\" " + MSG_CODE_EXT);
+    }
+    if ($e.size > MAX_CODE_FILE_BYTES) {
+        def why as string init "is {$e.size} bytes; a file in code/ holds at most " +
+            "{MAX_CODE_FILE_BYTES} (256 KiB)";
+        $out[] = finding($p, 0, "code-folder", $why);
+    }
+    return $out;
+}
+
+/**
+ * What is wrong with a code/LICENSE, "" when it is the MIT-0 licence: its title,
+ * a `Copyright <year> <holder>` line, then the MIT-0 text word for word (line
+ * breaks and spacing may differ).
+ * @param {string} text the file's contents
+ * @return {string} the problem, or ""
+ */
+export func mit0Problem(text as string) {
+    def lines as list of string;
+    for (def l in strings.split($text, "\n")) {
+        if (strings.trim($l) != "") {
+            $lines[] = strings.trim($l);
+        }
+    }
+    if (len($lines) < 3 or $lines[0] != MIT0_TITLE) {
+        return "must be the MIT-0 licence, starting with \"" + MIT0_TITLE + "\"";
+    }
+    if (not regex.matches('^Copyright (\(c\) )?[0-9]{4}(-[0-9]{4})?,? \S.*$', $lines[1])) {
+        return "line 2 must be \"Copyright <year> <holder>\", got \"" + $lines[1] + "\"";
+    }
+    def rest as list of string init lists.slice($lines, 2, len($lines));
+    if (words(strings.join($rest, " ")) != words(MIT0_BODY)) {
+        return "the text after the copyright line is not the MIT-0 licence word for word";
+    }
+    return "";
+}
+
+/** The whitespace-separated words of a text, joined by single spaces. */
+func words(text as string) {
+    def out as list of string;
+    for (def w in regex.split('\s+', strings.trim($text))) {
+        if ($w != "") {
+            $out[] = $w;
+        }
+    }
+    return strings.join($out, " ");
+}
+
+/** The findings for text no code file may contain (CODE_FORBIDDEN_TEXT). */
+func checkForbiddenText(file as string, lines as list of string) {
+    def out as list of Finding;
+    for (def i in 0..len($lines)) {
+        for (def rule in CODE_FORBIDDEN_TEXT) {
+            def m as regex.Match init regex.find($rule[0], $lines[$i]);
+            if ($m.start >= 0 and not strings.contains($m.text, "EXAMPLE")) {
+                $out[] = finding($file, $i + 1, "code-folder", "contains " + $rule[1]);
+            }
+        }
+    }
+    return $out;
+}
+
+/**
+ * The findings for the `import` and `include` paths of a program: a local
+ * file must exist inside code/. A deck (`@scope/deck/`) and a module that
+ * ships with Jennifer are not looked for.
+ */
+func checkImports(file as string, realCode as string, lines as list of string) {
+    def out as list of Finding;
+    for (def i in 0..len($lines)) {
+        def m as list of string init lineMatch('^\s*(import|include)\s+"([^"]*)"', $lines[$i]);
+        if (len($m) == 0 or strings.startsWith($m[2], "@")) {
+            continue;
+        }
+        def target as string init $m[2];
+        if (strings.startsWith($target, "/")) {
+            def why as string init "{$m[1]} \"{$target}\": an absolute path; use one relative " +
+                "to the program";
+            $out[] = finding($file, $i + 1, "code-folder", $why);
+            continue;
+        }
+        def p as string init path.join(path.dir($file), $target);
+        def local as bool init $m[1] == "include" or strings.startsWith($target, "./") or
+            strings.startsWith($target, "../") or fs.exists($p);
+        if (not $local) {
+            continue;
+        }
+        if (not fs.isFile($p)) {
+            def why as string init "{$m[1]} \"{$target}\" is not a file in code/";
+            $out[] = finding($file, $i + 1, "code-folder", $why);
+        } elseif (not isInside($realCode, fs.realpath($p))) {
+            def why as string init "{$m[1]} \"{$target}\" leads out of code/";
+            $out[] = finding($file, $i + 1, "code-folder", $why);
+        }
+    }
+    return $out;
+}
+
+/** The findings for one text file's bytes: encoding, dashes, forbidden text, links, imports. */
+func checkCodeText(p as string, rel as string, code as string, user as string) {
+    def data as bytes init fs.readBytes($p);
+    def out as list of Finding init checkEncoding($p, $data);
+    if (len($out) > 0) {
+        return $out;
+    }
+    def text as string init convert.stringFromBytes("utf-8", $data);
+    if (strings.contains($text, convert.fromCodepoint(0))) {
+        $out[] = finding($p, 0, "code-folder", "holds NUL bytes: no binaries in code/");
+        return $out;
+    }
+    if (isLauncher($rel) and not strings.startsWith($text, "#!")) {
+        def why as string init "a file without an extension in bin/ is a launcher: its first " +
+            "line is #!";
+        $out[] = finding($p, 1, "code-folder", $why);
+    }
+    def lines as list of string init strings.split(strings.replace($text, "\r\n", "\n"), "\n");
+    def groups as list of list of Finding;
+    $groups[] = checkDashes($p, $text);
+    $groups[] = checkForbiddenText($p, $lines);
+    if ($p == path.join($code, CODE_README)) {
+        $groups[] = checkLinks($p, $code, $user, scan($lines), true);
+    }
+    if (lowerExt($p) == ".j") {
+        $groups[] = checkImports($p, fs.realpath($code), $lines);
+    }
+    for (def g in $groups) {
+        for (def f in $g) {
+            $out[] = $f;
+        }
+    }
+    return $out;
+}
+
+/**
+ * Lint the programs of a code folder in one run of `jennifer lint`: every
+ * warning and error is a finding, info is not. Decks are not installed, and
+ * lint needs no vendor/: an `@scope/deck/` import it cannot resolve is not
+ * reported, only the calls into it go unchecked.
+ */
+func lintPrograms(programs as list of string, opts as Options) {
+    def out as list of Finding;
+    def argv as list of string init [$opts.jennifer, "lint", "--format=json"];
+    for (def p in $programs) {
+        $argv[] = $p;
+    }
+    def r as os.Result init os.run($argv);
+    def doc as json.Value;
+    try {
+        $doc = json.decode($r.stdout);
+    } catch (e) {
+        def why as string init firstLine($r.stderr + $r.stdout);
+        $out[] = finding($programs[0], 0, "code-lint", "jennifer lint failed: {$why}");
+        return $out;
+    }
+    if (json.typeOf($doc, "") != "list") {
+        return $out;
+    }
+    for (def i in 0..json.length($doc, "")) {
+        def at as string init "/" + convert.toString($i);
+        if (json.asString($doc, $at + "/severity") == "info") {
+            continue;
+        }
+        def why as string init json.asString($doc, $at + "/message") + " [" +
+            json.asString($doc, $at + "/id") + "]";
+        $out[] = finding(
+            json.asString($doc, $at + "/file"),
+            json.asInt($doc, $at + "/line"),
+            "code-lint",
+            $why);
+    }
+    return $out;
+}
+
+/**
+ * Check a talk's code folder, when it has one (rule 12): README.md, the file
+ * types, names, depth and sizes, each text file's encoding, dashes and
+ * forbidden text, README.md's links, local imports, and (with `parseCode`)
+ * that every program but an `.inc.j` passes `jennifer lint` without a warning.
+ * @param {string} dir the talk directory
+ * @param {string} user the namespace the talk is in
+ * @param {Options} opts whether to lint, and with which interpreter
+ * @return {list of Finding} empty when there is no code folder or it passes
+ */
+export func checkCodeFolder(dir as string, user as string, opts as Options) {
+    def out as list of Finding;
+    def code as string init path.join($dir, CODE_DIR);
+    if (not fs.isDir($code) or isLinked($code, fs.realpath($dir), CODE_DIR)) {
+        return $out;
+    }
+    if (not fs.isFile(path.join($code, CODE_README))) {
+        def why as string init "code/ needs a README.md: what each program shows, how to run it, " +
+            "and the setup it needs";
+        $out[] = finding($code, 0, "code-folder", $why);
+    }
+    def license as string init path.join($code, CODE_LICENSE);
+    if (not fs.isFile($license)) {
+        def why as string init "code/ needs a LICENSE with the MIT-0 text: the sample code is " +
+            CODE_LICENSE_ID + " (see LICENSE-code)";
+        $out[] = finding($code, 0, "code-license", $why);
+    } else {
+        def problem as string init mit0Problem(fs.readString($license));
+        if ($problem != "") {
+            $out[] = finding($license, 0, "code-license", $problem);
+        }
+    }
+    def total as int init 0;
+    def programs as list of string;
+    for (def e in codeEntries($code)) {
+        def p as string init path.join($code, $e.rel);
+        def found as list of Finding init checkCodeEntry($p, $e);
+        for (def f in $found) {
+            $out[] = $f;
+        }
+        $total = $total + $e.size;
+        if ($e.isDir or $e.isLink or len($found) > 0 or not isCodeText($e.rel)) {
+            continue;
+        }
+        def text as list of Finding init checkCodeText($p, $e.rel, $code, $user);
+        for (def f in $text) {
+            $out[] = $f;
+        }
+        if (isProgram($e.rel) and len($text) == 0) {
+            $programs[] = $p;
+        }
+    }
+    if ($total > MAX_CODE_BYTES) {
+        def why as string init "code/ holds {$total} bytes; at most {MAX_CODE_BYTES} (2 MiB)";
+        $out[] = finding($code, 0, "code-folder", $why);
+    }
+    if ($opts.parseCode and len($programs) > 0) {
+        for (def f in lintPrograms($programs, $opts)) {
+            $out[] = $f;
+        }
+    }
+    return $out;
+}
+
+/**
+ * The programs of a code folder that import a deck (`@scope/deck/`), which
+ * lint checks without the deck's surface since vendor/ is not shipped.
+ * @param {string} dir the talk directory
+ * @return {list of string} their paths
+ */
+export func deckPrograms(dir as string) {
+    def out as list of string;
+    def code as string init path.join($dir, CODE_DIR);
+    if (not fs.isDir($code)) {
+        return $out;
+    }
+    for (def e in codeFiles($code)) {
+        if (lowerExt($e.rel) != ".j" or $e.size > MAX_CODE_FILE_BYTES) {
+            continue;
+        }
+        def p as string init path.join($code, $e.rel);
+        if (regex.matches('(?m)^\s*import\s+"@', fs.readString($p))) {
+            $out[] = $p;
+        }
+    }
+    return $out;
+}
+
 /** The findings for how talk files and translation tables pair up. */
 func checkLanguages(dir as string, m as meta.Meta) {
     def out as list of Finding;
@@ -1261,7 +1797,7 @@ func checkFile(
     $groups[] = checkCharset($file, $text);
     $groups[] = checkFrontMatter($file, $fm);
     $groups[] = checkVersion($file, $entry.meta, $body);
-    $groups[] = checkLinks($file, $dir, $user, $sc);
+    $groups[] = checkLinks($file, $dir, $user, $sc, false);
     $groups[] = checkNotes($file, $sc, $fm.bodyStart, $lang);
     $groups[] = checkLength($file, $sc, $fm.bodyStart);
     $groups[] = checkAuthor($file, $sc, $fm, $user, $lang);
@@ -1291,6 +1827,9 @@ func checkFile(
 export func checkTalk(dir as string, user as string, opts as Options) {
     def out as list of Finding init checkMetaFile($dir, $user);
     def entry as meta.Checked init readMeta($dir, $user);
+    for (def f in checkCodeFolder($dir, $user, $opts)) {
+        $out[] = $f;
+    }
     def files as list of string init talkFiles($dir);
     if (len($files) == 0) {
         $out[] = finding(path.join($dir, "talk.md"), 0, "layout", "missing talk.md");
