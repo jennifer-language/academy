@@ -1,0 +1,12 @@
+groups:
+  - name: shop
+    rules:
+      - alert: ShopErrorsHigh
+        expr: |
+          sum(rate(shop_http_requests_total{code=~"5.."}[1m]))
+            / sum(rate(shop_http_requests_total[1m])) > 0.02
+        for: 30s
+        labels:
+          severity: warning
+        annotations:
+          summary: "{{ $value | humanizePercentage }} of requests fail"

@@ -1,0 +1,27 @@
+[package]
+name = "metricsdemo"
+version = "0.1.0"
+description = ""
+license = ""
+authors = []
+keywords = []
+capabilities = []
+bin = ""
+bin-dir = ""
+
+[package.urls]
+
+[engines]
+
+[decks]
+"@jennifer/influxdb" = "*"
+"@jennifer/prometheus" = "*"
+"@jennifer/statsd" = "*"
+
+[dev-decks]
+
+[conflicts]
+
+[sources]
+
+[registries]

@@ -4,22 +4,24 @@ ratio: 16:9
 transition: slide
 ---
 
-# Metrics with Jennifer: Prometheus and StatsD
+# Metrics with Jennifer: Prometheus, StatsD and InfluxDB
 
 ![Jennifer](jennifer-logo.png)
 
 Counters, gauges and histograms from a Jennifer service: scraped by
-Prometheus, pushed by a batch job, sent over UDP to StatsD.
+Prometheus, pushed by a batch job, sent over UDP to StatsD, written as
+points to InfluxDB.
 
 Based on **Jennifer 0.26.0**, November 2026, by [@mplx](https://github.com/mplx).
 
 <!-- notes:
 This talk instruments a small Jennifer web service and a queue worker with
-the two metrics decks, @jennifer/prometheus and @jennifer/statsd. Every
-program, every line of exposition text and every query result on the slides
-is from a real run on one laptop: the official Prometheus, Pushgateway and
-statsd_exporter images in Docker, bound to 127.0.0.1, scraping and receiving
-from Jennifer programs. Alerting itself has its own talk, linked at the end.
+the three metrics decks, @jennifer/prometheus, @jennifer/statsd and
+@jennifer/influxdb. Every program, every line of exposition text, every line
+protocol and every query result on the slides is from a real run on one
+laptop: the official Prometheus, Pushgateway, statsd_exporter and InfluxDB 2
+images in Docker, bound to 127.0.0.1, scraping and receiving from Jennifer
+programs. Alerting itself has its own talk, linked at the end.
 -->
 
 ---
@@ -68,7 +70,7 @@ there are two ways: a histogram counts how many observations fell below each
 bucket bound, and the server estimates quantiles later; a summary computes the
 quantiles in the program. Prefer histograms: you can add them up over ten
 replicas, and the Prometheus deck keeps every observation of a summary in
-memory.
+memory. InfluxDB, later on, has none of these types: it stores the events.
 -->
 
 ---
@@ -93,34 +95,39 @@ creates a new series that Prometheus keeps in memory and on disk, so a label
 with the user id turns ten series into a million. The rule of thumb: a label's
 values must come from a short list you could write down. The shop in this
 talk maps every 404 to route "other", so a scanner probing ten thousand URLs
-adds one series, not ten thousand.
+adds one series, not ten thousand. InfluxDB's tags follow the same rule.
 -->
 
 ---
 
-## Pull or push: two decks
+## Pull or push: three decks
 
-| | `@jennifer/prometheus` 0.2.0 | `@jennifer/statsd` 0.2.0 |
-| --- | --- | --- |
-| Model | **pull**: Prometheus scrapes you | **push**: you send UDP |
-| Transport | HTTP, text format | one datagram per metric |
-| Aggregation | in your program | in the agent |
-| Dimensions | labels | dots in the name, DogStatsD tags |
+| | `@jennifer/prometheus` | `@jennifer/statsd` | `@jennifer/influxdb` |
+| --- | --- | --- | --- |
+| Model | **pull**: scraped | **push**: UDP | **push**: HTTP POST |
+| Keeps | totals, in your program | totals, in the agent | every point, raw |
+| Dimensions | labels | dots, DogStatsD tags | tags |
 
 ```sh
 jvc add @jennifer/prometheus
 jvc add @jennifer/statsd
+jvc add @jennifer/influxdb
 jvc install
 ```
 
+- All three at 0.2.0. The bundled `prometheus.j`, `statsd.j` and
+  `influxdb.j` are deprecated, **removed in Jennifer 0.28.0**
+- Same functions in deck and module: only the import line changes
+
 <!-- notes:
 Prometheus pulls: your program keeps its counters and serves them over HTTP,
-and the server fetches them every few seconds. StatsD is the opposite: the
-program fires a line over UDP for each event, and an agent adds them up and
-flushes them to a backend. The Prometheus deck also has a query client for
-Prometheus's HTTP API, which we use below. Both decks need the net capability
-and the default jennifer binary. jvc vendors them, and the imports read
-import "@jennifer/prometheus/" as prometheus, and the same for statsd.
+and the server fetches them every few seconds. StatsD and InfluxDB are pushed:
+StatsD fires a line over UDP for each event and an agent adds them up;
+InfluxDB takes points over HTTP and stores every one. All three decks need the
+net capability and the default jennifer binary. Jennifer 0.26.0 still bundles
+the three modules, frozen; the decks started as copies and export the same
+functions, so moving is jvc add plus one import line per file, from
+import "influxdb.j" to import "@jennifer/influxdb/". Do it before 0.28.0.
 -->
 
 ---
@@ -213,34 +220,6 @@ whose condition is always true.
 
 ---
 
-## What Prometheus reads
-
-```text
-# HELP shop_http_requests_total HTTP requests by route and status
-# TYPE shop_http_requests_total counter
-shop_http_requests_total{code="200",route="/checkout"} 438.0
-shop_http_requests_total{code="500",route="/checkout"} 46.0
-# TYPE shop_latency_seconds histogram
-shop_latency_seconds_bucket{le="0.05",route="/checkout"} 86.0
-shop_latency_seconds_bucket{le="0.1",route="/checkout"} 231.0
-shop_latency_seconds_bucket{le="0.25",route="/checkout"} 484.0
-shop_latency_seconds_bucket{le="+Inf",route="/checkout"} 484.0
-shop_latency_seconds_sum{route="/checkout"} 49.53770324100002
-shop_latency_seconds_count{route="/checkout"} 484.0
-```
-
-<!-- notes:
-This is curl on /metrics after a few minutes of traffic, cut down to the
-checkout route: the full answer has every route, every bucket and the
-histogram's HELP line. Note what render does for you: label keys sorted,
-the histogram's buckets cumulative, so the bucket le 0.25 holds everything
-at or below 250 milliseconds, the +Inf bucket equal to the count, and _sum
-and _count beside them. render throws on an invalid name and on a metric given
-twice, so a typo never produces text Prometheus refuses.
--->
-
----
-
 ## Prometheus scrapes the shop
 
 ```yaml
@@ -252,27 +231,24 @@ scrape_configs:
       - targets: ["127.0.0.1:8080"]
 ```
 
-```sh
-docker run -d --network host \
-  -v $PWD/prom:/etc/prometheus:ro prom/prometheus:v3.5.0 \
-  --config.file=/etc/prometheus/prometheus.yml \
-  --web.listen-address=127.0.0.1:9090
-```
-
 ```text
-statsd 127.0.0.1:9102 = 1
-pushgateway 127.0.0.1:9091 = 1
-shop 127.0.0.1:8080 = 1
+# TYPE shop_http_requests_total counter
+shop_http_requests_total{code="200",route="/checkout"} 438.0
+shop_http_requests_total{code="500",route="/checkout"} 46.0
+# TYPE shop_latency_seconds histogram
+shop_latency_seconds_bucket{le="0.1",route="/checkout"} 231.0
+shop_latency_seconds_bucket{le="+Inf",route="/checkout"} 484.0
+shop_latency_seconds_count{route="/checkout"} 484.0
 ```
 
 <!-- notes:
-Host networking lets the container reach the shop on the loopback address,
-and the listen address keeps Prometheus itself off the network. The real
-configuration has two more lines for the alert rules and two more jobs, the
-Pushgateway and the statsd_exporter, which come later. The output is the
-query up, run from Jennifer with the deck's query function and printed one
-line per target: 1 means the last scrape worked, 0 that it failed, which is
-the first thing to alert on.
+Prometheus runs as prom/prometheus v3.5.0 with host networking and listens on
+127.0.0.1 only. The text is curl on /metrics after a few minutes, cut down to
+the checkout route. render sorts label keys, makes the buckets cumulative, sets
++Inf to the count and adds _sum and _count; it throws on an invalid name or a
+metric given twice. The query up, run from Jennifer, gave 1 for the shop, the
+Pushgateway and the statsd_exporter: 1 means the last scrape worked, 0 that it
+failed, the first thing to alert on.
 -->
 
 ---
@@ -400,30 +376,157 @@ graph that goes flat.
 
 ---
 
+## InfluxDB: one line per point
+
+```jennifer excerpt
+def p as influxdb.Point init influxdb.point("shop_job");
+$p = influxdb.tag($p, "queue", "orders");
+$p = influxdb.field($p, "duration_ms", 53.2);
+$p = influxdb.intField($p, "items", 3);
+io.printf("%s\n", influxdb.line($p));
+io.printf("%s\n", influxdb.line(influxdb.atTime($p, time.now())));
+```
+
+```text
+shop_job,queue=orders duration_ms=53.2,items=3i
+shop_job,queue=orders duration_ms=53.2,items=3i 1795091540169180680
+```
+
+- Measurement, then **tags** (indexed strings), a space, **fields**
+  (typed values), a space, the time in **nanoseconds**
+- `3i` is an integer; `stringField` quotes, `boolField` writes `true`
+
+<!-- notes:
+Line protocol is InfluxDB's write format, and the deck's builders make it:
+point, then tag, field, intField, stringField or boolField, each returning a
+new Point, like the Prometheus deck's observe. line shows what write will
+send. Without a timestamp the server stamps the point on arrival; atTime sets
+it from a time.Time in nanoseconds. The builders escape spaces, commas and
+equals signs, and refuse a point without fields, an empty key or a newline.
+There are no counters or histograms here: you write what happened, and ask
+later.
+-->
+
+---
+
+## Timestamps and batches
+
+```jennifer excerpt
+$right = influxdb.atTime($right, $now);
+$wrong = influxdb.at($wrong, time.unix($now));     # seconds, not ns
+...
+if (len($pending) == $batch) {
+    influxdb.write($db, $pending);                 # one HTTP POST
+    ...
+    $pending = [];
+}
+```
+
+```text
+1970-01-01T00:00:01.795091416Z 2
+2026-11-19T12:30:16.798577523Z 1
+2000 points in 2000 writes, 13381 ms
+2000 points in 4 writes, 635 ms
+```
+
+<!-- notes:
+The deck always writes with precision ns, so at takes nanoseconds. Passing
+time.unix, which is seconds, is not an error: InfluxDB stores the point a
+second and a bit after 1970, as the InfluxQL SELECT shows. Use atTime, or
+time.unixNanos. The worker writes 2000 jobs, timestamped over ten minutes;
+one write per point took 13 seconds, batches of 500 took 0.6 seconds. Batch
+up to a few thousand points, and flush the rest before the program exits.
+-->
+
+---
+
+## Flux from Jennifer: exact quantiles
+
+```jennifer excerpt
+def body as string init influxdb.queryFlux($db, 'from(bucket: "shop")
+  |> range(start: -15m)
+  |> filter(fn: (r) => r._field == "duration_ms")
+  |> group(columns: ["queue"])
+  |> quantile(q: 0.95)');
+for (def row in csv.toRecords(csv.parse(strings.trim($body)))) {
+    io.printf("%s|pad=8 %f|prec=1 ms\n", $row["queue"],
+        convert.toFloat($row["_value"]));
+}
+```
+
+```text
+images   173.0 ms
+mails    169.3 ms
+orders   172.8 ms
+```
+
+<!-- notes:
+queryFlux posts the script and returns the CSV body as a string; the csv
+module parses it. Trim it first: InfluxDB ends the answer with an empty line,
+which strict csv.parse refuses. The Flux is a raw single-quoted string, so its
+quotes need no escaping. The durations were uniform between 20 and 180
+milliseconds, so the true 95th percentile is 172: computed from the raw
+points, not estimated from buckets like PromQL's 0.236. A 1.x client and
+query run InfluxQL instead, and InfluxDB 2 answered that as well.
+-->
+
+---
+
+## Tags, fields and cardinality
+
+```jennifer excerpt
+for (def i in 0..2000) {
+    def p as influxdb.Point init influxdb.point("shop_job_by_id");
+    $p = influxdb.tag($p, "job", "j{100000 + $i}");    # an id: wrong
+    $batch[] = influxdb.field($p, "duration_ms", 50.0);
+}
+```
+
+```text
+shop_job         9 series
+shop_job_by_id   2000 series
+```
+
+- A series is measurement plus **tag set**: 3 hosts x 3 queues = 9
+- Ids, texts, user input: a **field**, which is not indexed
+
+<!-- notes:
+The worker's shop_job has three hosts and three queues as tags, and 2000
+points make nine series. The same 2000 points with the job id as a tag make
+2000 series, and a busy worker would add one per job, forever: the index
+grows until queries slow down. The counts are Flux's
+influxdb.cardinality over the last hour, filtered by measurement. The rule is
+the one from the labels slide. The difference: InfluxDB has fields, so the id
+can still be stored, as a stringField.
+-->
+
+---
+
 ## Naming conventions
 
-| | Prometheus | StatsD |
-| --- | --- | --- |
-| Shape | `app_thing_unit_total`, snake_case | `app.area.thing`, dots |
-| Allowed | `[a-zA-Z_:][a-zA-Z0-9_:]*` | letters, digits, `_`, `-`, dots |
-| Units | base units: `_seconds`, `_bytes` | the type says it: `ms` timers |
-| Counters | end in `_total` | no suffix |
-| Dimensions | labels | segments, or DogStatsD tags |
+| | Prometheus | StatsD | InfluxDB |
+| --- | --- | --- | --- |
+| Shape | `app_thing_unit_total` | `app.area.thing` | `app_thing` + fields |
+| Allowed | `[a-zA-Z_:][a-zA-Z0-9_:]*` | letters, digits, `_ - .` | anything, escaped |
+| Units | base units: `_seconds` | the type: `ms` | field key: `_ms` |
+| Counters | end in `_total` | no suffix | count in the query |
+| Dimensions | labels | segments, DogStatsD tags | tags |
 
 One prefix per program (`shop_`, `shop.worker`); one unit per metric.
 
 <!-- notes:
 Prometheus names say what is measured and in which unit, and the unit is a
 base unit: seconds, not milliseconds; bytes, not megabytes. Counters end in
-_total. Info metrics end in _info with the value 1. StatsD uses dots, and the
-type in the line carries the unit for timers. Both decks check the names
-they get, and the StatsD deck also refuses colon, pipe and newline in a value
-or tag, so data from a request can never forge an extra metric line.
+_total. StatsD uses dots, and the type in the line carries the unit for
+timers. InfluxDB accepts almost any name, since the deck escapes it, but keep
+snake_case measurements and put the unit in the field key. The Prometheus and
+StatsD decks check the names they get, and StatsD also refuses colon, pipe and
+newline in a value or tag, so request data cannot forge a metric line.
 -->
 
 ---
 
-## What the decks throw
+## What Prometheus and StatsD throw
 
 ```text
 [prometheus] prometheus: invalid metric name: shop-requests
@@ -453,6 +556,36 @@ message text.
 
 ---
 
+## What InfluxDB throws
+
+```text
+[401 unauthorized] influxdb: HTTP 401: unauthorized access
+[404 not found] influxdb: HTTP 404: bucket "shpo" not found
+[422 unprocessable entity] influxdb: HTTP 422: failure writing
+  points to database: partial write: field type conflict: input
+  field "duration_ms" on measurement "shop_job" is type integer,
+  already exists as type float dropped=1
+[0 ] influxdb: point "shop_job" has no fields
+[net] net.connect: 127.0.0.1:8099: dial tcp 127.0.0.1:8099: connect:
+  connection refused
+```
+
+```jennifer excerpt
+def ie as influxdb.InfluxdbError init $e;  # $ie.status, $ie.code
+```
+
+<!-- notes:
+A wrong token, a misspelt bucket, an integer written to a float field, a point
+without fields and a stopped server, printed as status, code and message, long
+lines wrapped. Every
+error of kind influxdb is an InfluxdbError; status is 0 when the deck refused
+the point itself. The 422 is a partial write: in a batch, the other points
+were stored, which a second probe confirmed, yet write throws. The deck redacts
+the token from every message. Branch on status and code, never on the text.
+-->
+
+---
+
 ## From metrics to alerts
 
 ```yaml
@@ -473,7 +606,7 @@ def r as prometheus.Result init prometheus.query(PROM,
 firing: ShopErrorsHigh (warning)
 ```
 
-Delivery, once and resolved: [the alerting talk](https://academy.jennifer-lang.dev/mplx/alerting/).
+Delivery, once and resolved: [the alerting talk](https://academy.jennifer-lang.dev/talks/mplx/alerting/).
 
 <!-- notes:
 Alert on symptoms users feel, an error ratio or a latency, not on every
@@ -487,48 +620,25 @@ Jennifer program sends it to Gotify, Telegram, Slack and Discord itself.
 
 ---
 
-## Bundled modules and decks
-
-```jennifer excerpt
-import "prometheus.j" as prometheus;             # deprecated
-import "@jennifer/prometheus/" as prometheus;    # the deck
-import "statsd.j" as statsd;                     # deprecated
-import "@jennifer/statsd/" as statsd;            # the deck
-```
-
-- `prometheus.j`, `statsd.j` and `influxdb.j` ship with 0.26.0, marked
-  `@deprecated`, and are **removed in Jennifer 0.28.0**
-- Both decks export the same functions: the import is the only change
-- Decks are released on their own schedule; `jvc update` brings fixes
-
-<!-- notes:
-Jennifer 0.26.0 still bundles all three modules, so old programs run
-unchanged, but they are frozen and go away in 0.28.0. The decks started as
-copies of them and keep the same exported functions and structs, so the move
-is one import line per file plus jvc add. InfluxDB has its own deck too,
-@jennifer/influxdb, for the line protocol over HTTP; it is not covered here.
-Do it now, while both still exist side by side.
--->
-
----
-
 ## Which one when
 
 - **Prometheus, scraped:** long-running services; labels; you also get
   `up` for free, so a dead process is noticed
 - **Pushgateway:** batch and cron jobs; push "last success", not events
-- **StatsD:** many short processes, or a team already running an agent;
+- **StatsD:** many short processes, or an agent already on every host;
   hot paths where a send must never block
-- **Both?** statsd_exporter puts StatsD into Prometheus
+- **InfluxDB:** every event kept with its own time; exact quantiles,
+  irregular or sensor data, long history; a silent sender goes unnoticed
 - **Neither:** a per-request story belongs in a log
 
 <!-- notes:
 A rule of thumb. A service that runs all the time should expose /metrics:
 Prometheus then knows when it is gone, which no push system can tell you by
-itself. A job that runs and exits pushes once at the end. StatsD shines when
-there are many small processes, such as CGI-style scripts or workers that live
-for seconds, or when a Datadog or Telegraf agent is already on every host.
-And whatever you count, keep the labels bounded.
+itself. A job that runs and exits pushes once at the end. StatsD shines with
+many small processes or an agent already on every host. InfluxDB keeps the
+points themselves, so you can ask new questions of old data; that costs disk,
+and like StatsD it cannot tell a quiet sender from a dead one. statsd_exporter
+puts StatsD into Prometheus. Whatever you count, keep the tags bounded.
 -->
 
 ---
@@ -536,13 +646,14 @@ And whatever you count, keep the labels bounded.
 ## Takeaways and read more
 
 - Counters only go up: ask for `rate()`. Durations: a histogram
-- Labels from a short list; one series per distinct label set
-- `observe` returns a new `Metric`; keep metrics in one owner
-- StatsD is fire-and-forget: cheap, and silent when it fails
-- Decks: [deck-prometheus](https://github.com/jennifer-language/deck-prometheus),
-  [deck-statsd](https://github.com/jennifer-language/deck-statsd),
+- Labels and tags from a short list; ids go into fields or logs
+- `observe` and the point builders return new values; keep one owner
+- StatsD is fire-and-forget; InfluxDB: batch, timestamps in ns
+- Decks: [deck-prometheus](https://registry.jennifer-lang.dev/deck/jennifer/prometheus),
+  [deck-statsd](https://registry.jennifer-lang.dev/deck/jennifer/statsd),
+  [deck-influxdb](https://registry.jennifer-lang.dev/deck/jennifer/influxdb),
   [the registry](https://registry.jennifer-lang.dev/)
-- [Alerting with Jennifer](https://academy.jennifer-lang.dev/mplx/alerting/),
+- [Alerting with Jennifer](https://academy.jennifer-lang.dev/talks/mplx/alerting/),
   [jennifer-lang.dev](https://jennifer-lang.dev/)
 
 Based on Jennifer 0.26.0, November 2026.
@@ -550,8 +661,9 @@ Based on Jennifer 0.26.0, November 2026.
 <!-- notes:
 Metrics are the cheapest way to know how a program is doing over time, as
 long as you keep the label sets small and pick the right type: counters for
-things that happen, gauges for levels, histograms for durations. The
-Prometheus deck renders and queries, the StatsD deck sends, and both check
-their input strictly. Move off the bundled modules before 0.28.0, and when the
-numbers say something is wrong, the alerting talk shows how to tell someone.
+things that happen, gauges for levels, histograms for durations, raw points
+in InfluxDB when you want every event. The Prometheus deck renders and
+queries, the StatsD deck sends, the InfluxDB deck writes and queries. Move
+off the bundled modules before 0.28.0, and when the numbers say something is
+wrong, the alerting talk shows how to tell someone.
 -->

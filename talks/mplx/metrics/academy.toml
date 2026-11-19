@@ -1,9 +1,9 @@
-title = "Metrics with Jennifer: Prometheus and StatsD"
-description = "Counters, gauges, histograms and labels from Jennifer: /metrics for Prometheus with the @jennifer/prometheus deck, PromQL rate and quantiles, a Pushgateway for batch jobs, StatsD over UDP, naming, errors and the move off the bundled modules."
+title = "Metrics with Jennifer: Prometheus, StatsD and InfluxDB"
+description = "Counters, gauges, histograms and labels from Jennifer: /metrics for Prometheus, PromQL rate and quantiles, a Pushgateway, StatsD over UDP, and InfluxDB line protocol, batches, Flux and tag cardinality, with the @jennifer decks, their errors and the move off the bundled modules."
 author = "mplx"
 license = "CC-BY-4.0"
 lang = "en"
 jennifer = "0.26.0"
 date = "2026-11"
 level = "intermediate"
-tags = ["monitoring", "prometheus", "statsd", "http", "decks", "errors"]
+tags = ["monitoring", "prometheus", "statsd", "influxdb", "http", "decks", "errors"]
