@@ -405,8 +405,7 @@ func risky() {
 try {
     risky();
 } catch (e) {
-    io.printf("caught %s: %s
-", $e.kind, $e.message);
+    io.printf("caught %s: %s\n", $e.kind, $e.message);
 }
 ```
 
