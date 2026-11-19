@@ -1,0 +1,9 @@
+title = "A production web API in Jennifer"
+description = "An order API with webapi: versioned routes, one error envelope, paging, orm queries, migrations run once at deploy, JSON Schema contracts, idempotent POST, an order state machine, JSONPath selection, signed webhooks, structured logs and end-to-end tests. Based on Jennifer 0.26.0."
+author = "mplx"
+license = "CC-BY-4.0"
+lang = "en"
+jennifer = "0.26.0"
+date = "2026-11"
+level = "advanced"
+tags = ["web", "http", "sql", "postgresql", "json", "testing", "decks"]

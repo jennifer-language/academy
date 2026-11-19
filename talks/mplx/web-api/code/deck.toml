@@ -1,0 +1,28 @@
+[package]
+name = "shop"
+version = "0.1.0"
+description = "The order API of the academy talk A production web API in Jennifer"
+license = "CC-BY-4.0"
+authors = []
+keywords = []
+capabilities = []
+bin = ""
+bin-dir = ""
+
+[package.urls]
+
+[engines]
+jennifer = ">=0.26.0"
+
+[decks]
+"@deckyard/jsonschema" = "^0.2.0"
+"@deckyard/jsonpath" = "^0.1.0"
+"@deckyard/fsm" = "^0.2.0"
+
+[dev-decks]
+
+[conflicts]
+
+[sources]
+
+[registries]
