@@ -1,0 +1,12 @@
+{{ define "content" }}
+{{ range .posts }}
+<article>
+  <h2><a href="/posts/{{ .slug }}/">{{ .title | html }}</a></h2>
+  <p class="date">{{ .date }}</p>
+  <p>{{ .summary | html }}</p>
+</article>
+{{ end }}
+<h2>Upcoming events</h2>
+{{ .events }}
+<p><a href="/events.ics">Add them to your calendar</a></p>
+{{ end }}

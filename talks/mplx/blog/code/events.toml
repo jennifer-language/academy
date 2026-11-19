@@ -1,0 +1,13 @@
+[[event]]
+id = "meetup-2026-12@blog.example.org"
+title = "Jennifer meetup"
+start = 2026-12-03T18:00:00Z
+end = 2026-12-03T20:00:00Z
+place = "Vienna"
+
+[[event]]
+id = "qa-2027-01@blog.example.org"
+title = "Q&A: your first blog"
+start = 2027-01-14T17:00:00Z
+end = 2027-01-14T18:00:00Z
+place = "Online"

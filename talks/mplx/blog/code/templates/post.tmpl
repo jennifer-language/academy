@@ -1,0 +1,8 @@
+{{ define "content" }}
+<article>
+  <h1>{{ .post.title | html }}</h1>
+  <p class="date">{{ .post.date }}</p>
+  {{ .post.body }}
+</article>
+<p><a href="/">&larr; All posts</a></p>
+{{ end }}

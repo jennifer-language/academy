@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>{{ .title | html }} - {{ .site.title | html }}</title>
+<style>
+body { font-family: Georgia, serif; max-width: 40rem; margin: 1.5rem auto;
+       padding: 0 1rem; color: #222; background: #fdfbf7; line-height: 1.5; }
+header a { font-size: 1.6rem; font-weight: bold; color: #7a2e8c;
+           text-decoration: none; }
+h1, h2 { font-family: sans-serif; margin: .8rem 0 .2rem; }
+article { border-bottom: 1px solid #ddd; padding-bottom: .3rem; }
+article p { margin: .3rem 0; }
+.date { color: #777; font-size: .9rem; }
+pre { background: #eee; padding: .5rem; }
+footer { margin-top: 1.5rem; font-size: .9rem; color: #555; }
+a { color: #7a2e8c; }
+</style>
+<link rel="alternate" type="application/rss+xml" href="/feed.xml">
+</head>
+<body>
+<header><a href="/">{{ .site.title | html }}</a></header>
+<main>{{ block "content" . }}{{ end }}</main>
+<footer>{{ .site.author | html }} &middot;
+<a href="/feed.xml">RSS</a> &middot; <a href="/atom.xml">Atom</a> &middot;
+<a href="/author.vcf">Contact card</a></footer>
+</body>
+</html>

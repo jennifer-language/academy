@@ -1,0 +1,9 @@
+title = "Your own small blog with Jennifer"
+description = "Build a static site generator step by step: Markdown posts with front matter, tengine templates, safe escaping with html, an RSS and Atom feed, an iCalendar file of events, a vCard, and a tiny preview server."
+author = "mplx"
+license = "CC-BY-4.0"
+lang = "en"
+jennifer = "0.26.0"
+date = "2026-11"
+level = "beginner"
+tags = ["web", "markdown", "templates", "files", "http"]
