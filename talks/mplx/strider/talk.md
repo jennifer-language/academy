@@ -485,9 +485,9 @@ software, and both documentations state that limit plainly.
 
 ## Read more
 
-- Reader: [deckyard/deck-strider-frequency-converter](https://github.com/deckyard/deck-strider-frequency-converter),
+- Reader: [deckyard/deck-strider-frequency-converter](https://registry.jennifer-lang.dev/deck/deckyard/strider),
   `@deckyard/strider` in the [registry](https://registry.jennifer-lang.dev/)
-- Statistics: [deckyard/deck-forensicgenetics](https://github.com/deckyard/deck-forensicgenetics),
+- Statistics: [deckyard/deck-forensicgenetics](https://registry.jennifer-lang.dev/deck/deckyard/forensicgenetics),
   `@deckyard/forensicgenetics`
 - STRidER itself: strider.online (download, formulae, terms of use)
 - This talk: in the [Jennifer Academy](https://academy.jennifer-lang.dev/)

@@ -482,7 +482,7 @@ refuses a sheet above 100,000 rows with kind "limit".
 
 - `csv` module: `docs/modules/csv.md` in the
   [Jennifer repository](https://github.com/jennifer-language/jennifer)
-- The deck: [deckyard/deck-sheets](https://github.com/deckyard/deck-sheets),
+- The deck: [deckyard/deck-sheets](https://registry.jennifer-lang.dev/deck/deckyard/sheets),
   in the [registry](https://registry.jennifer-lang.dev/) as `@deckyard/sheets`
 - Guides there: streaming, number formats, evaluation, untrusted files
 - This talk: in the [Jennifer Academy](https://academy.jennifer-lang.dev/)
