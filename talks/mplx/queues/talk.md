@@ -4,69 +4,50 @@ ratio: 16:9
 transition: slide
 ---
 
-# Queues and messaging: Resque, AMQP and MQTT
+# Queues and messaging: Resque, AMQP, MQTT and ZeroMQ
 
 ![Jennifer](jennifer-logo.png)
 
-Background jobs on Redis, a RabbitMQ broker with acks, and pub/sub for
-small devices, with three modules that ship with the interpreter.
+Background jobs on Redis, a RabbitMQ broker with acks, pub/sub for small
+devices, and ZeroMQ without any broker: four modules that ship with the
+interpreter.
 
 Based on **Jennifer 0.26.0**, November 2026, by [@mplx](https://github.com/mplx).
 
 <!-- notes:
 This talk is about handing work to someone else and trusting that it gets
-done. Jennifer ships three clients for that in its standard module directory:
+done. Jennifer ships four modules for that in its standard module directory:
 resque for job queues on Redis, amqp for RabbitMQ and other AMQP 0-9-1
-brokers, and mqtt for MQTT 3.1.1. Every program and every output on these
-slides was run with Jennifer 0.26.0 against Redis 7, RabbitMQ 4 and
-Mosquitto 2 in local containers. The passwords you see are placeholders.
+brokers, mqtt for MQTT 3.1.1, and zmq, which speaks ZeroMQ's wire protocol
+with no server at all. Every program and every output on these slides was
+run with Jennifer 0.26.0 against Redis 7, RabbitMQ 4, Mosquitto 2 and pyzmq
+27.3 with libzmq 4.3.5 in local containers. The passwords are placeholders.
 -->
 
 ---
 
-## Why put a queue in between
+## Why a queue, and four shapes
 
-- **Decoupling:** the web request enqueues "send the welcome mail" and
-  answers at once; a worker sends it later, maybe on another machine
-- **Retries:** a failed job is retried or parked, not lost with the
-  request that caused it
-- **Load levelling:** a burst of 10 000 uploads becomes a queue that four
-  workers drain at their own pace
-- **Fan-out:** one event, many interested parties that do not know each
-  other
-
-<!-- notes:
-Every reason comes down to the same thing: the producer and the consumer no
-longer have to be alive, fast and correct at the same moment. The price is a
-new moving part, a server that holds the messages, and new questions: what
-happens to a message when a worker dies halfway, can it arrive twice, and who
-notices when nobody consumes it. The rest of the talk answers those questions
-for each of the three modules.
--->
-
----
-
-## Three shapes, three bundled modules
+Producer and consumer no longer need to be alive, fast and correct at the
+same moment: **decoupling, retries, load levelling, fan-out**.
 
 | Module | Shape | Server | Typical use |
 | --- | --- | --- | --- |
 | `resque.j` | job queue | Redis | background jobs of a web app |
 | `amqp.j` | broker with exchanges and acks | RabbitMQ | services talking to services |
 | `mqtt.j` | lightweight pub/sub | Mosquitto, ... | sensors, devices, dashboards |
+| `zmq.j` | sockets with patterns | none | pipelines, peers using libzmq |
 
-```jennifer excerpt
-import "resque.j" as resque;   # bundled modules, not decks:
-import "amqp.j" as amqp;       # no jvc, no [decks] entry
-import "mqtt.j" as mqtt;
-```
+All four are bundled: `import "zmq.j" as zmq;` needs no jvc and no deck.
 
 <!-- notes:
-These are bundled modules: they live in the interpreter's module directory
-and are imported by file name, without jvc and without a deck.toml entry. All
-three speak their protocol over the net library, so they need the default
-jennifer binary, not the stock jennifer-tiny build. Resque needs the redis
-module too, and Options structs take a transport.Security value, so most
-programs also import redis.j and transport.j.
+The web request enqueues "send the welcome mail" and answers at once; a
+worker sends it later, retries it when it fails, and a burst of uploads
+becomes a queue that four workers drain at their own pace. The price is a new
+moving part, a server that holds the messages, except for ZeroMQ, which has
+none. All four modules speak their protocol over the net library, so they
+need the default jennifer binary, not jennifer-tiny. Resque also needs
+redis.j, and most Options structs take a transport.Security value.
 -->
 
 ---
@@ -409,6 +390,135 @@ subscribers see. An empty retained payload clears it.
 
 ---
 
+## ZeroMQ: no broker, just sockets
+
+```jennifer excerpt
+def l as zmq.Listener init zmq.listen("REP", "127.0.0.1:0");
+def server as task of int init spawn {
+    def s as zmq.Socket init zmq.accept($l);       # one peer
+    def req as zmq.Message init zmq.receive($s);
+    zmq.reply($s, $req, [utf8("pong " + zmq.text($req))]);
+    return 1;
+};
+def c as zmq.Socket init zmq.connect("REQ", zmq.address($l));
+zmq.sendText($c, "ping");
+io.printf("%s, from a %s peer\n", zmq.text(zmq.receive($c)),
+    $c.peerKind);
+```
+
+```text
+pong ping, from a REP peer
+```
+
+<!-- notes:
+ZeroMQ is a wire protocol, ZMTP 3.1, plus socket patterns; the two programs
+talk to each other directly over TCP. The module implements the protocol in
+Jennifer, so nothing needs to be installed. Unlike libzmq, a socket here is
+one connection to one peer and nothing runs in the background: listen and
+accept take peers one at a time, and connect dials one. REQ adds the empty
+delimiter frame, REP keeps it as the envelope that reply puts back. utf8 is a
+one-line helper around convert.bytesFromString.
+-->
+
+---
+
+## PUSH / PULL: a ventilator and its workers
+
+```jennifer excerpt
+func worker(addr as string) {
+    def s as zmq.Socket init zmq.connect("PULL", $addr);
+    def done as int init 0;
+    while (true) {
+        if (zmq.text(zmq.receive($s)) == "END") { return $done; }
+        time.sleep(time.fromMilliseconds(100));   # the "work"
+        $done = $done + 1;
+    }
+}
+for (def w in 0..4) { $pool[] = spawn { return worker($addr); }; }
+for (def w in 0..4) { $peers[] = zmq.accept($l); }   # PUSH
+for (def n in 0..12) { zmq.sendText($peers[$n % 4], "job {$n}"); }
+```
+
+```text
+per worker [3, 3, 3, 3], 301 ms
+```
+
+<!-- notes:
+The ventilator listens as PUSH and accepts four workers that connect as PULL.
+Because one socket is one peer, the round robin over the accepted sockets is
+the program's own line, where libzmq would do it inside one socket. Twelve
+jobs of 100 milliseconds took 301 milliseconds instead of 1.2 seconds; after
+the jobs, each worker gets END. The workers could as well be separate
+processes on other machines running the same function.
+-->
+
+---
+
+## PUB / SUB: prefixes, filtered by the subscriber
+
+```jennifer excerpt
+def s as zmq.Socket init zmq.subscribe(
+    zmq.connect("SUB", $addr), "weather.");      # in a spawn
+for (def i in 0..2) {
+    def m as zmq.Message init zmq.receive($s);   # skips the rest
+    io.printf("%s = %s\n", zmq.text($m), txt($m.frames[1]));
+}
+# the publisher, after zmq.accept($l):
+zmq.send($pub, [b("weather.vienna"), b("12.5")]);
+zmq.send($pub, [b("traffic.a23"), b("jam")]);
+zmq.send($pub, [b("weatherstation.7"), b("up")]);
+zmq.send($pub, [b("weather.linz"), b("9.0")]);
+```
+
+```text
+weather.vienna = 12.5
+weather.linz = 9.0
+```
+
+<!-- notes:
+A subscription is a byte prefix of the first frame, so put the topic in frame
+one and the data after it; weather dot does not match weatherstation. A
+Jennifer PUB sends everything and the SUB drops what it did not subscribe to.
+Careful with poll on a SUB: a dropped message also returns an empty list, so
+an empty poll does not mean the publisher went quiet. I tried exactly that:
+after traffic.a23 the first poll came back empty, weather.linz right behind it.
+-->
+
+---
+
+## Talking to libzmq, with PLAIN
+
+```text
+$ jennifer run slowjoin.j   # SUB, 0.5 s after a pyzmq PUB started
+first tick seen: 10
+$ jennifer run plain.j      # REQ to a pyzmq REP with PLAIN and ZAP
+python got hello
+refused, peerReason 400
+```
+
+```jennifer excerpt
+def o as zmq.Options init zmq.defaultOptions();
+$o.mechanism = "PLAIN";      # user and password in clear text
+$o.username = "ada";
+$o.password = $password;
+def s as zmq.Socket init zmq.connectWith("REQ", ADDR, $o);
+```
+
+- Nothing is stored in between: no connected peer, no message
+- No high-water mark: `send` blocks once the peer's TCP buffers are full
+
+<!-- notes:
+The pyzmq publisher bound its port and sent a tick every 50 milliseconds from
+the start. Ticks one to nine were gone before the subscriber connected and
+subscribed: the slow joiner, because a libzmq PUB drops what no subscription
+asked for, and nothing is stored anywhere. In three runs the first tick was
+10, 11 and 10. The PLAIN server checked the password through a ZAP handler,
+which answered status 400 for the wrong one; a caught ZmqError carries it in
+peerReason. PLAIN is not encryption, CURVE is not supported.
+-->
+
+---
+
 ## Delivery guarantees compared
 
 | | Lost when | Twice when |
@@ -418,6 +528,7 @@ subscribers see. An empty retained payload clears it.
 | AMQP, manual ack | unconfirmed publish, transient on restart | consumer dies before `ack` |
 | MQTT QoS 0 | link drops, nobody subscribed | never |
 | MQTT QoS 1 | subscriber offline, no persistent session | PUBACK lost, DUP resent |
+| ZeroMQ | no peer yet, slow joiner, peer or process dies | never |
 
 At most once, or at least once and **idempotent handlers**. Nothing here is
 exactly once.
@@ -428,7 +539,10 @@ loses it unless your own code records progress: that is at most once. AMQP
 with manual acks and publisher confirms is at least once. MQTT QoS 1 is at
 least once between client and broker; whether a subscriber that was offline
 gets queued messages depends on a persistent session, clean session false.
-Design every handler so that running it twice does no harm.
+ZeroMQ stores nothing and never resends: at most once. The module has no
+high-water mark either; a send blocks once the reader's TCP buffers are full,
+in my test after about forty messages of 64 KiB. Make every handler safe to
+run twice.
 -->
 
 ---
@@ -441,9 +555,11 @@ Design every handler so that running it twice does no harm.
 | AMQP, bad password | `closed` | `connection closed after 0 of 1 bytes` |
 | AMQP, no such queue | `amqp` | `404 NOT_FOUND - no queue 'jobs' ...` |
 | MQTT, bad password | `mqtt` | `CONNACK code 5 (not authorized)` |
+| ZeroMQ, bad PLAIN password | `zmq` | `peer refused the handshake: ...` |
+| ZeroMQ, REQ to a PULL | `zmq` | `a REQ socket cannot talk to a PULL peer` |
 
-- `amqp.AmqpError`: `replyCode`, `replyText`, `scope`; `mqtt.MqttError`:
-  `connackCode`, `topic`; malformed Resque job: kind `"resque"`
+- `AmqpError`: `replyCode`, `replyText`, `scope`; `MqttError`:
+  `connackCode`, `topic`; `ZmqError`: `peerReason`; Resque: kind `"resque"`
 - Generic kinds pass through: `"net"`, `"closed"`, `"timeout"`, `"limit"`
 - After a broker `Close` the AMQP connection is unusable: open a new one
 
@@ -451,9 +567,10 @@ Design every handler so that running it twice does no harm.
 The table condenses the real output of one test program. Two surprises. A wrong
 RabbitMQ password is not an amqp error with code 403: RabbitMQ closes the
 socket, so you see kind closed. Mosquitto refuses a bad password with CONNACK
-code 5, not 4. Decide by kind and by the struct fields, never by the message
-text. A broker that stops answering a handshake or a reply fails after 30
-seconds with kind timeout.
+code 5, not 4. A Jennifer PLAIN listener refuses with the reason "invalid
+username or password", which lands in peerReason; a ZeroMQ peer that went
+away is kind closed on receive and kind net on send. Decide by kind and by
+the struct fields, never by the message text.
 -->
 
 ---
@@ -484,8 +601,9 @@ I restarted the Mosquitto container while this subscriber sat in receive.
 receive threw kind closed and the loop called reconnect; while the broker was
 down, each dial failed with kind net and the pause doubled. mqtt.reconnect re-dials, sends the
 stored CONNECT and subscribes the tracked topics again. AMQP and Redis have no
-reconnect call: build a new Conn or Session, declare again, and carry on. A
-refused password is rethrown, not retried.
+reconnect call, and neither has zmq: build a new Conn, Session or Socket,
+declare or subscribe again, and carry on. A refused password is rethrown, not
+retried.
 -->
 
 ---
@@ -530,18 +648,21 @@ each job to exactly one of them.
   queues, acks and confirms, and you can run RabbitMQ
 - **MQTT** when the other end is a sensor, a microcontroller or a phone:
   small packets, retained state, last wills, flaky links
-- Whatever you pick: one connection per task, idempotent handlers, a
-  reconnect loop, and a decision by error kind
+- **ZeroMQ** when there should be no broker: a pipeline of your own
+  programs, or a peer that already speaks libzmq; delivery is yours
+- Always: one connection per task, idempotent handlers, a reconnect loop
 
 Docs: [resque](https://github.com/jennifer-language/jennifer/blob/main/docs/modules/resque.md),
 [amqp](https://github.com/jennifer-language/jennifer/blob/main/docs/modules/amqp.md),
-[mqtt](https://github.com/jennifer-language/jennifer/blob/main/docs/modules/mqtt.md)
+[mqtt](https://github.com/jennifer-language/jennifer/blob/main/docs/modules/mqtt.md),
+[zmq](https://github.com/jennifer-language/jennifer/blob/main/docs/modules/zmq.md)
 
 <!-- notes:
-The three overlap less than it seems. Resque is the smallest step: a Redis
+The four overlap less than it seems. Resque is the smallest step: a Redis
 list and a convention. AMQP gives you a real broker with routing and
 acknowledgements, at the cost of running and understanding RabbitMQ. MQTT is
 built for devices on weak networks, and its retained messages and wills
-describe state rather than work. Each module's documentation has the full
-list of calls and its limits.
+describe state rather than work. ZeroMQ removes the server and with it every
+guarantee a server gives. Whatever you pick, decide by error kind. Each
+module's documentation has the full list of calls and its limits.
 -->
