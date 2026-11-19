@@ -1,0 +1,27 @@
+[package]
+name = "codehost-talk"
+version = "0.1.0"
+description = "The programs of the academy talk One API over GitHub, GitLab and Forgejo"
+license = "CC-BY-4.0"
+authors = ["mplx"]
+keywords = []
+capabilities = ["net", "exec"]
+bin = ""
+bin-dir = ""
+
+[package.urls]
+
+[engines]
+jennifer = ">=0.26.0"
+
+[decks]
+"@deckyard/codehost" = ">=0.3.0"
+"@deckyard/git" = ">=0.2.0"
+
+[dev-decks]
+
+[conflicts]
+
+[sources]
+
+[registries]

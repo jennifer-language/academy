@@ -1,0 +1,12 @@
+# forges.toml without the GitHub stand-in, which has no pull requests.
+[[forge]]
+backend = "forgejo"
+host = "http://127.0.0.1:13300"
+repo = "relbot/tempo"
+token = "FORGEJO_TOKEN"
+
+[[forge]]
+backend = "gitlab"
+host = "http://127.0.0.1:18929"
+repo = "relbot/tempo"
+token = "GITLAB_TOKEN"

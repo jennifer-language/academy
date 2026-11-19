@@ -1,0 +1,9 @@
+title = "One API over GitHub, GitLab and Forgejo"
+description = "Release a project on several code forges from one Jennifer script with @deckyard/codehost: repositories, issues, labels, pull and merge requests, releases with assets, a CI gate, and where the forges differ in errors, tokens, paging, rate limits and plain http."
+author = "mplx"
+license = "CC-BY-4.0"
+lang = "en"
+jennifer = "0.26.0"
+date = "2026-11"
+level = "advanced"
+tags = ["decks", "automation", "errors", "security", "ci", "git"]

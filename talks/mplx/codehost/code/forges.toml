@@ -1,0 +1,19 @@
+# Where tempo lives. The token of each forge comes from the variable
+# named in `token`, never from this file.
+[[forge]]
+backend = "github"
+host = "http://127.0.0.1:18080"
+repo = "relbot/tempo"
+token = "GITHUB_TOKEN"
+
+[[forge]]
+backend = "forgejo"
+host = "http://127.0.0.1:13300"
+repo = "relbot/tempo"
+token = "FORGEJO_TOKEN"
+
+[[forge]]
+backend = "gitlab"
+host = "http://127.0.0.1:18929"
+repo = "relbot/tempo"
+token = "GITLAB_TOKEN"
