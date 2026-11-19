@@ -1,0 +1,26 @@
+[package]
+name = "invoicing"
+version = "0.1.0"
+description = ""
+license = ""
+authors = []
+keywords = []
+capabilities = []
+bin = ""
+bin-dir = ""
+
+[package.urls]
+
+[engines]
+
+[decks]
+"@deckyard/vies" = "0.3.0"
+"@deckyard/money" = "0.2.0"
+
+[dev-decks]
+
+[conflicts]
+
+[sources]
+
+[registries]

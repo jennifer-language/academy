@@ -1,0 +1,9 @@
+title = "Invoicing with web services: VAT, SOAP and GraphQL"
+description = "Invoices from a GraphQL API: EU VAT numbers checked with VIES through the soap module and the @deckyard/vies deck, reverse charge, amounts with @deckyard/money, a PDF per invoice, and retries, caching and an audit trail for when VIES is down."
+author = "mplx"
+license = "CC-BY-4.0"
+lang = "en"
+jennifer = "0.26.0"
+date = "2026-11"
+level = "advanced"
+tags = ["invoicing", "soap", "graphql", "money", "pdf", "errors", "decks"]
