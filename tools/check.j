@@ -12,11 +12,15 @@
  *   jennifer run tools/check.j --fast          # skip parsing code and building
  *
  * Run it from the repository root. `JENNIFER` names the interpreter used for
- * the code blocks and for cantrip (default `jennifer`), `CANTRIP` the cantrip
+ * the code blocks, for `jennifer lint` over each talk's code/ programs and for
+ * cantrip (default `jennifer`), `CANTRIP` the cantrip
  * launcher (default: `../apps/cantrip/bin/cantrip`, the workspace's checkout,
  * when it exists, else `cantrip` on PATH; CI sets it to its own clone).
  * Prints one `file:line: rule: message` line per problem and exits 1 when
- * there is any.
+ * there is any. Programs in code/ are linted without their decks: vendor/ is
+ * never shipped, lint accepts an `@scope/deck/` import it cannot resolve and
+ * leaves the calls into it unchecked, and a note says how many programs that
+ * concerns.
  * @module check
  * @author mplx <mplx@jennifer-lang.dev>
  * @license LGPL-3.0-only
@@ -144,6 +148,7 @@ if (not os.hasEnv("CANTRIP") and fs.isFile("../apps/cantrip/bin/cantrip")) {
 
 def findings as list of rules.Finding init rules.checkLayout("talks");
 def count as int init 0;
+def deckUsers as int init 0;
 if (fs.isDir("talks")) {
     for (def user in fs.list("talks")) {
         if (not fs.isDir(path.join("talks", $user))) {
@@ -158,6 +163,7 @@ if (fs.isDir("talks")) {
             for (def f in rules.checkTalk($dir, $user, $opts)) {
                 $findings[] = $f;
             }
+            $deckUsers = $deckUsers + len(rules.deckPrograms($dir));
         }
     }
 }
@@ -169,6 +175,12 @@ for (def file in repoTextFiles()) {
 
 for (def f in $findings) {
     io.printf("%s\n", rules.describe($f));
+}
+if ($opts.parseCode and $deckUsers > 0) {
+    io.printf(
+        "check: note: %d program(s) in code/ import decks; vendor/ is not shipped, so lint " +
+            "leaves their calls into decks unchecked\n",
+        $deckUsers);
 }
 if (os.hasEnv("GITHUB_ACTIONS")) {
     annotate($findings);
