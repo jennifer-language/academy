@@ -288,7 +288,7 @@ loop with that error. The handler is the same in all three decks.
 
 ```text
 fake: POST /v1/messages (x-api-key) -> 200, 381 bytes in
-fake: POST /v1/messages (x-api-key) -> 200, 996 bytes in
+fake: POST /v1/messages (x-api-key) -> 200, 915 bytes in
 Reorder nuts (80) and washers (0); bolts are fine (1200).
 [3 tool calls in 2 requests, stopped ""]
 ```
@@ -455,8 +455,8 @@ fake: POST /v1beta/models/gemini-3.8-flash:generateContent ...
 The trailing lint-disable comment silences L105, jennifer lint's warning for a
 loop whose condition is always true: this server loop is meant to run until
 the process is stopped.
-The fake behind this talk serves all three paths with scripted answers in
-order: a text reply, a tool-call reply, the final answer, then a 429. It logs
+The fake behind this talk serves all three paths with scripted answers:
+a text reply, a tool-call reply, the final answer, and a 429 for one model. It logs
 which key header arrived, never its value. Start it on a free port, set the
 three base URL variables and the keys to obviously fake values, and the same
 programs run offline. A 429 or a malformed body is one more scripted answer.
@@ -466,11 +466,11 @@ programs run offline. A 429 or a malformed body is one more scripted answer.
 
 ## Read more
 
-- [deckyard/deck-anthropic](https://github.com/deckyard/deck-anthropic):
+- [deckyard/deck-anthropic](https://registry.jennifer-lang.dev/deck/deckyard/anthropic):
   thinking, effort, caching, batches, token counting
-- [deckyard/deck-openai](https://github.com/deckyard/deck-openai):
+- [deckyard/deck-openai](https://registry.jennifer-lang.dev/deck/deckyard/openai):
   compatible servers, structured output, embeddings
-- [deckyard/deck-gemini](https://github.com/deckyard/deck-gemini):
+- [deckyard/deck-gemini](https://registry.jennifer-lang.dev/deck/deckyard/gemini):
   files, context caching, embeddings, thinking levels
 - Each deck's `docs/design.md`: scope, limits, what is not covered yet
 - The language: [jennifer-lang.dev](https://jennifer-lang.dev/), the

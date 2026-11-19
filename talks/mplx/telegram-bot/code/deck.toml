@@ -1,0 +1,25 @@
+[package]
+name = "dicebot"
+version = "0.1.0"
+description = ""
+license = ""
+authors = []
+keywords = []
+capabilities = []
+bin = ""
+bin-dir = ""
+
+[package.urls]
+
+[engines]
+
+[decks]
+"@jennifer/telegram" = "^0.2.0"
+
+[dev-decks]
+
+[conflicts]
+
+[sources]
+
+[registries]

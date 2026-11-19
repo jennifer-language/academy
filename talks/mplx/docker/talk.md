@@ -189,11 +189,11 @@ $ docker run --rm --entrypoint sh shelf:latest \
     -c 'id; ls -l /app; touch /app/x'
 uid=10001(jennifer) gid=999(jennifer) groups=999(jennifer)
 total 16
--rw-r--r-- 1 root root  761 Nov 18 15:35 addmember.j
--rw-r--r-- 1 root root 6070 Nov 18 15:44 app.j
--rw-r--r-- 1 root root  520 Nov 18 15:35 healthcheck.j
-drwxr-xr-x 1 root root   12 Nov 18 15:35 public
-drwxr-xr-x 1 root root   28 Nov 18 15:47 src
+-rw-r--r-- 1 root root  919 Nov 19 17:23 addmember.j
+-rw-r--r-- 1 root root 6300 Nov 19 17:23 app.j
+-rw-r--r-- 1 root root  451 Nov 19 17:23 healthcheck.j
+drwxr-xr-x 1 root root   12 Nov 19 17:23 public
+drwxr-xr-x 1 root root   28 Nov 19 17:23 src
 touch: cannot touch '/app/x': Permission denied
 ```
 

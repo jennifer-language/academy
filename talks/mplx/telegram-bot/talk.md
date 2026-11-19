@@ -347,7 +347,7 @@ $ TELEGRAM_BOT_TOKEN=123456:TEST-TOKEN \
 running as @jennifer_dice_bot
 ```
 
-A fake Bot API in 134 lines: `httpd`, scripted updates, one 429.
+A fake Bot API in 146 lines: `httpd`, scripted updates, one 429.
 
 <!-- notes:
 botWith points the bot at any base URL: a self-hosted Bot API server, or a
@@ -367,7 +367,7 @@ The deck's own tests work the same way.
   `telegram.parseUpdate` reads the same JSON in a `web` handler.
 - **Not yet in the deck:** the chat id of a button press, editing a sent
   message, the sender of a message (all reachable through the raw JSON)
-- The deck: [jennifer-language/deck-telegram](https://github.com/jennifer-language/deck-telegram)
+- The deck: [jennifer-language/deck-telegram](https://registry.jennifer-lang.dev/deck/jennifer/telegram)
 - The language: [jennifer-lang.dev](https://jennifer-lang.dev/), this talk in
   the [Jennifer Academy](https://academy.jennifer-lang.dev/)
 

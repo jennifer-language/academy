@@ -1,0 +1,10 @@
+# .dockerignore: nothing is sent unless it is named here
+*
+!app.j
+!addmember.j
+!healthcheck.j
+!src/
+!public/
+!docs/
+!grimoire.toml
+**/*_test.j

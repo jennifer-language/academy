@@ -1,0 +1,6 @@
+body { font-family: system-ui, sans-serif; max-width: 40rem; margin: 2rem auto; padding: 0 1rem; }
+header { display: flex; justify-content: space-between; align-items: baseline; }
+li { margin: 0.4rem 0; }
+li form, header form { display: inline; margin-left: 0.5rem; }
+label { display: block; margin: 0.5rem 0; }
+.error { color: #a00; }

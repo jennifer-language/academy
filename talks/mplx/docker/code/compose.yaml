@@ -1,0 +1,28 @@
+services:
+  db:
+    image: mariadb:11.4
+    environment:
+      MARIADB_DATABASE: shelf
+      MARIADB_USER: shelf
+      MARIADB_PASSWORD: ${DB_PASSWORD:?set DB_PASSWORD in .env}
+      MARIADB_RANDOM_ROOT_PASSWORD: "1"
+    volumes: [db:/var/lib/mysql]
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      interval: 5s
+
+  app:
+    build: .
+    image: shelf:latest
+    depends_on:
+      db: {condition: service_healthy}
+    environment:
+      SHELF_DB_DSN: "shelf:${DB_PASSWORD}@tcp(db:3306)/shelf"
+      SHELF_CSRF_SECRET: ${CSRF_SECRET:?set CSRF_SECRET in .env}
+    ports: ["127.0.0.1:8080:8080"]
+    read_only: true
+    cap_drop: [ALL]
+    security_opt: ["no-new-privileges:true"]
+
+volumes:
+  db:

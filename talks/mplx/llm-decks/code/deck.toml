@@ -1,0 +1,27 @@
+[package]
+name = "llmdemo"
+version = "0.1.0"
+description = ""
+license = ""
+authors = []
+keywords = []
+capabilities = []
+bin = ""
+bin-dir = ""
+
+[package.urls]
+
+[engines]
+
+[decks]
+"@deckyard/anthropic" = "^0.1.0"
+"@deckyard/openai" = "^0.1.0"
+"@deckyard/gemini" = "^0.1.0"
+
+[dev-decks]
+
+[conflicts]
+
+[sources]
+
+[registries]

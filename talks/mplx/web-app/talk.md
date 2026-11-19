@@ -352,7 +352,7 @@ def const LIST as string init '{{ define "main" }}
 ```
 
 ```text
-<li>&lt;script&gt;alert(1)&lt;/script&gt; by Mallory (added by ada) - read</li>
+<li>&lt;script&gt;alert(1)&lt;/script&gt; by Mallory - read</li>
 ```
 
 <!-- notes:

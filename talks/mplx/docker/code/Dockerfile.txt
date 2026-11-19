@@ -1,0 +1,22 @@
+# syntax=docker/dockerfile:1
+ARG JENNIFER_IMAGE=ghcr.io/jennifer-language/jennifer:0.26.0
+ARG GRIMOIRE_IMAGE=ghcr.io/jennifer-language/grimoire:0.5.0
+
+FROM ${GRIMOIRE_IMAGE} AS docs
+COPY grimoire.toml ./
+COPY docs/ docs/
+RUN ["jennifer", "run", "/opt/grimoire/bin/grimoire", "build"]
+
+FROM ${JENNIFER_IMAGE}
+COPY app.j addmember.j healthcheck.j /app/
+COPY src/ /app/src/
+COPY public/ /app/public/
+COPY --from=docs --chown=root:root /work/site/ \
+    /app/public/static/handbook/
+WORKDIR /app
+RUN ["jennifer", "lint", "app.j", "addmember.j", "healthcheck.j", \
+     "src/store.j", "src/views.j"]
+EXPOSE 8080
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
+    CMD ["jennifer", "run", "/app/healthcheck.j"]
+CMD ["run", "app.j"]
