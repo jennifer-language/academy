@@ -1,0 +1,9 @@
+title = "Images, barcodes and labels with Jennifer"
+description = "Load, resize, crop and re-encode pictures with the images library, hand the rest to ImageMagick, make QR, Code 128, EAN-13, GS1-128 and DataMatrix codes, print ZPL and cab labels, scan a document to PDF over eSCL, and build a shipping label."
+author = "mplx"
+license = "CC-BY-4.0"
+lang = "en"
+jennifer = "0.26.0"
+date = "2026-11"
+level = "intermediate"
+tags = ["images", "barcodes", "labels", "pdf", "decks", "hardware", "limits"]
