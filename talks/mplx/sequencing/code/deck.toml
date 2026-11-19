@@ -1,0 +1,30 @@
+[package]
+name = "sequencing-talk"
+version = "0.1.0"
+description = "The programs of the Jennifer Academy talk Sequencing data with Jennifer"
+license = "CC-BY-4.0"
+authors = ["mplx <mplx@jennifer-lang.dev>"]
+keywords = []
+capabilities = []
+bin = ""
+bin-dir = ""
+
+[package.urls]
+
+[engines]
+jennifer = ">=0.26.0"
+
+[decks]
+"@deckyard/bioinformatics" = "^0.4.0"
+"@deckyard/abif" = "^0.1.0"
+"@deckyard/ngs" = "^0.3.0"
+"@deckyard/mitoleaf" = "^0.3.0"
+"@deckyard/statfiles" = "^0.1.0"
+
+[dev-decks]
+
+[conflicts]
+
+[sources]
+
+[registries]

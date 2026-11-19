@@ -1,0 +1,9 @@
+title = "Sequencing data with Jennifer"
+description = "DNA, RNA and protein with @deckyard/bioinformatics, Sanger traces and fragment runs with abif, FASTQ QC and trimming with ngs, mtDNA haplogroups with mitoleaf, study tables with statfiles, and one pipeline from trace to haplogroup. Based on Jennifer 0.26.0."
+author = "mplx"
+license = "CC-BY-4.0"
+lang = "en"
+jennifer = "0.26.0"
+date = "2026-11"
+level = "advanced"
+tags = ["genetics", "bioinformatics", "sequencing", "decks", "errors", "limits"]
