@@ -22,6 +22,7 @@ must meet. Every rule is checked by `tools/check.j`, locally and in CI.
 talks/<github-user>/<topic>/talk.md        the slides (or talk.<lang>.md per language)
 talks/<github-user>/<topic>/academy.toml   the catalogue entry
 talks/<github-user>/<topic>/*.png|jpg|gif  its images, beside talk.md
+talks/<github-user>/<topic>/cantrip.toml   optional: diagram and maths plugins
 talks/<github-user>/<topic>/code/          optional: the programs behind the slides
 ```
 
@@ -36,7 +37,8 @@ in [Talks in several languages](#talks-in-several-languages).
 - **The topic** is a slug: lowercase `a-z`, `0-9` and single inner hyphens
   (`intro-to-tasks`). It is the last part of the URL, so keep it short.
 - **One talk per directory**, holding its talk file(s), `academy.toml`,
-  images (`.png`, `.jpg`, `.jpeg`, `.gif`) and optionally a `code/` folder
+  images (`.png`, `.jpg`, `.jpeg`, `.gif`), optionally a `cantrip.toml` (see
+  [Diagrams and maths](#diagrams-and-maths)) and optionally a `code/` folder
   (see [The code folder](#the-code-folder)) only: no other subdirectories, no
   symbolic links, no other files.
 - **Images are read only from the talk's own directory.** Cantrip refuses an
@@ -229,6 +231,39 @@ part in its path (`.env`, `app/.github/...`) is published in the zip only.
   many programs that concerns). The programs target the talk's Jennifer
   version.
 
+## Diagrams and maths
+
+A talk can draw diagrams from text and typeset maths with two plugins, named in
+a `cantrip.toml` beside `talk.md`:
+
+```toml
+[preprocessor.mermaid]   # a mermaid fence becomes a picture
+
+[preprocessor.katex]     # $`...`$ inline and a math fence become maths
+```
+
+````markdown
+```mermaid
+flowchart LR
+  a[talk.md] --> b[cantrip] --> c[slides]
+```
+````
+
+They are [`grimoire-mermaid`](https://github.com/mplx/grimoire-mermaid) and
+[`grimoire-katex`](https://github.com/mplx/grimoire-katex), which Cantrip runs
+before it builds the talk. The slideshow carries the diagram inside the page
+and the maths as MathML; the PDF draws the diagram and prints the TeX source of
+the maths in monospace. A table may set the plugin's own options (`theme`,
+`scale`, `inline`, ... see each plugin's README); it may not set `command`,
+`args` or `program`, and no other plugin may be named, because CI runs the
+programs it installed and nothing a pull request chose. The PDF fonts' Windows-1252 rule
+(rule 9) applies to the TeX source as to any other text.
+
+To build such a talk locally, install the two plugins and what they need
+(`merman-cli` and a font for diagrams, `katex` for maths; their READMEs say
+how) and Cantrip 0.6.0 or later. `cantrip plugins talk.md` shows what the talk
+would run.
+
 ## Who you are
 
 Every talk names its author, in the talk itself, in one of two ways:
@@ -282,6 +317,7 @@ each problem.
 | 10 | **Languages match** (see [Talks in several languages](#talks-in-several-languages)). | File names are checked against ISO 639-1, and the files against academy.toml's `lang` and `[translations.<lang>]` tables. |
 | 11 | **At most 25 slides; aim for 15 to 20.** A longer subject is two talks, each of which can be given on its own. | The slides are counted the way Cantrip splits them. |
 | 12 | **The code folder** follows [its rules](#the-code-folder): a README.md, an MIT-0 LICENSE, allowed file types only, sizes, no secrets, and programs that pass `jennifer lint`. | `code/` is walked; each text file is read; every program but an `.inc.j` goes through `jennifer lint --format=json` (not with `--fast`). |
+| 13 | **Plugins** are [the two allowed ones](#diagrams-and-maths): `cantrip.toml` holds only `[preprocessor.mermaid]` and `[preprocessor.katex]` tables, and none sets `command`, `args` or `program`. | The file is parsed with Jennifer's `toml` module and every table checked; when the talk is built, `cantrip plugins` must find both programs. |
 
 ### The link allowlist
 
