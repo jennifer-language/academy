@@ -1,0 +1,9 @@
+title = "Jennifer 0.27: what's new, what's deprecated, what breaks"
+description = "The 0.27.0 release for people who write Jennifer: credentials only over TLS, strict parsers, checked options, one way per thing with slices and crypto.deriveKey, safe secret files, and how to upgrade. Based on Jennifer 0.27.0."
+author = "mplx"
+license = "CC-BY-4.0"
+lang = "en"
+jennifer = "0.27.0"
+date = "2026-11"
+level = "intermediate"
+tags = ["jennifer-inside", "release", "upgrade", "errors", "limits", "security"]
