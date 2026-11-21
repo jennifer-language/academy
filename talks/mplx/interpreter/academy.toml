@@ -6,4 +6,4 @@ lang = "en"
 jennifer = "0.26.0"
 date = "2026-11"
 level = "advanced"
-tags = ["interpreter", "internals", "parser", "runtime", "tinygo", "contributing"]
+tags = ["jennifer-inside", "interpreter", "internals", "parser", "runtime", "tinygo", "contributing"]
