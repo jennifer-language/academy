@@ -497,7 +497,7 @@ docs/technical/filemap.md has a line for every file, and is the map to keep
 open. interpreter.go is the large one, over six thousand lines, and much of it
 is organised as one function per AST node: evalBinary, execAssign, evalCall. Start from the
 node you care about in ast.go and search for its name. The design records are
-next to it: design-stances.md for the seven stances, design-decisions.md for
+next to it: design-stances.md for the eight stances, design-decisions.md for
 features that look like exceptions, rejected.md for what was turned down and
 why.
 -->
