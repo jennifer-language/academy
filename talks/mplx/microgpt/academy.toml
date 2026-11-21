@@ -1,0 +1,9 @@
+title = "Build your own GPT in Jennifer"
+description = "A transformer that invents names, from scratch: a scalar autodiff engine on a tape, then a char-level GPT on top, trained across all cores with spawn and saved as a checkpoint. How no closures and value semantics shape the design. Based on Jennifer 0.27.0."
+author = "mplx"
+license = "CC-BY-4.0"
+lang = "en"
+jennifer = "0.27.0"
+date = "2026-11"
+level = "intermediate"
+tags = ["llm", "autodiff", "machine-learning", "concurrency", "performance", "teaching"]

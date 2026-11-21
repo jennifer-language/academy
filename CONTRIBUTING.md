@@ -292,6 +292,8 @@ A link in a talk may point only to:
 - `github.com/jennifer-language/...`, `github.com/deckyard/...` and
   `github.com/mplx/...`, the project's accounts;
 - `github.com/topics/grimoire-plugin`;
+- `github.com/karpathy`, the profile only: credit for the talks that
+  reimplement Andrej Karpathy's micrograd and microGPT;
 - `github.com/<your-github-user>/...`: your own profile and repositories, in
   your own talks.
 

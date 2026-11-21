@@ -40,8 +40,11 @@ export def const ALLOWED_DOMAIN as string init "jennifer-lang.dev";
 /** GitHub accounts of the project whose pages and repositories may be linked. */
 export def const GITHUB_OWNERS as list of string init ["jennifer-language", "deckyard", "mplx"];
 
-/** Single GitHub pages outside those accounts that may be linked. */
-export def const GITHUB_PATHS as list of string init ["topics/grimoire-plugin"];
+/**
+ * Single GitHub pages outside those accounts that may be linked. `karpathy` is
+ * his profile only, credited by the talks that reimplement his work.
+ */
+export def const GITHUB_PATHS as list of string init ["topics/grimoire-plugin", "karpathy"];
 
 /** Organisations that can never be a talk's namespace. */
 export def const DENIED_NAMESPACES as list of string init ["jennifer-language", "deckyard"];
