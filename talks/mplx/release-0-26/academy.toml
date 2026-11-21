@@ -1,0 +1,9 @@
+title = "Jennifer 0.26: what's new, what's deprecated, what breaks"
+description = "The 0.26.0 release for people who write Jennifer: name-first arguments, one crypto function per operation, error kinds instead of messages, stricter input and caps, nine modules turned decks, the new decimal and images libraries, and how to upgrade. Based on Jennifer 0.26.0."
+author = "mplx"
+license = "CC-BY-4.0"
+lang = "en"
+jennifer = "0.26.0"
+date = "2026-11"
+level = "intermediate"
+tags = ["jennifer-inside", "release", "upgrade", "errors", "limits", "security"]
