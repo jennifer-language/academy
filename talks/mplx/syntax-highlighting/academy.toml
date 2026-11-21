@@ -1,0 +1,9 @@
+title = "Syntax highlighting for Jennifer"
+description = "Install Jennifer syntax highlighting in Vim, Neovim, VS Code, Sublime Text, JetBrains IDEs and bat, on web pages with highlight.js, and what to expect from Forgejo, Gitea, Hugo and GitHub."
+author = "mplx"
+license = "CC-BY-4.0"
+lang = "en"
+jennifer = "0.26.0"
+date = "2026-11"
+level = "beginner"
+tags = ["editors", "tooling", "basics"]
