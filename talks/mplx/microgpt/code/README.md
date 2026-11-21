@@ -20,9 +20,5 @@ copies of [demo-micrograd](https://github.com/jennifer-language/demo-micrograd)
   and the checkpoint formats, included by the programs above.
 - `32k1000.json`: a checkpoint trained on the 32,033 names of the makemore
   data set.
-- `diagrams.md`, `render-diagrams.sh`: the Mermaid sources of the slides'
-  pictures, and the script that draws them beside `talk.md`. It needs
-  `merman-cli` and a TrueType font (`FONT=/path/to/font.ttf` to choose one).
-  Run: `sh render-diagrams.sh`
 
 `jennifer run sample.j --help` and `jennifer run train.j --help` list every flag.

@@ -45,7 +45,23 @@ word pieces; the mechanics are the same.
 
 ## Two repositories, read in order
 
-![demo-micrograd builds the engine in eight editions; demo-microgpt uses it](editions.png)
+```mermaid
+flowchart LR
+  accTitle: demo-micrograd builds the engine in eight editions; demo-microgpt uses it
+  subgraph engine["demo-micrograd: one idea per edition"]
+    direction TB
+    subgraph a["build the engine"]
+      direction LR
+      v1["v1<br/>tape + backward"] --> v2["v2<br/>more ops"] --> v3["v3<br/>neuron, MLP"] --> v4["v4<br/>two moons"]
+    end
+    subgraph b["look at it closely"]
+      direction LR
+      v5["v5<br/>measure first"] --> v6["v6<br/>draw the tape"] --> v7["v7<br/>spawn"] --> v8["v8<br/>forward mode"]
+    end
+    a --> b
+  end
+  engine -- "autograd.j, verbatim" --> gpt["demo-microgpt<br/>a char-level GPT"]
+```
 
 <!-- notes:
 demo-micrograd is the engine, in the spirit of Andrej Karpathy's micrograd,
@@ -59,7 +75,15 @@ So everything the model needs is explained before the model appears.
 
 ## Every number is a node
 
-![The neuron tanh(x * w + b) as a graph of six nodes](tape.png)
+```mermaid
+flowchart LR
+  accTitle: The neuron tanh(x * w + b) as a graph of six nodes
+  x["#0 Leaf<br/>x = 2"] --> mul["#3 Mul<br/>-6"]
+  w["#1 Leaf<br/>w = -3"] --> mul
+  mul --> add["#4 Add<br/>-5"]
+  b["#2 Leaf<br/>b = 1"] --> add
+  add --> th["#5 Tanh<br/>-0.9999"]
+```
 
 `out = tanh(x * w + b)`: three leaves, three operations, six nodes.
 
@@ -148,7 +172,11 @@ its own output, which is already stored in the node.
 
 ## Parameters lead the tape
 
-![The parameters #0 to #1327 stay; each step's graph after them is dropped](layout.png)
+```mermaid
+flowchart LR
+  accTitle: The parameters #0 to #1327 stay; each step's graph after them is dropped
+  p["#0 .. #1327: the parameters<br/>resetTo keeps them, zeroes their gradients"] --> g["#1328 ..: this step's graph<br/>embeddings, attention, MLP, loss<br/>resetTo drops it"]
+```
 
 `resetTo(numParams)` drops last step's graph and keeps the weights.
 
@@ -198,7 +226,36 @@ the reason the first seven editions, and every training framework, keep a tape.
 
 ## From a neuron to a GPT
 
-![The model: embed, attention, MLP, predict](gpt.png)
+```mermaid
+flowchart TB
+  accTitle: The model: embed, attention, MLP, predict
+  subgraph top[" "]
+    direction LR
+    subgraph emb["1. embed"]
+      direction LR
+      tok["token id"] --> wte["wte"] --> sum(("+"))
+      pos["position"] --> wpe["wpe"] --> sum
+    end
+    subgraph att["2. attention + residual"]
+      direction LR
+      qkv["q, k, v"] --> kv["KV cache"] --> heads["2 heads"] --> wo["wo"]
+    end
+    emb --> att
+  end
+  subgraph bottom[" "]
+    direction LR
+    subgraph mlp["3. MLP + residual"]
+      direction LR
+      fc1["fc1, 32 wide"] --> relu["relu"] --> fc2["fc2"]
+    end
+    subgraph out["4. predict"]
+      direction LR
+      head["lm_head"] --> sm["softmax"] --> next["next character"]
+    end
+    mlp --> out
+  end
+  top --> bottom
+```
 
 Each block also starts with an RMSNorm.
 
@@ -257,7 +314,25 @@ tokens has a loss of about 3.3.
 
 ## Training on every core
 
-![Each step spawns one worker per name; their gradients are averaged](training.png)
+```mermaid
+flowchart LR
+  accTitle: Each step spawns one worker per name; their gradients are averaged
+  start["resetTo(numParams)"] --> s1["name 1"]
+  start --> s2["name 2"]
+  start --> s3["..."]
+  start --> s4["name 8"]
+  subgraph workers["spawn: each worker on its own copy of the tape"]
+    s1
+    s2
+    s3
+    s4
+  end
+  s1 --> avg["average the gradients"]
+  s2 --> avg
+  s3 --> avg
+  s4 --> avg
+  avg --> adam["Adam: update #0 .. #1327,<br/>then the next step"]
+```
 
 <!-- notes:
 A spawn in Jennifer deep-copies its enclosing scope, including the global
@@ -288,7 +363,14 @@ so measure on the binary you will ship.
 
 ## Train once, sample often
 
-![train.j writes a checkpoint; sample.j rebuilds the model from it](checkpoint.png)
+```mermaid
+flowchart LR
+  accTitle: train.j writes a checkpoint; sample.j rebuilds the model from it
+  train["train.j"] --> ck["checkpoint<br/>shape, vocabulary,<br/>1328 weights"]
+  ck --> json["32k1000.json"]
+  json --> sample["sample.j<br/>rebuilds the parameters<br/>in training order"]
+  sample --> names["dareen, elina, arin, ..."]
+```
 
 A checkpoint is the shape, the vocabulary and the 1328 floats, read off the
 front of the tape.
