@@ -26,8 +26,15 @@ env:
   # (lint enforces its pragma floor), so this follows the releases. Not named
   # JENNIFER: the tools read that as the interpreter's path.
   JENNIFER_REF: "0.27.0"
-  # The cantrip release the talks are built with.
-  CANTRIP_REF: "0.5.3"
+  # The cantrip release the talks are built with; 0.6.0 is the first that runs
+  # the plugins a talk names in cantrip.toml.
+  CANTRIP_REF: "0.6.0"
+  # The plugins a talk may name in cantrip.toml (PLUGINS in tools/rules.j), and
+  # the renderers they run, as checked by the plugins' own READMEs.
+  GRIMOIRE_MERMAID_REF: "0.1.0"
+  GRIMOIRE_KATEX_REF: "0.1.0"
+  MERMAN_REF: "v0.10.0"
+  KATEX_REF: "0.19.1"
 
 jobs:
   site:
@@ -56,6 +63,38 @@ jobs:
           git -C "$RUNNER_TEMP/cantrip" checkout --quiet "$CANTRIP_REF"
           echo "CANTRIP=$RUNNER_TEMP/cantrip/bin/cantrip" >> "$GITHUB_ENV"
           echo "cantrip $(git -C "$RUNNER_TEMP/cantrip" rev-parse --short HEAD)"
+
+      # Only when a talk names plugins. They go on PATH, where cantrip looks for
+      # grimoire-NAME; a talk cannot choose another program (rule 13).
+      - name: Install the talk plugins
+        run: |
+          set -eu
+          if ! ls talks/*/*/cantrip.toml > /dev/null 2>&1; then
+            echo "no talk names plugins"
+            exit 0
+          fi
+          bin="$RUNNER_TEMP/plugins/bin"
+          mkdir -p "$bin"
+          # merman-cli for grimoire-mermaid, checked against its checksum, and a
+          # font for it to measure text with.
+          tarball="merman-cli-x86_64-unknown-linux-gnu.tar.xz"
+          base="https://github.com/Latias94/merman/releases/download/$MERMAN_REF"
+          ( cd "$RUNNER_TEMP" && curl -fsSLO "$base/$tarball" && curl -fsSLO "$base/$tarball.sha256" &&
+            sha256sum -c "$tarball.sha256" && tar -xJf "$tarball" )
+          cp "$RUNNER_TEMP/merman-cli-x86_64-unknown-linux-gnu/merman-cli" "$bin/"
+          if ! fc-match -f '%{file}' 'DejaVu Sans' 2>/dev/null | grep -q DejaVu; then
+            sudo apt-get update -qq
+            sudo apt-get install -y --no-install-recommends fontconfig fonts-dejavu-core
+          fi
+          # katex for grimoire-katex.
+          npm install -g "katex@$KATEX_REF"
+          git clone --quiet --depth 1 --branch "$GRIMOIRE_MERMAID_REF" \
+            https://github.com/mplx/grimoire-mermaid.git "$RUNNER_TEMP/grimoire-mermaid"
+          git clone --quiet --depth 1 --branch "$GRIMOIRE_KATEX_REF" \
+            https://github.com/mplx/grimoire-katex.git "$RUNNER_TEMP/grimoire-katex"
+          ln -s "$RUNNER_TEMP/grimoire-mermaid/bin/grimoire-mermaid" "$bin/grimoire-mermaid"
+          ln -s "$RUNNER_TEMP/grimoire-katex/bin/grimoire-katex" "$bin/grimoire-katex"
+          echo "$bin" >> "$GITHUB_PATH"
 
       - name: Format and lint the tools
         run: |
