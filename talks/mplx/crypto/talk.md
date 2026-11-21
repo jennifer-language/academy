@@ -47,6 +47,9 @@ lets anyone check without being able to sign. Jennifer has one function per
 operation with the algorithm as a string, so a negotiated algorithm is a
 variable and an unknown name is an error listing the known ones. Digests and
 HMAC live in hash, everything that needs secure randomness lives in crypto.
+None of it is hand-rolled: it is Go's standard library and golang.org/x/crypto,
+randomness comes from the operating system, and comparisons use Go's
+constant-time compare. The library pages list every default.
 -->
 
 ---
@@ -179,7 +182,7 @@ account as enrolled only after the user has typed one valid code.
 ```jennifer excerpt
 func stepOf(code as string, now as int, o as totp.Options) {
     def found as int init -1;
-    for (def d in -1..2) {
+    for (def d in -1..2) { # -1, 0, 1: half-open, one step each side
         def at as int init $now + $d * 30;
         def want as string init totp.generateAt(SECRET, $at, $o);
         if (hash.equal(utf8($want), utf8($code))) { $found = $at // 30; }
@@ -196,7 +199,8 @@ verify true, old code false
 
 <!-- notes:
 totp.verify accepts the current 30-second step and one on each side, with a
-constant-time compare. It does not remember anything, so a code seen over a
+constant-time compare, and stepOf checks the same three: the range -1..2 is
+half-open, so it stops before 2. It does not remember anything, so a code seen over a
 shoulder works again for up to ninety seconds. stepOf tells which step
 matched (utf8 is convert.bytesFromString); login stores the last accepted step per user and refuses any step
 not newer than it. The old code is from ninety seconds ago. Rate-limit the

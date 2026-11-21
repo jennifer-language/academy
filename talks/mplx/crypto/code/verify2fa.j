@@ -13,7 +13,7 @@ func utf8(s as string) {
 
 func stepOf(code as string, now as int, o as totp.Options) {
     def found as int init -1;
-    for (def d in -1..2) {
+    for (def d in -1..2) { # -1, 0, 1: half-open, one step each side
         def at as int init $now + $d * 30;
         def want as string init totp.generateAt(SECRET, $at, $o);
         if (hash.equal(utf8($want), utf8($code))) { $found = $at // 30; }
