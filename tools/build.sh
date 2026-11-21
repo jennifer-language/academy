@@ -33,13 +33,18 @@ log="$(mktemp)"
 work="$(mktemp -d)"
 trap 'rm -rf "$log" "$work"' EXIT
 
-# Run cantrip and fail on an error or on any warning (an overflowing slide).
+# The notice that an allowlisted plugin (tools/rules.j, PLUGINS) came from
+# PATH: in CI that is where they are installed, so it is not a fault.
+plugin_notice='^cantrip: warning: preprocessor (mermaid|katex): runs .*, found on PATH rather than in this deck$'
+
+# Run cantrip and fail on an error or on any other warning (an overflowing
+# slide).
 cantrip() {
     if ! "$JENNIFER" run "$CANTRIP" "$@" 2>"$log" </dev/null; then
         cat "$log" >&2
         exit 1
     fi
-    if grep -q '^cantrip: warning:' "$log"; then
+    if grep '^cantrip: warning:' "$log" | grep -qvE "$plugin_notice"; then
         cat "$log" >&2
         echo "build: cantrip warned; fix the talk (see CONTRIBUTING.md)" >&2
         exit 1
@@ -89,7 +94,7 @@ for meta in talks/*/*/academy.toml; do
         # Its code/ is published once, by gallery.j, for every version.
         for file in "$dir"/*; do
             case "$(basename "$file")" in
-                talk.md | talk.*.md | academy.toml | code) continue ;;
+                talk.md | talk.*.md | academy.toml | cantrip.toml | code) continue ;;
             esac
             cp "$file" "$dest/"
         done

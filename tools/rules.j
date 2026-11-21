@@ -24,6 +24,7 @@ use os;
 use path;
 use regex;
 use strings;
+use toml;
 
 import "./meta.j" as meta;
 
@@ -57,6 +58,34 @@ export def const FRONT_REQUIRED as list of string init ["theme"];
 
 /** File extensions a talk directory may hold besides `talk.md`. */
 export def const IMAGE_EXTENSIONS as list of string init [".png", ".jpg", ".jpeg", ".gif"];
+
+/**
+ * The plugin file a talk may hold beside talk.md: Cantrip's `cantrip.toml`,
+ * naming the preprocessors its build runs.
+ */
+export def const PLUGIN_CONFIG as string init "cantrip.toml";
+
+/**
+ * The preprocessors a talk may name in `cantrip.toml`, `[preprocessor.NAME]`.
+ * CI installs exactly these (`grimoire-mermaid`, `grimoire-katex`, and what
+ * they need), so a talk can draw diagrams and typeset maths and run nothing
+ * else.
+ */
+export def const PLUGINS as list of string init ["mermaid", "katex"];
+
+/**
+ * Keys a talk's plugin table may not set: they choose the program that runs,
+ * and in CI that has to be the plugin CI installed. `command` and `args` pick
+ * the plugin; `program` is the renderer each plugin runs (`merman-cli`,
+ * `katex`).
+ */
+export def const PLUGIN_RESERVED as list of string init ["command", "args", "program"];
+
+/**
+ * The first Cantrip release that runs preprocessors. A Cantrip before it
+ * ignores `cantrip.toml` and would publish a `mermaid` fence as code.
+ */
+export def const PLUGIN_CANTRIP as string init "0.6.0";
 
 /** The most slides a talk may have (rule 11); 15 to 20 is the aim. */
 export def const MAX_SLIDES as int init 25;
@@ -197,7 +226,8 @@ def const MSG_NO_META as string init "a talk directory holds its catalogue entry
 def const MSG_SUBDIR as string init
     "the only subdirectory of a talk is code/; keep its images beside talk.md";
 def const MSG_OTHER_FILE as string init
-    "a talk directory holds its talk files, academy.toml, images (.png, .jpg, .jpeg, .gif) " +
+    "a talk directory holds its talk files, academy.toml, cantrip.toml, images (.png, .jpg, " +
+    ".jpeg, .gif) " +
     "and code/ only";
 def const MSG_CODE_EXT as string init
     "is not a file type code/ may hold (see CONTRIBUTING.md, \"The code folder\")";
@@ -421,7 +451,7 @@ func checkTalkDir(dir as string) {
         } elseif ($lang != "-") {
             def why as string init "\"{$lang}\" is not an ISO 639-1 code (e.g. talk.de.md)";
             $out[] = finding($p, 0, "layout", $why);
-        } elseif ($name != "academy.toml" and not isImage($name)) {
+        } elseif ($name != "academy.toml" and $name != PLUGIN_CONFIG and not isImage($name)) {
             $out[] = finding($p, 0, "layout", MSG_OTHER_FILE);
         }
     }
@@ -1240,7 +1270,7 @@ export func sourceFile(dir as string, lang as string) {
 /**
  * Write a buildable copy of one language version into `out`: its talk file
  * as talk.md, with the catalogue fields from academy.toml injected into its
- * front matter, and the talk's images.
+ * front matter, the talk's images, and its `cantrip.toml` if it has one.
  * @param {string} dir the talk directory
  * @param {meta.Meta} m its valid catalogue entry
  * @param {meta.Version} v the version to prepare
@@ -1266,7 +1296,7 @@ export func prepare(dir as string, m as meta.Meta, v as meta.Version, out as str
     def target as string init path.join($out, "talk.md");
     fs.writeString($target, $text);
     for (def name in fs.list($dir)) {
-        if (lists.contains(IMAGE_EXTENSIONS, lowerExt($name))) {
+        if (lists.contains(IMAGE_EXTENSIONS, lowerExt($name)) or $name == PLUGIN_CONFIG) {
             fs.writeBytes(path.join($out, $name), fs.readBytes(path.join($dir, $name)));
         }
     }
@@ -1279,18 +1309,160 @@ func checkBuild(file as string, dir as string, m as meta.Meta, v as meta.Version
     def tmp as string init fs.makeTempDir("", "academy-build-");
     defer fs.removeAll($tmp);
     def prepared as string init prepare($dir, $m, $v, path.join($tmp, "talk"));
+    if (fs.isFile(path.join($dir, PLUGIN_CONFIG))) {
+        def missing as list of Finding init checkPluginsInstalled($file, $prepared, $opts);
+        if (len($missing) > 0) {
+            return $missing;
+        }
+    }
     def argv as list of string init [$opts.jennifer, "run", $opts.cantrip, "build", $prepared];
     $argv[] = "--out";
     $argv[] = path.join($tmp, "out");
     def r as os.Result init os.run($argv);
     for (def line in strings.split($r.stderr, "\n")) {
-        if (strings.startsWith($line, "cantrip: warning:")) {
+        if (strings.startsWith($line, "cantrip: warning:") and not isPluginNotice($line)) {
             $out[] = finding($file, 0, "build", $line);
         }
     }
     if ($r.exitCode != 0) {
         def why as string init firstLine(strings.replace($r.stderr + $r.stdout, $prepared, $file));
         $out[] = finding($file, 0, "build", "cantrip failed (exit {$r.exitCode}): {$why}");
+    }
+    return $out;
+}
+
+/**
+ * Whether a Cantrip warning is only the notice that an allowlisted plugin came
+ * from PATH. In CI that is where the plugins are installed, so it is no fault
+ * of the talk; any other warning still fails rule 4.
+ * @param {string} line one line of Cantrip's standard error
+ * @return {bool} true for that notice
+ */
+export func isPluginNotice(line as string) {
+    for (def name in PLUGINS) {
+        if (strings.startsWith($line, "cantrip: warning: preprocessor " + $name + ": runs ") and
+            strings.endsWith($line, ", found on PATH rather than in this deck")) {
+            return true;
+        }
+    }
+    return false;
+}
+
+/**
+ * The finding for a plugin `cantrip plugins` did not find, from its line
+ * (`preprocessor  mermaid  ->  cantrip-mermaid  (not found)`).
+ * @param {string} line one line of `cantrip plugins`
+ * @return {string} the message
+ */
+export func pluginMissing(line as string) {
+    def name as string init "";
+    for (def word in strings.split(strings.trim($line), " ")) {
+        if ($word != "" and $word != "preprocessor") {
+            $name = $word;
+            break;
+        }
+    }
+    return "plugin \"" + $name + "\" is not installed: Cantrip found neither cantrip-" + $name +
+        " nor grimoire-" + $name + " on PATH (see CONTRIBUTING.md, \"Diagrams and maths\")";
+}
+
+# checkPluginsInstalled asks cantrip what the prepared talk would run. A cantrip
+# without the `plugins` verb predates plugins and would ignore cantrip.toml; a
+# plugin it does not find would stop the build with a less helpful message.
+func checkPluginsInstalled(file as string, prepared as string, opts as Options) {
+    def out as list of Finding;
+    def r as os.Result init os.run([$opts.jennifer, "run", $opts.cantrip, "plugins", $prepared]);
+    if ($r.exitCode != 0) {
+        $out[] = finding(
+            $file,
+            0,
+            "build",
+            "this talk names plugins in cantrip.toml, which needs Cantrip " + PLUGIN_CANTRIP +
+                " or later; " + $opts.cantrip + " does not run them");
+        return $out;
+    }
+    for (def line in strings.split($r.stdout, "\n")) {
+        if (strings.endsWith($line, "(not found)")) {
+            $out[] = finding($file, 0, "build", pluginMissing($line));
+        }
+    }
+    return $out;
+}
+
+/**
+ * The findings for a talk's `cantrip.toml` (rule 13): UTF-8, no dashes, valid
+ * TOML holding only `[preprocessor.NAME]` tables, each NAME one of `PLUGINS`,
+ * and none setting a key of `PLUGIN_RESERVED`. The plugins check their own
+ * settings when the talk is built.
+ * @param {string} dir the talk directory
+ * @return {list of Finding} empty when the file is absent or passes
+ */
+export func checkPlugins(dir as string) {
+    def file as string init path.join($dir, PLUGIN_CONFIG);
+    def out as list of Finding;
+    if (not fs.isFile($file)) {
+        return $out;
+    }
+    def data as bytes init fs.readBytes($file);
+    $out = checkEncoding($file, $data);
+    if (len($out) > 0) {
+        return $out;
+    }
+    def text as string init convert.stringFromBytes("utf-8", $data);
+    $out = checkDashes($file, $text);
+    def doc as toml.Value init toml.decode("");
+    try {
+        $doc = toml.decode($text);
+    } catch (e) {
+        $out[] = finding($file, 0, "plugins", "not valid TOML: " + $e.message);
+        return $out;
+    }
+    for (def key in toml.keys($doc, "")) {
+        if ($key != "preprocessor" or toml.typeOf($doc, "/preprocessor") != "map") {
+            $out[] = finding(
+                $file,
+                0,
+                "plugins",
+                "\"" + $key + "\": the file holds [preprocessor.NAME] tables only");
+        }
+    }
+    if (len($out) > 0 or not toml.has($doc, "/preprocessor")) {
+        return $out;
+    }
+    for (def name in toml.keys($doc, "/preprocessor")) {
+        for (def f in checkPluginTable($file, $doc, $name)) {
+            $out[] = $f;
+        }
+    }
+    return $out;
+}
+
+# checkPluginTable checks one [preprocessor.NAME] table.
+func checkPluginTable(file as string, doc as toml.Value, name as string) {
+    def out as list of Finding;
+    if (not lists.contains(PLUGINS, $name)) {
+        $out[] = finding(
+            $file,
+            0,
+            "plugins",
+            "preprocessor \"" + $name + "\" is not one a talk may use; use one of: " +
+                strings.join(PLUGINS, ", "));
+        return $out;
+    }
+    def ptr as string init "/preprocessor/" + $name;
+    if (toml.typeOf($doc, $ptr) != "map") {
+        $out[] = finding($file, 0, "plugins", "preprocessor." + $name + " must be a table");
+        return $out;
+    }
+    for (def key in PLUGIN_RESERVED) {
+        if (toml.has($doc, $ptr + "/" + $key)) {
+            $out[] = finding(
+                $file,
+                0,
+                "plugins",
+                "preprocessor." + $name + "." + $key +
+                    ": a talk may not choose the program; CI runs the plugin it installed");
+        }
     }
     return $out;
 }
@@ -1829,6 +2001,9 @@ func checkFile(
  */
 export func checkTalk(dir as string, user as string, opts as Options) {
     def out as list of Finding init checkMetaFile($dir, $user);
+    for (def f in checkPlugins($dir)) {
+        $out[] = $f;
+    }
     def entry as meta.Checked init readMeta($dir, $user);
     for (def f in checkCodeFolder($dir, $user, $opts)) {
         $out[] = $f;

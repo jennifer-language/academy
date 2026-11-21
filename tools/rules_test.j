@@ -1313,3 +1313,80 @@ func testCodeFiles() {
     testing.assertFalse(isProgram("helper.inc.j"));
     testing.assertFalse(isCodeText("logo.png"));
 }
+
+# --- plugins (rule 13) --------------------------------------------------
+
+func pluginFindings(text as string) {
+    def dir as string init fs.makeTempDir("", "academy-plugins-");
+    defer fs.removeAll($dir);
+    fs.writeString(path.join($dir, PLUGIN_CONFIG), $text);
+    def out as list of string;
+    for (def f in checkPlugins($dir)) {
+        testing.assertEqual($f.rule == "plugins" or $f.rule == "dashes", true);
+        $out[] = $f.message;
+    }
+    return $out;
+}
+
+func testAllowedPluginsPass() {
+    testing.assertEqual(
+        len(pluginFindings("[preprocessor.mermaid]\ntheme = \"dark\"\n\n[preprocessor.katex]\n")),
+        0);
+    testing.assertEqual(len(pluginFindings("")), 0);
+    def none as string init fs.makeTempDir("", "academy-plugins-");
+    testing.assertEqual(len(checkPlugins($none)), 0);
+    fs.removeAll($none);
+    testing.assertEqual(PLUGINS, ["mermaid", "katex"]);
+    testing.assertEqual(PLUGIN_CANTRIP, "0.6.0");
+}
+
+func testATalkCannotChooseTheProgram() {
+    def got as list of string init pluginFindings(
+        "[preprocessor.mermaid]\ncommand = \"./evil.sh\"\nargs = [\"-x\"]\n");
+    testing.assertEqual(len($got), 2);
+    testing.assertContains($got[0], "preprocessor.mermaid.command");
+    testing.assertContains($got[1], "preprocessor.mermaid.args");
+    testing.assertEqual(PLUGIN_RESERVED, ["command", "args", "program"]);
+    def renderer as list of string init pluginFindings(
+        "[preprocessor.katex]\nprogram = \"/tmp/evil\"\n");
+    testing.assertContains($renderer[0], "preprocessor.katex.program");
+}
+
+func testOnlyAllowlistedPluginsAndTablesPass() {
+    testing.assertContains(pluginFindings("[preprocessor.include]\n")[0], "not one a talk may use");
+    testing.assertContains(pluginFindings("[renderer.sitemap]\n")[0], "tables only");
+    testing.assertContains(pluginFindings("theme = \"ivy\"\n")[0], "tables only");
+    testing.assertContains(pluginFindings("[preprocessor\n")[0], "not valid TOML");
+    testing.assertContains(pluginFindings("[preprocessor]\nmermaid = 1\n")[0], "must be a table");
+}
+
+func testThePathNoticeIsNotAFault() {
+    testing.assertTrue(isPluginNotice(
+        "cantrip: warning: preprocessor mermaid: runs /opt/p/bin/grimoire-mermaid, " +
+            "found on PATH rather than in this deck"));
+    testing.assertFalse(isPluginNotice(
+        "cantrip: warning: preprocessor other: runs /x, found on PATH rather than in this deck"));
+    testing.assertFalse(isPluginNotice("cantrip: warning: 2 slide(s) took 3 pages"));
+}
+
+# cantrip.toml is a file a talk may hold, and the prepared copy carries it.
+func testTheConfigIsAllowedAndPrepared() {
+    def dir as string init makeTalk("ada", "diagrams", GOOD);
+    fs.writeString(path.join($dir, PLUGIN_CONFIG), "[preprocessor.mermaid]\n");
+    def root as string init path.dir(path.dir(path.dir($dir)));
+    defer fs.removeAll($root);
+    for (def f in checkLayout(path.join($root, "talks"))) {
+        testing.assertFalse(strings.contains($f.message, "talk directory holds"));
+    }
+    def entry as meta.Checked init readMeta($dir, "ada");
+    def out as string init path.join($root, "prepared");
+    prepare($dir, $entry.meta, meta.versionsOf($entry.meta)[0], $out);
+    testing.assertTrue(fs.isFile(path.join($out, PLUGIN_CONFIG)));
+}
+
+func testAMissingPluginIsNamed() {
+    testing.assertEqual(
+        pluginMissing("preprocessor  mermaid  ->  cantrip-mermaid  (not found)"),
+        "plugin \"mermaid\" is not installed: Cantrip found neither cantrip-mermaid nor " +
+            "grimoire-mermaid on PATH (see CONTRIBUTING.md, \"Diagrams and maths\")");
+}
