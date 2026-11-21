@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(jennifer fmt:*)",
+      "Bash(jennifer lint:*)",
+      "Bash(jennifer run:*)",
+      "Bash(jennifer test:*)"
+    ]
+  }
+}

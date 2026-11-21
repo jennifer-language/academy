@@ -1,0 +1,9 @@
+title = "Vibecoding with Jennifer"
+description = "Set up an AI coding assistant to write Jennifer that runs: JENNIFER.md as the language reference, AGENTS.md and CLAUDE.md as house rules, Claude Code in the terminal and VS Code, and the fmt, lint, run and test loop that lets it fix its own mistakes."
+author = "mplx"
+license = "CC-BY-4.0"
+lang = "en"
+jennifer = "0.26.0"
+date = "2026-11"
+level = "beginner"
+tags = ["llm", "tooling", "lint", "basics"]
