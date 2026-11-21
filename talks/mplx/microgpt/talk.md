@@ -7,6 +7,8 @@ transition: fade
 
 # Build your own GPT in Jennifer
 
+![Jennifer](jennifer-logo.png)
+
 From a scalar autodiff engine to a transformer that invents names: microGPT,
 written from scratch, no libraries.
 
