@@ -9,7 +9,7 @@ transition: fade
 
 ![Jennifer](jennifer-logo.png)
 
-Seven design decisions, why they were made, and what the interpreter
+Eight design decisions, why they were made, and what the interpreter
 says when you run into one.
 
 Based on **Jennifer 0.26.0**, November 2026, by [@mplx](https://github.com/mplx).
@@ -17,14 +17,14 @@ Based on **Jennifer 0.26.0**, November 2026, by [@mplx](https://github.com/mplx)
 <!-- notes:
 Everyone who learns Jennifer asks at some point: why can I not write plus
 equals, why does my if refuse a number, why does every library need a use
-line. The answer is always one of seven design stances, written down in the
+line. The answer is always one of eight design stances, written down in the
 project's documentation. This talk goes through them one by one: what each
 stance says, a small example, the real message, and the reasoning behind it.
 -->
 
 ---
 
-## The seven stances
+## The eight stances
 
 | # | Stance | In one line |
 | --- | --- | --- |
@@ -35,6 +35,7 @@ stance says, a small example, the real message, and the reasoning behind it.
 | 5 | Value semantics | assignment copies, `const` is deep |
 | 6 | No shadowing | a name binds once |
 | 7 | Topic-based, opt-in libraries | nothing auto-loads |
+| 8 | One convention everywhere | the same situation, the same shape |
 
 <!-- notes:
 This is the table from the design stances page of the documentation, shortened.
@@ -48,7 +49,7 @@ this one is about why they are there at all.
 
 ## Where the reasoning is written down
 
-- `docs/design-stances.md`: the seven stances
+- `docs/design-stances.md`: the eight stances
 - `docs/technical/rejected.md`: proposals that were turned down,
   and why, so the same idea does not come back every month
 - `docs/technical/design-decisions.md`: features that *look* like
@@ -391,6 +392,37 @@ core library disappeared by making len part of the language.
 
 ---
 
+## 8. One convention everywhere
+
+```jennifer excerpt
+json.decode($deep);       # 2,000 levels deep
+xml.decode($nested);
+json.decode('{"a":');     # malformed
+crypto.decrypt("aes-gcm", $forged, $key, $nonce, $none);
+```
+
+```text
+json.decode, too deep:  limit
+xml.decode, too deep:   limit
+json.decode, malformed: runtime
+crypto.decrypt, forged: runtime
+```
+
+- Names, argument order, options, error kinds, caps: one catalogue,
+  `docs/technical/conventions.md`
+- Two libraries that differ is a bug, fixed before 1.0
+
+<!-- notes:
+The eighth stance was added in November 2026, after readers pointed out small
+inconsistencies. Every reader of outside data stops at a cap with kind limit,
+whichever library it is. Bad data does not yet carry its library's kind: json
+and crypto still say runtime. That is exactly what the stance forbids, so it is
+on the roadmap, and a survey of every library, module and deck lists what is
+left. PHP shows what happens when this is fixed too late.
+-->
+
+---
+
 ## When a familiar feature is missing
 
 | Proposal | Turned down for | Instead |
@@ -421,7 +453,7 @@ already are the raw and the cooked string, so prefixes would add a third form.
 3. Can a library function do it instead of new syntax?
 4. Turned down: an entry in `rejected.md`, with the arguments
 5. Shipped despite a stance: an entry in `design-decisions.md`
-6. Accepted: a `DRAFT#` in `horizon.md`, or an `M` number in `milestones.md`
+6. Accepted: a `DRAFT#` in `horizon.md`, or an `M` number in `roadmap.md`
 
 <!-- notes:
 A violation needs a strong justification, not a popular one. Most proposals are

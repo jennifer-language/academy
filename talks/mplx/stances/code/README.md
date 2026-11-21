@@ -1,4 +1,4 @@
-# The seven stances: the code
+# The eight stances: the code
 
 The examples behind the slides. They need no server and no decks and run with
 Jennifer 0.26.0 from this folder. Most slides show code that Jennifer
@@ -25,6 +25,9 @@ them instead.
   ("4. A missing value is an error, not a default"). Run: `jennifer run underflow.j`
 - `values.j`: assigning a list copies it ("5. Value semantics").
   Run: `jennifer run values.j`
+- `conventions.j`: the same failure in several libraries, and the kinds
+  that still differ ("8. One convention everywhere"). Run:
+  `jennifer run conventions.j`
 - `divmod.j`: two results returned as a struct, the alternative to
   `return $q, $r;` ("When a familiar feature is missing").
   Run: `jennifer run divmod.j`
