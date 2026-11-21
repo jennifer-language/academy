@@ -1,4 +1,4 @@
-title = "STR allele frequencies from STRidER"
+title = "From STRidER frequencies to match probabilities"
 description = "Read a STRidER STR allele-frequency export with @deckyard/strider, check and convert one population, then compute random match probabilities and likelihood ratios with @deckyard/forensicgenetics: theta, the 5/(2N) floor, missing loci, error kinds. Invented data only. Based on Jennifer 0.26.0."
 author = "mplx"
 license = "CC-BY-4.0"

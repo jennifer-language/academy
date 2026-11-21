@@ -4,7 +4,7 @@ ratio: 16:9
 transition: slide
 ---
 
-# STR allele frequencies from STRidER
+# From STRidER frequencies to match probabilities
 
 ![Jennifer](jennifer-logo.png)
 
