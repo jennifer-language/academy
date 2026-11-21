@@ -274,14 +274,14 @@ goes to stdout, everything else to stderr.
 ```text
 $ jvc init tidy
 created ./deck.toml for deck tidy
-$ jvc add @mplx/xformat "^0.1.0"
-added @mplx/xformat ^0.1.0 to requirements
+$ jvc add @mplx/texttransform "^0.3.0"
+added @mplx/texttransform ^0.3.0 to requirements
 $ jvc add @mplx/clispinner "^0.2.0"
 added @mplx/clispinner ^0.2.0 to requirements
 $ jvc install
 installed 2 deck(s):
   ok    @mplx/clispinner 0.2.0 -> https://github.com/mplx/deck-clispinner.git
-  ok    @mplx/xformat 0.1.0 -> https://github.com/mplx/deck-xformat.git
+  ok    @mplx/texttransform 0.3.0 -> https://github.com/mplx/deck-texttransform.git
 ```
 
 <!-- notes:
@@ -289,21 +289,21 @@ Jennifer ships modules like args, ansi and log. Other people's code comes as
 decks, installed with jvc from the registry. jvc init writes a deck.toml for
 the project, jvc add records a deck and its allowed versions, and jvc install
 copies the deck's source into a vendor folder next to the program. A few lines
-of the install output were left out. Imports then read import @mplx/xformat
+of the install output were left out. Imports then read import @mplx/texttransform
 with a slash at the end.
 -->
 
 ---
 
-## Case conversion with `@mplx/xformat`
+## Case conversion with `@mplx/texttransform`
 
 ```jennifer
 use io;
-import "@mplx/xformat/" as xformat;
+import "@mplx/texttransform/" as texttransform;
 
 def name as string init "Holiday Photo 01";
 for (def style in ["kebab", "snake", "camel", "pascal", "constant"]) {
-    io.printf("%s|pad=9 %s\n", $style, xformat.toCase($name, $style));
+    io.printf("%s|pad=9 %s\n", $style, texttransform.toCase($name, $style));
 }
 ```
 
@@ -318,10 +318,10 @@ constant  HOLIDAY_PHOTO_01
 <!-- notes:
 toCase splits a text into words, at spaces, dashes, underscores and at the
 change from a small to a capital letter, and joins them again in the style
-you ask for. The deck can do more: xformat.t applies a whole recipe
+you ask for. The deck can do more: texttransform.t applies a whole recipe
 separated by bars, such as trim, fold the accents away, then kebab case. The pad modifier in printf
 makes the first column nine characters wide. An unknown style throws an error
-of kind xformat.
+of kind texttransform.
 -->
 
 ---
@@ -330,7 +330,7 @@ of kind xformat.
 
 ```jennifer excerpt
 func newName(file as string, style as string) {
-    def stem as string init xformat.toCase(path.stem($file), $style);
+    def stem as string init texttransform.toCase(path.stem($file), $style);
     def ext as string init strings.lower(path.ext($file));
     return path.join(path.dir($file), $stem + $ext);
 }

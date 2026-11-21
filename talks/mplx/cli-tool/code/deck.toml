@@ -15,7 +15,7 @@ bin-dir = ""
 jennifer = ">=0.26.0"
 
 [decks]
-"@mplx/xformat" = "^0.1.0"
+"@mplx/texttransform" = "^0.3.0"
 "@mplx/clispinner" = "^0.2.0"
 
 [dev-decks]

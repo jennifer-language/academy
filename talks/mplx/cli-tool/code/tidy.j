@@ -9,7 +9,7 @@ use strings;
 import "args.j" as args;
 import "ansi.j" as ansi;
 import "log.j" as log;
-import "@mplx/xformat/" as xformat;
+import "@mplx/texttransform/" as texttransform;
 import "@mplx/clispinner/" as spinner;
 
 def const OK as int init 0;
@@ -23,7 +23,7 @@ def struct Step {
 };
 
 func newName(file as string, style as string) {
-    def stem as string init xformat.toCase(path.stem($file), $style);
+    def stem as string init texttransform.toCase(path.stem($file), $style);
     def ext as string init strings.lower(path.ext($file));
     return path.join(path.dir($file), $stem + $ext);
 }
