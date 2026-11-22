@@ -1,6 +1,6 @@
 # SPDX-License-Identifier: LGPL-3.0-only
 # SPDX-FileCopyrightText: Copyright (C) 2026 mplx <mplx@jennifer-lang.dev>
-# pragma-jennifer-version: >=0.26.0
+# pragma-jennifer-version: >=0.27.0
 
 /**
  * White-box tests for the rules, above all the negative cases: each scratch
@@ -90,7 +90,7 @@ func padNotes(text as string) {
     return strings.replace(
         $text,
         " ... -->",
-        " " + strings.repeat("word ", MIN_NOTE_WORDS) + "-->");
+        " " + strings.replicate("word ", MIN_NOTE_WORDS) + "-->");
 }
 
 /** Check GOOD with another academy.toml (fast) and return the findings. */
@@ -341,7 +341,7 @@ func testEmDashAndEnDashFail() {
 func testByteOrderMarkFails() {
     def dir as string init makeTalk("ada", "talk", "");
     defer fs.removeAll(path.dir(path.dir(path.dir($dir))));
-    def data as bytes init convert.bytesFromString("utf-8", GOOD);
+    def data as bytes init encoding.encode("utf-8", GOOD);
     def withBom as bytes;
     $withBom[] = 0xef;
     $withBom[] = 0xbb;
@@ -513,8 +513,8 @@ func testFrontMatter() {
 func testNames() {
     testing.assertTrue(isValidUser("mplx"));
     testing.assertTrue(isValidUser("a-b-1"));
-    testing.assertTrue(isValidUser(strings.repeat("a", 39)));
-    testing.assertFalse(isValidUser(strings.repeat("a", 40)));
+    testing.assertTrue(isValidUser(strings.replicate("a", 39)));
+    testing.assertFalse(isValidUser(strings.replicate("a", 40)));
     testing.assertFalse(isValidUser("Mplx"));
     testing.assertFalse(isValidUser("-a"));
     testing.assertFalse(isValidUser("a--b"));
@@ -573,7 +573,7 @@ func testBuildWarningFails() {
     if ($cantrip == "") {
         return;
     }
-    def long as string init strings.repeat("- a line\n", 60);
+    def long as string init strings.replicate("- a line\n", 60);
     def dir as string init makeTalk(
         "ada",
         "talk",
@@ -1136,7 +1136,7 @@ func testCodeFolderLaunchers() {
     def outside as list of Finding init checkedCode(codeWith("app/tool", "#!/bin/sh\n"));
     testing.assertEqual(rulesOf($outside), ["code-folder"]);
     testing.assertContains($outside[0].message, "is not a file type");
-    def binary as bytes init convert.bytesFromString("utf-8", "#!x");
+    def binary as bytes init encoding.encode("utf-8", "#!x");
     $binary[] = 0;
     def dir as string init makeCodeTalk(goodCode());
     defer fs.removeAll(path.dir(path.dir(path.dir($dir))));
@@ -1158,7 +1158,7 @@ func testCodeFolderSymlinkFails() {
 }
 
 func testCodeFolderSizes() {
-    def big as string init strings.repeat("x", MAX_CODE_FILE_BYTES);
+    def big as string init strings.replicate("x", MAX_CODE_FILE_BYTES);
     testing.assertEqual(checkedCode(codeWith("big.txt", $big)), []);
     def found as list of Finding init checkedCode(codeWith("big.txt", $big + "x"));
     testing.assertEqual(rulesOf($found), ["code-folder"]);
@@ -1185,7 +1185,7 @@ func testCodeFolderForbiddenText() {
     testing.assertContains($keys[0].message, "contains a private key");
     def pkcs8 as string init "-----BEGIN " + "PRIVATE KEY-----\n";
     testing.assertEqual(rulesOf(checkedCode(codeWith("k.txt", $pkcs8))), ["code-folder"]);
-    def token as string init "token = \"ghp_" + strings.repeat("a1", 18) + "\"\n";
+    def token as string init "token = \"ghp_" + strings.replicate("a1", 18) + "\"\n";
     testing.assertEqual(rulesOf(checkedCode(codeWith("cfg.toml", $token))), ["code-folder"]);
     # AWS's documented placeholder is fine, a real-looking key is not.
     testing.assertEqual(checkedCode(codeWith("aws.ini", "key = AKIAIOSFODNN7EXAMPLE\n")), []);
@@ -1197,11 +1197,11 @@ func testCodeFolderForbiddenText() {
 func testCodeFolderEncodingAndDashes() {
     def dir as string init makeCodeTalk(goodCode());
     defer fs.removeAll(path.dir(path.dir(path.dir($dir))));
-    def broken as bytes init convert.bytesFromString("utf-8", "abc");
+    def broken as bytes init encoding.encode("utf-8", "abc");
     $broken[] = 0xff;
     fs.writeBytes(path.join($dir, "code", "data.txt"), $broken);
     testing.assertEqual(rulesOf(checkTalk($dir, "ada", fast())), ["encoding"]);
-    def nul as bytes init convert.bytesFromString("utf-8", "abc");
+    def nul as bytes init encoding.encode("utf-8", "abc");
     $nul[] = 0;
     fs.writeBytes(path.join($dir, "code", "data.txt"), $nul);
     def found as list of Finding init checkTalk($dir, "ada", fast());
@@ -1265,7 +1265,7 @@ func testCodeLint() {
     $opts.parseCode = true;
     # The deck import resolves nowhere (no vendor/), and lint accepts that.
     testing.assertEqual(checkTalk($dir, "ada", $opts), []);
-    def long as string init "use io;\nio.printf(\"%s\\n\", \"" + strings.repeat("x", 120) +
+    def long as string init "use io;\nio.printf(\"%s\\n\", \"" + strings.replicate("x", 120) +
         "\");\n";
     fs.writeString(path.join($dir, "code", "long.j"), $long);
     testing.assertEqual(checkTalk($dir, "ada", $opts), []);

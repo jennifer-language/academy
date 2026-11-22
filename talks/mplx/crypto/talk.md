@@ -12,14 +12,14 @@ transition: slide
 Hashes, MACs, ciphers and signatures, passwords, two-factor codes, JWT,
 OAuth2, ACME certificates and sealed secrets.
 
-Based on **Jennifer 0.26.0**, November 2026, by [@mplx](https://github.com/mplx).
+Based on **Jennifer 0.27.0**, November 2026, by [@mplx](https://github.com/mplx).
 
 <!-- notes:
 This talk is for people who already write services in Jennifer and now have
 to log users in, sign tokens, call an API with OAuth2 or get a certificate.
 It walks from the primitives in the hash and crypto libraries up to the
 bundled totp, jwt, oauth and acme modules and the sealbox deck. Every output
-was produced with the released Jennifer 0.26.0 and its modules: OAuth2
+was produced with the released Jennifer 0.27.0 and its modules: OAuth2
 against a small fake authorization server written in Jennifer, ACME against
 Let's Encrypt's test CA pebble in a container, both on 127.0.0.1. Every key
 and secret shown is a placeholder or a throwaway from a demo run.
@@ -57,9 +57,9 @@ constant-time compare. The library pages list every default.
 ## Hash, MAC, and a comparison that does not leak
 
 ```jennifer excerpt
-def body as bytes init convert.bytesFromString("utf-8", '{"order":42}');
+def body as bytes init encoding.encode("utf-8", '{"order":42}');
 def key as bytes init
-    convert.bytesFromString("utf-8", "PLACEHOLDER-hook-key");
+    encoding.encode("utf-8", "PLACEHOLDER-hook-key");
 def mac as string init
     encoding.toText("hex", hash.hmac("sha256", $body, $key));
 func authentic(body as bytes, sent as string, key as bytes) {
@@ -441,7 +441,7 @@ a plain http directory, so pin https yourself.
 ```jennifer excerpt
 def cert as asn1.Value init
     asn1.decode(encoding.fromText("base64", $b64));
-def s as string init convert.stringFromBytes("utf-8",
+def s as string init encoding.decode("utf-8",
     asn1.asBytes($cert, "/0/4/{$which}"));   # notBefore, notAfter
 # ...
 def life as int init time.unix($ends) - time.unix($from);
@@ -473,9 +473,9 @@ pebble issues ninety-day certificates, like Let's Encrypt today.
 import "@deckyard/sealbox/" as sealbox;
 
 def key as bytes init sealbox.newKey();
-def id as bytes init convert.bytesFromString("utf-8", "row 17");
+def id as bytes init encoding.encode("utf-8", "row 17");
 def box as bytes init sealbox.sealWith($plain, $key, $id);
-def other as bytes init convert.bytesFromString("utf-8", "row 18");
+def other as bytes init encoding.encode("utf-8", "row 18");
 sealbox.openWith($box, $key, $other);
 def tok as string init sealbox.fernetEncrypt($plain, $fkey);
 ```
@@ -509,7 +509,7 @@ func keyFile(path as string) {
     return fs.readString($path);
 }
 def old as string init jwt.signWithKid("HS256", $c,
-    convert.bytesFromString("utf-8", $keys["2026-10"]), "2026-10");
+    encoding.encode("utf-8", $keys["2026-10"]), "2026-10");
 def back as json.Value init jwt.verifyWithKeys("HS256", $t, $keys);
 ```
 
@@ -584,7 +584,7 @@ where a key lives. Those are the places where real systems break.
 - Companions: [Jennifer facing hostile input](https://academy.jennifer-lang.dev/talks/mplx/security/)
   and [A web app from scratch](https://academy.jennifer-lang.dev/talks/mplx/web-app/)
 
-Based on Jennifer 0.26.0, November 2026.
+Based on Jennifer 0.27.0, November 2026.
 
 <!-- notes:
 The crypto page lists every algorithm with its key sizes and limits, and

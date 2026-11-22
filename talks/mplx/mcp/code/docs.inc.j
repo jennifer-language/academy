@@ -31,7 +31,7 @@ func docPages() {
     def found as list of string init [];
     for (def st in fs.walk($root)) {
         if (not $st.isDir and strings.endsWith($st.path, ".md")) {
-            $found[] = strings.substring($st.path, len($root) + 1);
+            $found[] = $st.path[len($root) + 1..];
         }
     }
     return lists.sort($found);
@@ -57,7 +57,7 @@ func clip(s as string) {
     if (len($t) <= EXCERPT) {
         return $t;
     }
-    return strings.substring($t, 0, EXCERPT) + "...";
+    return $t[..EXCERPT] + "...";
 }
 
 # firstHit finds where a page first mentions q: the heading above
@@ -126,7 +126,7 @@ func readDoc(args as json.Value) {
 
 # A resource: one page. Only registered URIs reach this handler.
 func readResource(uri as json.Value) {
-    def p as string init strings.substring(json.asString($uri, ""), 7);
+    def p as string init json.asString($uri, "")[7..];
     return fs.readString($root + "/" + $p);
 }
 

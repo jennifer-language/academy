@@ -11,7 +11,7 @@ transition: slide
 From an empty directory to a deck others install with `jvc`: the manifest,
 the source layout, tests, the shared CI gate, a tag, and the registry.
 
-Based on **Jennifer 0.26.0**, November 2026, by [@mplx](https://github.com/mplx).
+Based on **Jennifer 0.27.0**, November 2026, by [@mplx](https://github.com/mplx).
 
 <!-- notes:
 We build one small deck from start to finish: @mplx/beaufort, which turns a
@@ -87,7 +87,7 @@ capabilities = []
 deck = "https://raw.githubusercontent.com/mplx/deck-beaufort/main/deck.toml"
 
 [engines]
-jennifer = ">=0.26.0"
+jennifer = ">=0.27.0"
 ```
 
 <!-- notes:
@@ -140,7 +140,7 @@ compares it with the manifest:
 ```text
 # SPDX-License-Identifier: LGPL-3.0-only
 # SPDX-FileCopyrightText: Copyright (C) 2026 mplx <mplx@jennifer-lang.dev>
-# pragma-jennifer-version: >=0.26.0
+# pragma-jennifer-version: >=0.27.0
 ```
 
 Two shapes: **modules** (one file per subject) or **topics** (one entry file
@@ -195,7 +195,7 @@ func testLimitsBelongToTheForceAbove() {
 }
 
 func testNegativeSpeedThrows() {
-    testing.assertThrowsWith("force", [-1], "beaufort");
+    testing.assertThrowsArgs("force", [-1], "beaufort");
 }
 ```
 
@@ -271,7 +271,7 @@ service or a key makes check-examples.sh only parse them instead of running.
 @mplx/beaufort 0.1.0 - deck.toml, modules shape, tiny=no
 === shared     all 22 shared files match the template
 === format     === lint
-=== headers    all 3 source files carry the SPDX pair and >=0.26.0
+=== headers    all 3 source files carry the SPDX pair and >=0.27.0
 === overlays   all 1 modules in src/ have a co-located test overlay
 === src        src/ holds only Jennifer source
 === coverage   all 1 exported functions are called from an overlay
@@ -478,7 +478,7 @@ yours.
 - jvc manual: [jvc.jennifer-lang.dev](https://jvc.jennifer-lang.dev/)
 - Registry: [registry.jennifer-lang.dev](https://registry.jennifer-lang.dev/)
 
-Based on Jennifer 0.26.0, November 2026.
+Based on Jennifer 0.27.0, November 2026.
 
 <!-- notes:
 That is the whole path. The registry's manual has a page on publishing that

@@ -12,7 +12,7 @@ transition: fade
 Eight design decisions, why they were made, and what the interpreter
 says when you run into one.
 
-Based on **Jennifer 0.26.0**, November 2026, by [@mplx](https://github.com/mplx).
+Based on **Jennifer 0.27.0**, November 2026, by [@mplx](https://github.com/mplx).
 
 <!-- notes:
 Everyone who learns Jennifer asks at some point: why can I not write plus
@@ -474,12 +474,12 @@ those two files first and say which stance your idea touches.
   [Jennifer Academy](https://academy.jennifer-lang.dev/)
 - Language: [jennifer-lang.dev](https://jennifer-lang.dev/)
 
-Based on Jennifer 0.26.0, November 2026.
+Based on Jennifer 0.27.0, November 2026.
 
 <!-- notes:
 The three documents are in the interpreter's repository and on the
 documentation site. The traps talk in this academy is the practical companion:
 the same rules, seen from the side of the person whose program was just
 refused, with the fix for each one. Every message on these slides came from
-running the snippet with Jennifer 0.26.0, with the file name shortened.
+running the snippet with Jennifer 0.27.0, with the file name shortened.
 -->

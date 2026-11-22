@@ -1,4 +1,4 @@
-use convert;
+use encoding;
 use io;
 use os;
 use time;
@@ -11,7 +11,7 @@ $c = koofr.withRetries($c, 3);              # GETs: 429 and 5xx
 def m as koofr.Mount init koofr.primaryMount($c);
 def opts as koofr.PutOptions;
 $opts.overwrite = true;                     # same bytes: idempotent
-def data as bytes init convert.bytesFromString("utf-8", "buy milk\n");
+def data as bytes init encoding.encode("utf-8", "buy milk\n");
 for (def attempt in 1..5) {       # $opts.overwrite: idempotent
     try {
         koofr.put($c, $m.id, "/notes.txt", $data, $opts);

@@ -1,9 +1,9 @@
 import "zmq.j" as zmq;
 use io;
-use convert;
 use task;
+use encoding;
 
-func b(s as string) { return convert.bytesFromString("utf-8", $s); }
+func b(s as string) { return encoding.encode("utf-8", $s); }
 def l as zmq.Listener init zmq.listen("PUB", "127.0.0.1:0");
 def addr as string init zmq.address($l);
 def t as task of zmq.Socket init spawn { return zmq.accept($l); };

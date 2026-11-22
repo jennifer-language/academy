@@ -4,8 +4,8 @@
 use io;
 use os;
 use strings;
-use convert;
 use httpd;
+use encoding;
 import "uri.j" as uri;
 
 def addr as string init "127.0.0.1:" + os.ARGS[1];
@@ -32,11 +32,11 @@ while (true) { # lint-disable: L105
     if ($svc == "gotify") {
         io.printf("  X-Gotify-Key: %s\n", httpd.header($req, "X-Gotify-Key"));
     }
-    def body as string init convert.stringFromBytes("utf-8", httpd.body($req));
+    def body as string init encoding.decode("utf-8", httpd.body($req));
     if (strings.startsWith(httpd.header($req, "Content-Type"), "application/x-www")) {
         def form as map of string to string init uri.parseQuery($body);
         for (def k in $form) {
-            def pad as string init "\n" + strings.repeat(" ", len($k) + 3);
+            def pad as string init "\n" + strings.replicate(" ", len($k) + 3);
             io.printf("  %s=%s\n", $k, strings.replace($form[$k], "\n", $pad));
         }
     } else {

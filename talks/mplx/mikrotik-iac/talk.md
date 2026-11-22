@@ -11,7 +11,7 @@ transition: none
 Scripting the setup of new MikroTik devices with the RouterOS deck: desired
 state in a file, a plan, a dry run, backup, apply, verify, roll back.
 
-Based on **Jennifer 0.26.0**, November 2026, by [@mplx](https://github.com/mplx).
+Based on **Jennifer 0.27.0**, November 2026, by [@mplx](https://github.com/mplx).
 
 <!-- notes:
 This talk builds one program, about four hundred lines of Jennifer, that
@@ -64,7 +64,7 @@ Two decks are involved. The routeros deck from Deckyard is the one to program
 against: about 460 verbs such as setIdentity, setDnsServers, addBridge, plus
 generic getAll, add, set and remove for any menu path. It validates input
 locally, so a typo fails before anything is sent. Underneath it speaks the
-binary API through the mikrotik client. In 0.26.0 that client is still the
+binary API through the mikrotik client. In 0.27.0 that client is still the
 bundled module, which is deprecated; the routeros deck moves to the
 @jennifer/mikrotik deck before 0.28.0 removes the bundled copy. Your code does
 not change: you import routeros either way.
@@ -371,7 +371,7 @@ them too. The second run's lines for those two are cut from the slide.
 - The language: [jennifer-lang.dev](https://jennifer-lang.dev/), this talk in
   the [Jennifer Academy](https://academy.jennifer-lang.dev/)
 
-Based on Jennifer 0.26.0, November 2026.
+Based on Jennifer 0.27.0, November 2026.
 
 <!-- notes:
 The routeros deck itself has no plan or diff step and does not detect drift;

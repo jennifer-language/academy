@@ -3,7 +3,7 @@
 The programs behind the slides. They use the `@deckyard/anthropic`,
 `@deckyard/openai` and `@deckyard/gemini` decks, listed in `deck.toml`, so
 run `jvc install` once in this folder to fill `vendor/`. Run everything from
-this folder with Jennifer 0.26.0.
+this folder with Jennifer 0.27.0.
 
 Nothing here was run against a vendor, and no real key was used. `fake.j`
 stands in for all three APIs on one loopback port, and every program reads

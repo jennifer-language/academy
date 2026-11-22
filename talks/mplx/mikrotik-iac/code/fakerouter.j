@@ -15,9 +15,9 @@ use toml;
 use maps;
 use lists;
 use strings;
-use convert;
 use binary;
 use task;
+use encoding;
 
 def const USER as string init "iac";
 def const PASSWORD as string init "lab-only";
@@ -105,7 +105,7 @@ func readSentence(conn as net.Conn) {
     while (true) {
         def n as int init readLength($conn);
         if ($n == 0) { return $s; }
-        def w as string init convert.stringFromBytes("utf-8", readExactly($conn, $n));
+        def w as string init encoding.decode("utf-8", readExactly($conn, $n));
         if ($s.command == "") {
             $s.command = $w;
         } elseif (strings.startsWith($w, "=")) {
@@ -118,7 +118,7 @@ func readSentence(conn as net.Conn) {
 func writeSentence(conn as net.Conn, words as list of string) {
     def parts as list of bytes;
     for (def w in $words) {
-        def raw as bytes init convert.bytesFromString("utf-8", $w);
+        def raw as bytes init encoding.encode("utf-8", $w);
         $parts[] = encodeLength(len($raw));
         $parts[] = $raw;
     }
@@ -223,8 +223,8 @@ func handle(r as Router, conn as net.Conn, s as Sentence) {
         }
         if ($verb == "remove") {
             def rows as list of map of string to string init $r.rows[$path];
-            $r.rows[$path] = lists.concat(lists.slice($rows, 0, $i),
-                lists.slice($rows, $i + 1, len($rows)));
+            $r.rows[$path] = lists.concat($rows[..$i],
+                $rows[$i + 1..len($rows)]);
         } else {
             for (def k in $s.attrs) { $r.rows[$path][$i][$k] = $s.attrs[$k]; }
         }

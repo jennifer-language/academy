@@ -6,9 +6,9 @@ func testParseQty() {
     testing.assertEqual(parseQty("99"), 99);
     # the regression test for the limit bug ("Prove the test catches the
     # bug"): the old code accepted 100
-    testing.assertThrowsWith("parseQty", ["0"], "cart");
-    testing.assertThrowsWith("parseQty", ["x"], "cart");
-    testing.assertThrowsWith("parseQty", ["100"], "cart");
+    testing.assertThrowsArgs("parseQty", ["0"], "cart");
+    testing.assertThrowsArgs("parseQty", ["x"], "cart");
+    testing.assertThrowsArgs("parseQty", ["100"], "cart");
 }
 
 
@@ -18,8 +18,8 @@ func badQty() {
 
 func testParseQtyRejects() {
     testing.assertThrows("badQty", "cart");
-    testing.assertThrowsWith("parseQty", ["0"], "cart");
-    testing.assertThrowsWith("parseQty", ["100"], "cart");
+    testing.assertThrowsArgs("parseQty", ["0"], "cart");
+    testing.assertThrowsArgs("parseQty", ["100"], "cart");
 }
 
 func testTotal() {

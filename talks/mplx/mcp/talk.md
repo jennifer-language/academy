@@ -12,7 +12,7 @@ A small server that serves the Jennifer documentation to an assistant:
 two tools, every page as a resource and a prompt, tested with real
 clients and connected to Claude Code and VS Code.
 
-Based on **Jennifer 0.26.0**, November 2026, by [@mplx](https://github.com/mplx).
+Based on **Jennifer 0.27.0**, November 2026, by [@mplx](https://github.com/mplx).
 
 <!-- notes:
 The companion talk, Talking to LLMs from Jennifer, is about the model side:
@@ -20,7 +20,7 @@ sending messages and running tools in your own program. This one is the other
 direction: you write a server, and an assistant you already use calls it.
 The example is practical: after this talk your assistant can look up a
 Jennifer function in the real documentation instead of guessing. Everything
-shown ran for real on Jennifer 0.26.0 with its bundled modules, against the
+shown ran for real on Jennifer 0.27.0 with its bundled modules, against the
 module's own client, the official MCP Inspector and Claude Code.
 -->
 
@@ -135,7 +135,7 @@ func docPages() {
     def found as list of string init [];
     for (def st in fs.walk($root)) {
         if (not $st.isDir and strings.endsWith($st.path, ".md")) {
-            $found[] = strings.substring($st.path, len($root) + 1);
+            $found[] = $st.path[len($root) + 1..];
         }
     }
     return lists.sort($found);
@@ -245,8 +245,7 @@ the same way. One stray io.printf would corrupt the protocol stream.
 
 ```jennifer excerpt
 func readResource(uri as json.Value) {
-    def p as string init strings.substring(
-        json.asString($uri, ""), 7);
+    def p as string init json.asString($uri, "")[7..];
     return fs.readString($root + "/" + $p);
 }
 # in docsServer():
@@ -449,7 +448,7 @@ prompt and resource menus are not in Copilot sessions. Not run in VS Code here.
 ```jennifer excerpt
 func postMcp(ctx as web.Context) {
     # ... Origin and bearer token checks, next slide ...
-    def body as string init convert.stringFromBytes("utf-8",
+    def body as string init encoding.decode("utf-8",
         web.body($ctx));
     def reply as string init mcp.handle($srv, $body);
     if ($reply == "") {
@@ -538,7 +537,7 @@ to os.run and check each argument against an allow-list.
   templates, custom `isError` text
 - The [Jennifer Academy](https://academy.jennifer-lang.dev/)
 
-Based on Jennifer 0.26.0, November 2026.
+Based on Jennifer 0.27.0, November 2026.
 
 <!-- notes:
 The programs are small: docs.inc.j with the tools, resources and prompt,

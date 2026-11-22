@@ -1,14 +1,14 @@
 use io;
 use time;
 use hash;
-use convert;
+use encoding;
 import "totp.j" as totp;
 
 def const SECRET as string init "V2M4INROIF3S3SQ6AERIYRLRQ2F5CVZS";
 
 # the step a code belongs to, -1 if none in +/-1; no early exit
 func utf8(s as string) {
-    return convert.bytesFromString("utf-8", $s);
+    return encoding.encode("utf-8", $s);
 }
 
 func stepOf(code as string, now as int, o as totp.Options) {

@@ -1,6 +1,6 @@
 # Inside a document pipeline: the code
 
-The programs behind the slides. Run each from this folder with Jennifer 0.26.0
+The programs behind the slides. Run each from this folder with Jennifer 0.27.0
 (`jennifer run <file>.j`); they use only the modules bundled with the
 interpreter. Programs that write files put them in the current folder:
 `book.j` writes `notes.pdf`, `unicode.j` writes `unicode.pdf`, `glyphs.j`

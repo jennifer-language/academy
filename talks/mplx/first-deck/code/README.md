@@ -1,7 +1,7 @@
 # Writing and publishing your first deck: the code
 
 The deck of the talk, `@mplx/beaufort`, and a project that uses it. Checked
-with Jennifer 0.26.0, jvc 0.2.0 and deck-template at commit `c81632c`.
+with Jennifer 0.27.0, jvc 0.2.0 and deck-template at commit `c81632c`.
 Nothing here is published, and nothing needs a registry account: the
 consumer reads the deck from a local git repository through `[sources]`.
 

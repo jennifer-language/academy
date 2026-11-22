@@ -1,6 +1,5 @@
 # Mirror a local folder to an S3 bucket and a WebDAV folder.
 # usage: jennifer run backup.j <folder>
-use convert;
 use encoding;
 use fs;
 use hash;
@@ -80,7 +79,7 @@ func readRemote(t as Target) {
         return {};
     }
     def b as bytes init webdav.get($t.dav, "/" + MANIFEST, 0);
-    return parse(convert.stringFromBytes("utf-8", $b));
+    return parse(encoding.decode("utf-8", $b));
 }
 
 func upload(t as Target, rel as string, data as bytes) {
@@ -152,7 +151,7 @@ func mirror(t as Target, root as string,
         }
     }
     def text as string init render($local);
-    send($t, MANIFEST, convert.bytesFromString("utf-8", $text)); # last
+    send($t, MANIFEST, encoding.encode("utf-8", $text)); # last
     io.printf("%s: %d sent, %d removed, %d unchanged\n", $t.name, $sent,
         $gone, len($local) - $sent);
 }

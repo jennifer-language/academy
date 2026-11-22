@@ -1,9 +1,9 @@
 title = "Writing and publishing your first deck"
-description = "From an empty directory to a published Jennifer deck: deck.toml, the src/ layout, test overlays, the shared CI layer from deck-template and its gate, docs and design notes, vendoring with jvc, release tags, scopes and publishing through the registry. Based on Jennifer 0.26.0."
+description = "From an empty directory to a published Jennifer deck: deck.toml, the src/ layout, test overlays, the shared CI layer from deck-template and its gate, docs and design notes, vendoring with jvc, release tags, scopes and publishing through the registry. Based on Jennifer 0.27.0."
 author = "mplx"
 license = "CC-BY-4.0"
 lang = "en"
-jennifer = "0.26.0"
+jennifer = "0.27.0"
 date = "2026-11"
 level = "intermediate"
 tags = ["decks", "jvc", "packaging", "registry", "testing", "ci"]

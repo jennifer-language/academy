@@ -1,6 +1,6 @@
 # CSV and spreadsheets: the code
 
-The programs behind the slides, for Jennifer 0.26.0. The CSV part uses the
+The programs behind the slides, for Jennifer 0.27.0. The CSV part uses the
 bundled `csv.j` module; the spreadsheet part uses the `@deckyard/sheets` deck
 listed in `deck.toml`, so run `jvc install` once in this folder to fill
 `vendor/`. No server is needed. Run everything from this folder: the

@@ -3,7 +3,7 @@
 The programs behind the slides. They use the `@jennifer/gotify`,
 `@jennifer/telegram`, `@jennifer/slack` and `@jennifer/discord` decks, listed
 in `deck.toml`, so run `jvc install` once in this folder to fill `vendor/`.
-Run everything from this folder with Jennifer 0.26.0.
+Run everything from this folder with Jennifer 0.27.0.
 
 Nothing here talks to the real services: `mock.j` stands in for all four on
 `127.0.0.1:28790`, and `.env.test` points every channel at it. The tokens and

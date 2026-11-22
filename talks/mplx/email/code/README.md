@@ -1,6 +1,6 @@
 # Email with Jennifer: the code
 
-The programs behind the slides, for Jennifer 0.26.0 and its bundled modules
+The programs behind the slides, for Jennifer 0.27.0 and its bundled modules
 (`smtp.j`, `imap.j`, `pop.j`, `mime.j`, `sasl.j`, `oauth.j`,
 `transport.j`). No decks. They talk to local stand-in servers in docker, not
 to a real mail provider: GreenMail 2.1.2 (SMTP, IMAP, POP3 over implicit
@@ -26,7 +26,7 @@ docker run --rm -d --name academy-mail-greenmail -v $D/certs:/certs:ro \
   greenmail/standalone:2.1.2
 docker run --rm -d --name academy-mail-oauth --network academy-mail-net \
   -p 127.0.0.1:18080:8080 -v $D/oauthmock:/app:ro --entrypoint jennifer \
-  ghcr.io/jennifer-language/jennifer:0.26.0 run /app/mock.j
+  ghcr.io/jennifer-language/jennifer:0.27.0 run /app/mock.j
 docker run --rm -d --name academy-mail-dovecot --network academy-mail-net \
   -v $D/dovecot:/etc/dovecot:ro -p 127.0.0.1:4143:143 -p 127.0.0.1:4993:993 \
   -p 127.0.0.1:4110:110 -p 127.0.0.1:4995:995 dovecot/dovecot:2.3.21

@@ -1,7 +1,7 @@
 #!/usr/bin/env -S jennifer run
 # SPDX-License-Identifier: LGPL-3.0-only
 # SPDX-FileCopyrightText: Copyright (C) 2026 mplx <mplx@jennifer-lang.dev>
-# pragma-jennifer-version: >=0.26.0
+# pragma-jennifer-version: >=0.27.0
 
 /**
  * Write the academy's own pages into the site directory.
@@ -24,7 +24,7 @@
  */
 
 use archive;
-use convert;
+use encoding;
 use fs;
 use io;
 use lists;
@@ -158,7 +158,7 @@ func writeCode(t as site.Talk, dir as string, dest as string, hl as string) {
         if (not $f.text) {
             continue;
         }
-        def text as string init convert.stringFromBytes("utf-8", $data);
+        def text as string init encoding.decode("utf-8", $data);
         def shown as string init fs.readString(path.join($hl, $code, $f.path + ".html"));
         fs.writeString(path.join($target, site.viewPath($f)), site.codeFilePage($t, $f, $shown));
         if ($f.path == rules.CODE_README) {

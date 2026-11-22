@@ -3,7 +3,6 @@
 #
 #   jennifer run errors.j
 
-use binary;
 use fs;
 use io;
 
@@ -29,7 +28,7 @@ try {
     show("fake.ab1", $e);
 }
 try {
-    abif.parse(binary.slice(fs.readBytes("data/3730.ab1"), 0, 200000));
+    abif.parse(fs.readBytes("data/3730.ab1")[..200000]);
 } catch (e) {
     show("cut .ab1", $e);
 }

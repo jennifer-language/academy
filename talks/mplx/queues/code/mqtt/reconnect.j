@@ -1,6 +1,6 @@
 use io;
 use time;
-use convert;
+use encoding;
 import "mqtt.j" as mqtt;
 import "transport.j" as transport;
 
@@ -25,7 +25,7 @@ def seen as int init 0;
 while ($seen < 2) {
     try {
         def m as mqtt.Message init mqtt.receive($c);
-        io.printf("%s = %s\n", $m.topic, convert.stringFromBytes("utf-8", $m.payload));
+        io.printf("%s = %s\n", $m.topic, encoding.decode("utf-8", $m.payload));
         $seen = $seen + 1;
     } catch (e) {
         io.printf("lost the broker (%s)\n", $e.kind);

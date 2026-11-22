@@ -22,7 +22,7 @@ func toPdf(doc as doctree.Node, o as doctree.PdfOptions) {
     return doctree.renderPdf($doc, $o);
 }
 
-def doc as doctree.Node init markdown.parse(strings.repeat(">", 20) + " x\n");
+def doc as doctree.Node init markdown.parse(strings.replicate(">", 20) + " x\n");
 try {
     io.printf("%d bytes\n", len(toPdf($doc, doctree.pdfDefaults())));
 } catch (e) {

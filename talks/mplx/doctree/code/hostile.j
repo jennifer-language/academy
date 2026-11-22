@@ -24,8 +24,8 @@ func attempt(reader as string, src as string) {
 
 def fences as string init "";
 for (def i in 0..60) {
-    $fences = $fences + strings.repeat(":", 70 - $i) + '{note}' + "\n";
+    $fences = $fences + strings.replicate(":", 70 - $i) + '{note}' + "\n";
 }
-attempt("markdown", strings.repeat(">", 150) + " deep\n");
+attempt("markdown", strings.replicate(">", 150) + " deep\n");
 attempt("myst", $fences + "deep\n");
-attempt("rst", strings.repeat("* ", 120) + "deep\n");
+attempt("rst", strings.replicate("* ", 120) + "deep\n");

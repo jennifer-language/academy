@@ -1,4 +1,4 @@
-use convert;
+use encoding;
 use io;
 use os;
 import "@deckyard/koofr/" as koofr;
@@ -28,7 +28,7 @@ io.printf("token for %s, permission %s\n",
     seafile.tokenLibrary($ro).name, $t.permission);
 try {
     seafile.put($ro, $lib.id, "/x.txt",
-        convert.bytesFromString("utf-8", "x"), true);
+        encoding.encode("utf-8", "x"), true);
 } catch (e) {
     io.printf("[%s] %s\n", $e.kind, $e.message);
 }

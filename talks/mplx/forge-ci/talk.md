@@ -11,7 +11,7 @@ transition: slide
 One workflow file, three forges: fmt, lint, docblocks, tests and the
 docs, for a small Jennifer app.
 
-Based on **Jennifer 0.26.0**, November 2026, by [@mplx](https://github.com/mplx).
+Based on **Jennifer 0.27.0**, November 2026, by [@mplx](https://github.com/mplx).
 
 <!-- notes:
 GitHub Actions, Gitea Actions and Forgejo Actions all read the same workflow
@@ -20,7 +20,7 @@ though: the forges differ in where they look for workflows, where an action
 comes from, what a runner label means, what the token is called and which
 GitHub features exist at all. This talk builds the pipeline for a small app
 step by step and then goes through those differences. Every command and every
-output on the slides was run with the Jennifer 0.26.0 release; the forge facts
+output on the slides was run with the Jennifer 0.27.0 release; the forge facts
 come from each forge's own documentation.
 -->
 
@@ -262,7 +262,7 @@ on:
   push: { branches: [main] }
   pull_request:
 permissions: { contents: read }
-env: { JENNIFER_VERSION: 0.26.0, GRIMOIRE_VERSION: 0.5.0 }
+env: { JENNIFER_VERSION: 0.27.0, GRIMOIRE_VERSION: 0.5.0 }
 jobs:
   check:
     runs-on: ubuntu-latest
@@ -495,7 +495,7 @@ its action from.
   `forgejo.org/docs/latest/user/actions`
 - More talks: the [Jennifer Academy](https://academy.jennifer-lang.dev/)
 
-Based on Jennifer 0.26.0, November 2026.
+Based on Jennifer 0.27.0, November 2026.
 
 <!-- notes:
 The Gitea documentation has a page comparing Gitea Actions with GitHub Actions,

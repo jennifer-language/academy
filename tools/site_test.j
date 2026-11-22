@@ -1,6 +1,6 @@
 # SPDX-License-Identifier: LGPL-3.0-only
 # SPDX-FileCopyrightText: Copyright (C) 2026 mplx <mplx@jennifer-lang.dev>
-# pragma-jennifer-version: >=0.26.0
+# pragma-jennifer-version: >=0.27.0
 
 /**
  * Tests for the site's pages: the order of the talks and the escaping of
@@ -10,6 +10,7 @@
  * @license LGPL-3.0-only
  */
 
+use encoding;
 use testing;
 
 /** A talk with the given title and months. */
@@ -445,13 +446,13 @@ func testCodeZipIsDeterministic() {
     def t as Talk init withCode();
     def a as archive.Entry init archive.Entry{
         name: "srv/main.j",
-        data: convert.bytesFromString("utf-8", "use io;\n"),
+        data: encoding.encode("utf-8", "use io;\n"),
         mode: 0o755,
         mtime: 1700000000
     };
     def b as archive.Entry init archive.Entry{
         name: "README.md",
-        data: convert.bytesFromString("utf-8", "# Programs\n"),
+        data: encoding.encode("utf-8", "# Programs\n"),
         mode: 0o600,
         mtime: 1
     };
@@ -463,5 +464,5 @@ func testCodeZipIsDeterministic() {
     testing.assertEqual($back[1].name, "code/srv/main.j");
     testing.assertEqual($back[1].mode, 0o644);
     testing.assertEqual($back[1].mtime, ZIP_MTIME);
-    testing.assertEqual(convert.stringFromBytes("utf-8", $back[1].data), "use io;\n");
+    testing.assertEqual(encoding.decode("utf-8", $back[1].data), "use io;\n");
 }

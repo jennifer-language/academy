@@ -1,6 +1,6 @@
 # Invoicing with web services: the code
 
-The programs behind the slides, for Jennifer 0.26.0. Run everything from
+The programs behind the slides, for Jennifer 0.27.0. Run everything from
 this folder. Two programs use decks, `@deckyard/vies` and `@deckyard/money`,
 listed in `deck.toml`: run `jvc update` once here to resolve them and fill
 `vendor/` (it also writes `camcorder.lock`; later, `jvc install` restores

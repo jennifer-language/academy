@@ -1,6 +1,6 @@
 use io;
 use net;
-use convert;
+use encoding;
 import "mqtt.j" as mqtt;
 import "transport.j" as transport;
 
@@ -12,11 +12,11 @@ func opts(id as string) {
 func show(c as mqtt.Client) {
     for (def m in mqtt.poll($c, 500)) {
         io.printf("%s = %s\n", $m.topic,
-            convert.stringFromBytes("utf-8", $m.payload));
+            encoding.decode("utf-8", $m.payload));
     }
 }
 def will as mqtt.Will init mqtt.Will{topic: "status/sensor7",
-    payload: convert.bytesFromString("utf-8", "offline"), qos: 1, retain: true};
+    payload: encoding.encode("utf-8", "offline"), qos: 1, retain: true};
 def sensor as mqtt.Client init mqtt.connectWith(opts("sensor7"), $will, true);
 mqtt.publishRetain($sensor, "status/sensor7", "online", true);
 

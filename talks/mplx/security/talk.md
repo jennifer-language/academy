@@ -11,14 +11,14 @@ transition: slide
 
 Caps, bounded parsing, deadlines, server defaults, and what decks promise.
 
-Based on **Jennifer 0.26.0**, November 2026, by [@mplx](https://github.com/mplx).
+Based on **Jennifer 0.27.0**, November 2026, by [@mplx](https://github.com/mplx).
 
 <!-- notes:
 This talk is for people who write servers, parsers and decks that read data
 somebody else controls: an upload, a request body, the reply of a server you
 call, a file a user hands you. It covers what Jennifer guarantees, what it
 leaves to you, and how to keep both straight. Every output on these slides
-was produced with Jennifer 0.26.0 and its bundled modules; network demos ran
+was produced with Jennifer 0.27.0 and its bundled modules; network demos ran
 against fake servers on 127.0.0.1. Long file paths are shortened to the file
 name.
 -->
@@ -193,7 +193,7 @@ download from a server you run yourself.
 
 ```jennifer excerpt
 # config_test.j, beside a config.j whose load() wraps json.decode
-func deepConfig() { load(strings.repeat("[", 5000)); }
+func deepConfig() { load(strings.replicate("[", 5000)); }
 func brokenConfig() { load("[1, 2"); }
 
 func testCapStaysLimit() {
@@ -228,7 +228,7 @@ somebody simplifies the catch block. The assertion line is wrapped here.
 def jpeg as bytes init images.encode("jpeg", images.create(64, 64));
 def sof as bytes init encoding.fromText("hex", "ffc0");   # SOF0
 def at as int init binary.indexOf($jpeg, $sof);
-def cut as bytes init binary.slice($jpeg, 0, $at + 3);   # mid header
+def cut as bytes init $jpeg[..$at + 3];   # mid header
 try {
     pdf.loadImage("Logo", $cut);
 } catch (e) {
@@ -265,7 +265,7 @@ func records(b as bytes) {
         need($b, $at, 2);
         def n as int init binary.readUint("be", $b, $at, 2);
         need($b, $at + 2, $n);
-        $out[] = binary.slice($b, $at + 2, $at + 2 + $n);
+        $out[] = $b[$at + 2..$at + 2 + $n];
         $at = $at + 2 + $n;
     }
     return $out;
@@ -535,7 +535,7 @@ further.
 - Decks: [jvc](https://jvc.jennifer-lang.dev/) and the [registry](https://registry.jennifer-lang.dev/)
 - Companion: [Errors done right](https://academy.jennifer-lang.dev/talks/mplx/errors/)
 
-Based on Jennifer 0.26.0, November 2026.
+Based on Jennifer 0.27.0, November 2026.
 
 <!-- notes:
 The security model page explains the trusted script in more depth, with the

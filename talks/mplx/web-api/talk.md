@@ -11,7 +11,7 @@ transition: slide
 Versioned routes, migrations, contracts, idempotency, a lifecycle,
 signed webhooks, logs and end-to-end tests.
 
-Based on **Jennifer 0.26.0**, November 2026, by [@mplx](https://github.com/mplx).
+Based on **Jennifer 0.27.0**, November 2026, by [@mplx](https://github.com/mplx).
 
 <!-- notes:
 This talk builds the order API of a small shop, the kind of service other
@@ -564,7 +564,7 @@ worker with retries.
 ## Incoming webhooks: verify the raw body
 
 ```jennifer excerpt
-def body as string init convert.stringFromBytes("utf-8", web.body($ctx));
+def body as string init encoding.decode("utf-8", web.body($ctx));
 if (not webhook.stripeVerify($paySecret, $body,
     web.header($ctx, "Payment-Signature"), 300, $now)) {
     webapi.fail($ctx, 401, "bad signature");
@@ -666,7 +666,7 @@ or webapi.evaluate, deserve fast unit tests beside these.
   [sqlmigrate](https://docs.jennifer-lang.dev/modules/sqlmigrate.html),
   the [web app talk](https://academy.jennifer-lang.dev/talks/mplx/web-app/)
 
-Based on Jennifer 0.26.0, November 2026.
+Based on Jennifer 0.27.0, November 2026.
 
 <!-- notes:
 The shop covers the parts that are hard to add later: a stable error shape,

@@ -1,6 +1,6 @@
 use io;
 use time;
-use convert;
+use encoding;
 import "amqp.j" as amqp;
 
 def c as amqp.Conn init amqp.connect(amqp.withPort(
@@ -8,6 +8,6 @@ def c as amqp.Conn init amqp.connect(amqp.withPort(
 amqp.consume($c, "billing", false);
 def d as amqp.Delivery init amqp.receiveDelivery($c);
 io.printf("got %s, crashing before the ack\n",
-    convert.stringFromBytes("utf-8", $d.body));
+    encoding.decode("utf-8", $d.body));
 time.sleep(time.fromSeconds(2));
 exit(1);

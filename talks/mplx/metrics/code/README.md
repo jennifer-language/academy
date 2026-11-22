@@ -1,6 +1,6 @@
 # Metrics with Prometheus, StatsD and InfluxDB: the code
 
-The programs behind the slides, for Jennifer 0.26.0. They import the decks
+The programs behind the slides, for Jennifer 0.27.0. They import the decks
 `@jennifer/prometheus`, `@jennifer/statsd` and `@jennifer/influxdb`, listed
 in `deck.toml`, so run `jvc install` here first to fill `vendor/`. Run
 everything from this folder. The servers are throwaway containers bound to

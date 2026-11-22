@@ -8,17 +8,17 @@ use net;
 use json;
 use images;
 use compress;
-use convert;
 use strings;
 use task;
+use encoding;
 
 func serveTwo(ln as net.Listener) {
     def plain as net.Conn init net.accept($ln);
-    net.writeBytes($plain, convert.bytesFromString("utf-8", "hello"));
+    net.writeBytes($plain, encoding.encode("utf-8", "hello"));
     net.close($plain);
     def web as net.Conn init net.accept($ln);
     net.readBytes($web, 4096);
-    net.writeBytes($web, convert.bytesFromString("utf-8",
+    net.writeBytes($web, encoding.encode("utf-8",
         "HTTP/1.1 200 OK\r\nContent-Length: 2\r\nConnection: close\r\n\r\nok"));
     net.close($web);
 }
@@ -27,7 +27,7 @@ def ln as net.Listener init net.listen("127.0.0.1:0");
 def server as task of null init spawn { serveTwo($ln); };
 def url as string init "http://" + net.address($ln) + "/";
 def upload as bytes init images.encode("png", images.create(16, 16));
-def raw as bytes init compress.pack("gzip", convert.bytesFromString("utf-8", "data"));
+def raw as bytes init compress.pack("gzip", encoding.encode("utf-8", "data"));
 
 def img as images.Image init images.decode($upload, 4000000);                 # 4 Mpx
 def data as bytes init compress.unpack("gzip", $raw, 16777216);              # 16 MiB
@@ -39,7 +39,7 @@ task.wait($server);
 io.printf("%dx%d, %d, %d, %d %s\n", images.width($img), images.height($img),
     len($data), len($got), $r.status, $r.body);
 
-def text as string init strings.repeat("[", 50);
+def text as string init strings.replicate("[", 50);
 def opts as json.DecodeOptions init
     json.DecodeOptions{maxDepth: 20, maxNodes: 10000};
 try {

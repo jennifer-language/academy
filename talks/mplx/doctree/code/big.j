@@ -6,7 +6,7 @@ import "doctree.j" as doctree;
 
 def section as string init "## Section\n\nSome *text* with `code` and a [link](a.html).\n\n" +
     "- one\n- two\n\n| a | b |\n| --- | --- |\n| 1 | 2 |\n\n";
-def md as string init strings.repeat($section, 400);
+def md as string init strings.replicate($section, 400);
 
 func ms(t0 as int) {
     return time.unixMillis(time.now()) - $t0;

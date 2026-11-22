@@ -33,4 +33,4 @@ None.
 
 ## Dependencies on the interpreter
 
-Jennifer 0.26.0 or newer; pure, so it also runs on `jennifer-tiny`.
+Jennifer 0.27.0 or newer; pure, so it also runs on `jennifer-tiny`.

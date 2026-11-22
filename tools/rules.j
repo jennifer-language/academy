@@ -1,6 +1,6 @@
 # SPDX-License-Identifier: LGPL-3.0-only
 # SPDX-FileCopyrightText: Copyright (C) 2026 mplx <mplx@jennifer-lang.dev>
-# pragma-jennifer-version: >=0.26.0
+# pragma-jennifer-version: >=0.27.0
 # pragma-jennifer-capability: exec
 
 /**
@@ -16,7 +16,9 @@
  */
 
 use convert;
+use encoding;
 use fs;
+use io;
 use json;
 use lists;
 use maps;
@@ -500,8 +502,8 @@ export func frontMatter(lines as list of string) {
         if ($colon < 1) {
             continue;
         }
-        def key as string init strings.lower(strings.trim(strings.substring($line, 0, $colon)));
-        def raw as string init strings.substring($line, $colon + 1, len($line));
+        def key as string init strings.lower(strings.trim($line[..$colon]));
+        def raw as string init $line[$colon + 1..len($line)];
         def value as string init unquote(strings.trim($raw));
         $fm.values[$key] = $value;
         $fm.lines[$key] = $i + 1;
@@ -729,11 +731,11 @@ export func noteWords(line as string) {
     def t as string init $line;
     def at as int init strings.indexOf($t, "<!-- notes:");
     if ($at >= 0) {
-        $t = strings.substring($t, $at + len("<!-- notes:"), len($t));
+        $t = $t[$at + len("<!-- notes:")..len($t)];
     }
     def end as int init strings.indexOf($t, "-->");
     if ($end >= 0) {
-        $t = strings.substring($t, 0, $end);
+        $t = $t[..$end];
     }
     def n as int init 0;
     for (def w in regex.split('\s+', strings.trim($t))) {
@@ -945,7 +947,7 @@ export func checkEncoding(file as string, data as bytes) {
         $out[] = finding($file, 1, "encoding", "remove the UTF-8 byte-order mark");
     }
     try {
-        convert.stringFromBytes("utf-8", $data);
+        encoding.decode("utf-8", $data);
     } catch (e) {
         $out[] = finding($file, 0, "encoding", "not valid UTF-8; save the file as UTF-8");
     }
@@ -1001,9 +1003,9 @@ export func checkCharset(file as string, text as string) {
                 continue;
             }
             $seen[] = $m.text;
-            def code as string init strings.upper(convert.toString(
-                convert.toCodepoint($m.text),
-                16));
+            def code as string init strings.upper(io.sprintf(
+                "%d|base=16",
+                convert.toCodepoint($m.text)));
             while (len($code) < 4) {
                 $code = "0" + $code;
             }
@@ -1408,7 +1410,7 @@ export func checkPlugins(dir as string) {
     if (len($out) > 0) {
         return $out;
     }
-    def text as string init convert.stringFromBytes("utf-8", $data);
+    def text as string init encoding.decode("utf-8", $data);
     $out = checkDashes($file, $text);
     def doc as toml.Value init toml.decode("");
     try {
@@ -1480,7 +1482,7 @@ func checkMetaFile(dir as string, user as string) {
     if (len($out) > 0) {
         return $out;
     }
-    $out = checkDashes($file, convert.stringFromBytes("utf-8", $data));
+    $out = checkDashes($file, encoding.decode("utf-8", $data));
     for (def p in readMeta($dir, $user).problems) {
         $out[] = finding($file, 0, "academy", $p);
     }
@@ -1659,7 +1661,7 @@ export func mit0Problem(text as string) {
     if (not regex.matches('^Copyright (\(c\) )?[0-9]{4}(-[0-9]{4})?,? \S.*$', $lines[1])) {
         return "line 2 must be \"Copyright <year> <holder>\", got \"" + $lines[1] + "\"";
     }
-    def rest as list of string init lists.slice($lines, 2, len($lines));
+    def rest as list of string init $lines[2..len($lines)];
     if (words(strings.join($rest, " ")) != words(MIT0_BODY)) {
         return "the text after the copyright line is not the MIT-0 licence word for word";
     }
@@ -1734,7 +1736,7 @@ func checkCodeText(p as string, rel as string, code as string, user as string) {
     if (len($out) > 0) {
         return $out;
     }
-    def text as string init convert.stringFromBytes("utf-8", $data);
+    def text as string init encoding.decode("utf-8", $data);
     if (strings.contains($text, convert.fromCodepoint(0))) {
         $out[] = finding($p, 0, "code-folder", "holds NUL bytes: no binaries in code/");
         return $out;
@@ -1962,7 +1964,7 @@ func checkFile(
     if (len($out) > 0) {
         return $out;
     }
-    def text as string init convert.stringFromBytes("utf-8", $data);
+    def text as string init encoding.decode("utf-8", $data);
     def lines as list of string init strings.split(strings.replace($text, "\r\n", "\n"), "\n");
     def fm as FrontMatter init frontMatter($lines);
     def sc as Scan init scan($lines);

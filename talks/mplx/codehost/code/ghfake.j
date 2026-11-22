@@ -3,6 +3,7 @@
 # programs use, held in memory. Not GitHub; for the talk's runs only.
 #   jennifer run ghfake.j 127.0.0.1:18080
 use convert;
+use encoding;
 use httpd;
 use io;
 use json;
@@ -57,14 +58,14 @@ while (true) {  # lint-disable: L105
     } elseif ($m == "GET" and $p == $repo + "/issues") {
         reply($req, 200, joined($issues));
     } elseif ($m == "POST" and $p == $repo + "/labels") {
-        def d as json.Value init json.decode(convert.stringFromBytes("utf-8", httpd.body($req)));
+        def d as json.Value init json.decode(encoding.decode("utf-8", httpd.body($req)));
         $nextId = $nextId + 1;
         $d = json.set($d, "/id", $nextId);
         $labels[] = json.encode($d);
         reply($req, 201, json.encode($d));
     } elseif ($m == "POST" and strings.startsWith($p, $repo + "/statuses/")) {
-        def sha as string init strings.substring($p, len($repo + "/statuses/"), len($p));
-        def d as json.Value init json.decode(convert.stringFromBytes("utf-8", httpd.body($req)));
+        def sha as string init $p[len($repo + "/statuses/")..len($p)];
+        def d as json.Value init json.decode(encoding.decode("utf-8", httpd.body($req)));
         $d = json.set($d, "/creator", json.map({"login": "relbot"}));
         $d = json.set($d, "/created_at", "2026-11-19T10:00:00Z");
         if (not lists.contains(lists.sort(maps.keys($statuses)), $sha)) {
@@ -77,14 +78,14 @@ while (true) {  # lint-disable: L105
         $statuses[$sha] = $got;
         reply($req, 201, json.encode($d));
     } elseif ($m == "GET" and strings.startsWith($p, $repo + "/commits/") and strings.endsWith($p, "/statuses")) {
-        def sha as string init strings.substring($p, len($repo + "/commits/"), len($p) - len("/statuses"));
+        def sha as string init $p[len($repo + "/commits/")..len($p) - len("/statuses")];
         if (lists.contains(lists.sort(maps.keys($statuses)), $sha)) {
             reply($req, 200, joined($statuses[$sha]));
         } else {
             reply($req, 200, "[]");
         }
     } elseif ($m == "POST" and $p == $repo + "/releases") {
-        def d as json.Value init json.decode(convert.stringFromBytes("utf-8", httpd.body($req)));
+        def d as json.Value init json.decode(encoding.decode("utf-8", httpd.body($req)));
         $nextId = $nextId + 1;
         def tag as string init json.asString($d, "/tag_name");
         def taken as bool init false;
@@ -106,9 +107,9 @@ while (true) {  # lint-disable: L105
         $releases[] = json.encode($d);
         reply($req, 201, json.encode($d));
     } elseif ($m == "POST" and strings.startsWith($p, "/api/uploads/repos/relbot/tempo/releases/")) {
-        def rest as string init strings.substring($p, len("/api/uploads/repos/relbot/tempo/releases/"), len($p));
-        def rid as int init convert.toInt(strings.substring($rest, 0, strings.indexOf($rest, "/")));
-        def name as string init strings.substring(httpd.rawQuery($req), 5, len(httpd.rawQuery($req)));
+        def rest as string init $p[len("/api/uploads/repos/relbot/tempo/releases/")..len($p)];
+        def rid as int init convert.toInt($rest[..strings.indexOf($rest, "/")]);
+        def name as string init httpd.rawQuery($req)[5..len(httpd.rawQuery($req))];
         def data as bytes init httpd.body($req);
         $nextId = $nextId + 1;
         def url as string init $api + "/repos/relbot/tempo/releases/assets/" + convert.toString($nextId);
@@ -127,7 +128,7 @@ while (true) {  # lint-disable: L105
         }
         reply($req, 201, json.encode($a));
     } elseif ($m == "GET" and strings.startsWith($p, $repo + "/releases/tags/")) {
-        def tag as string init strings.substring($p, len($repo + "/releases/tags/"), len($p));
+        def tag as string init $p[len($repo + "/releases/tags/")..len($p)];
         def found as string init "";
         for (def r in $releases) {
             if (json.asString(json.decode($r), "/tag_name") == $tag) {

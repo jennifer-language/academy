@@ -1,6 +1,6 @@
 # Code for "A terminal game in Jennifer"
 
-Every program runs on the released Jennifer 0.26.0 (`jennifer`, the default
+Every program runs on the released Jennifer 0.27.0 (`jennifer`, the default
 binary: the `term` library is not in `jennifer-tiny`). Run them from this
 folder; nothing else needs installing. `snake.j` writes `snake.save` here.
 

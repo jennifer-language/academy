@@ -1,6 +1,6 @@
 # Hashes, keys, tokens and certificates: the code
 
-The programs behind the slides, for Jennifer 0.26.0. Most use only the
+The programs behind the slides, for Jennifer 0.27.0. Most use only the
 `hash` and `crypto` libraries and the bundled `totp`, `jwt`, `oauth` and
 `acme` modules. `seal.j` uses the `@deckyard/sealbox` deck listed in
 `deck.toml`: run `jvc install` once in this folder to fill `vendor/`. Run

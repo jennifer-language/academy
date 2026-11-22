@@ -3,14 +3,14 @@
 use io;
 use httpd;
 use strings;
-use convert;
+use encoding;
 
 def const TOKEN as string init "ya29.demo-access-token";
 def srv as httpd.Server init httpd.listen("0.0.0.0:8080");
 io.printf("mock oauth on :8080\n");
 while (true) { # lint-disable: L105
     def req as httpd.Request init httpd.accept($srv);
-    def body as string init convert.stringFromBytes("utf-8", httpd.body($req));
+    def body as string init encoding.decode("utf-8", httpd.body($req));
     io.printf("%s %s %s\n", httpd.method($req), httpd.path($req), $body);
     if (httpd.path($req) == "/token") {
         httpd.setHeader($req, "Content-Type", "application/json");

@@ -11,7 +11,7 @@ transition: slide
 One store in the process, two servers on the network, and one line to switch
 between them.
 
-Based on **Jennifer 0.26.0**, November 2026, by [@mplx](https://github.com/mplx).
+Based on **Jennifer 0.27.0**, November 2026, by [@mplx](https://github.com/mplx).
 
 <!-- notes:
 Almost every service ends up needing a small, fast place for state that is not
@@ -384,7 +384,7 @@ trip; absent keys are simply missing from the map.
 ## memcached: when it says no
 
 ```jennifer excerpt
-memcache.set($mc, "big", strings.repeat("x", 2 * 1024 * 1024), 0);
+memcache.set($mc, "big", strings.replicate("x", 2 * 1024 * 1024), 0);
 memcache.set($mc, "has space", "v", 0);
 ```
 

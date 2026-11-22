@@ -2,13 +2,12 @@ use io;
 use json;
 use time;
 use crypto;
-use convert;
 use encoding;
 use strings;
 import "jwt.j" as jwt;
 
 func b64(s as string) {
-    def t as string init encoding.toText("base64-url", convert.bytesFromString("utf-8", $s));
+    def t as string init encoding.toText("base64-url", encoding.encode("utf-8", $s));
     return strings.replace($t, "=", "");
 }
 

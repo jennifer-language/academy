@@ -1,9 +1,9 @@
 title = "CSV and spreadsheets in Jennifer"
-description = "Read a messy CSV strictly with the csv module (dialects, streaming, positioned errors), total it, write it back safe from formula injection, then build, read, stream and export an XLSX with a formula and number formats using @deckyard/sheets. Based on Jennifer 0.26.0."
+description = "Read a messy CSV strictly with the csv module (dialects, streaming, positioned errors), total it, write it back safe from formula injection, then build, read, stream and export an XLSX with a formula and number formats using @deckyard/sheets. Based on Jennifer 0.27.0."
 author = "mplx"
 license = "CC-BY-4.0"
 lang = "en"
-jennifer = "0.26.0"
+jennifer = "0.27.0"
 date = "2026-11"
 level = "intermediate"
 tags = ["csv", "spreadsheets", "xlsx", "stdlib", "decks", "parsing", "errors"]

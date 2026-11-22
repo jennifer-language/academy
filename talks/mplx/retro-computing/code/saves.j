@@ -4,7 +4,7 @@
 
 use io;
 use strings;
-use convert;
+use encoding;
 
 import "@deckyard/zmachine/" as zmachine;
 
@@ -22,7 +22,7 @@ def q as bytes;
 if (zmachine.waiting($m) == zmachine.Wait.Save) {
     $q = zmachine.saveData($m);
     io.printf("[Wait.Save] quetzal %d bytes, starts %s\n", len($q),
-        convert.stringFromBytes("utf-8", $q[0..4]));
+        encoding.decode("utf-8", $q[0..4]));
     $m = zmachine.resume($m, true);
     io.printf("%s", zmachine.output($m));
 }

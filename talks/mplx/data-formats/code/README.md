@@ -2,7 +2,7 @@
 
 The programs behind the slides. They use only system libraries (`json`,
 `toml`, `yaml`, `xml`), need no server and no decks, and run with Jennifer
-0.26.0. Run each one from this folder, because the readers open the `app.*`
+0.27.0. Run each one from this folder, because the readers open the `app.*`
 files by relative path.
 
 - `app.json`, `app.toml`, `app.yaml`, `app.xml`: the one small config in

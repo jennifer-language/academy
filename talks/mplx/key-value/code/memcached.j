@@ -15,7 +15,7 @@ memcache.set($mc, "stock", "9", 0);            # someone else writes
 io.printf("cas: %s\n", memcache.cas($mc, "stock", "1", 0, $it.cas));
 io.printf("multi: %v\n", memcache.getMulti($mc, ["greeting", "stock", "nope"]));
 try {
-    memcache.set($mc, "big", strings.repeat("x", 2 * 1024 * 1024), 0);
+    memcache.set($mc, "big", strings.replicate("x", 2 * 1024 * 1024), 0);
 } catch (e) {
     io.printf("%s %s: %s\n", $e.kind, $e.reply, $e.text);
 }

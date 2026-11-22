@@ -1,6 +1,6 @@
 # Code for "Homelab automation with Jennifer"
 
-The nightly check behind the slides, for Jennifer 0.26.0, and the fake
+The nightly check behind the slides, for Jennifer 0.27.0, and the fake
 homelab it was run against. Run everything from this folder. Nothing here
 talks to a real Proxmox, Synology, Unraid, Frigate or Docker host: `fake.j`
 is a stand-in written in Jennifer that answers the five APIs on one

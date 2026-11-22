@@ -3,7 +3,7 @@
 use httpd;
 use fs;
 use io;
-use convert;
+use encoding;
 
 def const CAPS as string init '<?xml version="1.0" encoding="UTF-8"?>
 <scan:ScannerCapabilities xmlns:pwg="http://www.pwg.org/schemas/2010/12/sm"
@@ -41,11 +41,11 @@ while (not $done) {
     def req as httpd.Request init httpd.accept($srv);
     def what as string init httpd.method($req) + " " + httpd.path($req);
     io.printf("fake scanner: %s\n", $what);
-    def body as bytes init convert.bytesFromString("utf-8", "");
+    def body as bytes init encoding.encode("utf-8", "");
     def code as int init 200;
     if ($what == "GET /eSCL/ScannerCapabilities") {
         httpd.setHeader($req, "Content-Type", "text/xml");
-        $body = convert.bytesFromString("utf-8", CAPS);
+        $body = encoding.encode("utf-8", CAPS);
     } elseif ($what == "POST /eSCL/ScanJobs") {
         httpd.setHeader($req, "Location", "/eSCL/ScanJobs/7");
         $code = 201;
@@ -54,7 +54,7 @@ while (not $done) {
         $body = fs.readBytes("page.jpg");
     } elseif ($what == "GET /eSCL/ScannerStatus") {
         httpd.setHeader($req, "Content-Type", "text/xml");
-        $body = convert.bytesFromString("utf-8", STATUS);
+        $body = encoding.encode("utf-8", STATUS);
     } elseif ($what == "DELETE /eSCL/ScanJobs/7") {
         $code = 204;
         $done = true;

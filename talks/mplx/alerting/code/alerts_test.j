@@ -4,6 +4,7 @@ use task;
 use convert;
 use strings;
 use testing;
+use encoding;
 import "./alerts.j" as alerts;
 import "@jennifer/gotify/" as gotify;
 import "@jennifer/telegram/" as telegram;
@@ -12,7 +13,7 @@ import "@jennifer/telegram/" as telegram;
 func answer(srv as httpd.Server, status as int, retryAfter as string) {
     def req as httpd.Request init httpd.accept($srv);
     def seen as string init httpd.path($req) + " " +
-        convert.stringFromBytes("utf-8", httpd.body($req));
+        encoding.decode("utf-8", httpd.body($req));
     if ($retryAfter != "") {
         httpd.setHeader($req, "Retry-After", $retryAfter);
     }

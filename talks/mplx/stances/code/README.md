@@ -1,7 +1,7 @@
 # The eight stances: the code
 
 The examples behind the slides. They need no server and no decks and run with
-Jennifer 0.26.0 from this folder. Most slides show code that Jennifer
+Jennifer 0.27.0 from this folder. Most slides show code that Jennifer
 rejects; those snippets cannot be `.j` files here, because every program in
 `code/` must parse and lint cleanly, so `rejected.sh` writes them out and runs
 them instead.

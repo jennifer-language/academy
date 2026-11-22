@@ -131,7 +131,7 @@ export func login(conn as sql.Connection, name as string, pw as string) {
 
 export func tokenHash(token as string) {
     return encoding.toText("hex",
-        hash.compute("sha256", convert.bytesFromString("utf-8", $token)));
+        hash.compute("sha256", encoding.encode("utf-8", $token)));
 }
 
 # Mint a token: the caller sees it once, the database keeps its hash.

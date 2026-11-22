@@ -1,6 +1,6 @@
 # Network tools: the code
 
-The programs behind the slides, for Jennifer 0.26.0. `ipnet`, `idna`,
+The programs behind the slides, for Jennifer 0.27.0. `ipnet`, `idna`,
 `snmp`, `ntp` and `ldap` are bundled modules, so no `jvc install` is needed.
 Run everything from this folder. The ipnet, idna and LDAP test programs need
 nothing else; the others talk to throwaway containers bound to localhost

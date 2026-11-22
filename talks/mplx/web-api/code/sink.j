@@ -6,14 +6,14 @@ use os;
 use io;
 use json;
 use time;
-use convert;
+use encoding;
 import "web.j" as web;
 import "webhook.j" as webhook;
 
 def secret as string init os.getEnv("SHOP_HOOK_SECRET");
 
 func receive(ctx as web.Context) {
-    def body as string init convert.stringFromBytes("utf-8", web.body($ctx));
+    def body as string init encoding.decode("utf-8", web.body($ctx));
     def sig as string init web.header($ctx, "Shop-Signature");
     def now as int init time.unix(time.now());
     if (not webhook.stripeVerify($secret, $body, $sig, 300, $now)) {

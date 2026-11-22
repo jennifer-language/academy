@@ -1,6 +1,6 @@
 # Images, barcodes and labels with Jennifer: the code
 
-The programs behind the slides, for Jennifer 0.26.0. Run them from this
+The programs behind the slides, for Jennifer 0.27.0. Run them from this
 folder; they read and write their files by relative path.
 
 Setup:

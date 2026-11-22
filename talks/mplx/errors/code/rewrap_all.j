@@ -13,7 +13,7 @@ func loadConfig(text as string) {
 }
 
 try {
-    loadConfig(strings.repeat("[", 5000));
+    loadConfig(strings.replicate("[", 5000));
 } catch (e) {
     io.printf("%s | %s\n", $e.kind, $e.message);
 }

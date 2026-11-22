@@ -1,5 +1,5 @@
 use io;
-use convert;
+use encoding;
 import "mqtt.j" as mqtt;
 import "transport.j" as transport;
 
@@ -16,14 +16,14 @@ mqtt.publish($pub, "home/kitchen/temp", "21.5");
 mqtt.publish($pub, "home/kitchen/humidity", "48");
 mqtt.publish($pub, "home/garage/temp", "9.0");
 mqtt.publishQos1($pub, "alarm/garage/door",
-    convert.bytesFromString("utf-8", "open"), false);
+    encoding.encode("utf-8", "open"), false);
 while (true) {
     def got as list of mqtt.Message init mqtt.poll($sub, 500);
     if (len($got) == 0) {
         break;
     }
     io.printf("%s = %s\n", $got[0].topic,
-        convert.stringFromBytes("utf-8", $got[0].payload));
+        encoding.decode("utf-8", $got[0].payload));
 }
 mqtt.disconnect($pub);
 mqtt.disconnect($sub);

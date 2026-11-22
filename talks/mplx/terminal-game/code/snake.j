@@ -189,7 +189,7 @@ func play(best as int, interactive as bool) {
 }
 
 func checksum(text as string) {
-    def data as bytes init convert.bytesFromString("utf-8", $text);
+    def data as bytes init encoding.encode("utf-8", $text);
     return encoding.toText("hex", crc.compute("crc32", $data));
 }
 

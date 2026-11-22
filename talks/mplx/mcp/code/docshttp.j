@@ -4,7 +4,7 @@
 include "docs.inc.j";
 import "web.j" as web;
 use hash;
-use convert;
+use encoding;
 
 def const ADDR as string init "127.0.0.1:8931";
 def const ORIGIN as string init "http://127.0.0.1:8931";
@@ -17,7 +17,7 @@ if (len($token) < 32) {
 def srv as mcp.Server init docsServer();
 
 func utf8(s as string) {
-    return convert.bytesFromString("utf-8", $s);
+    return encoding.encode("utf-8", $s);
 }
 
 func postMcp(ctx as web.Context) {
@@ -33,7 +33,7 @@ func postMcp(ctx as web.Context) {
     }
     def body as string;
     try {
-        $body = convert.stringFromBytes("utf-8", web.body($ctx));
+        $body = encoding.decode("utf-8", web.body($ctx));
     } catch (e) {
         web.text($ctx, 400, "body is not UTF-8\n");
         return;

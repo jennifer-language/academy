@@ -1,9 +1,9 @@
 title = "Your own MCP server in Jennifer"
-description = "An MCP server with the bundled mcp module that serves the Jennifer documentation: search and read tools confined to the docs root, pages as resources, a prompt, stdio and HTTP with a token, tests with the MCP Inspector, then Claude Code and VS Code. Based on Jennifer 0.26.0."
+description = "An MCP server with the bundled mcp module that serves the Jennifer documentation: search and read tools confined to the docs root, pages as resources, a prompt, stdio and HTTP with a token, tests with the MCP Inspector, then Claude Code and VS Code. Based on Jennifer 0.27.0."
 author = "mplx"
 license = "CC-BY-4.0"
 lang = "en"
-jennifer = "0.26.0"
+jennifer = "0.27.0"
 date = "2026-11"
 level = "intermediate"
 tags = ["mcp", "llm", "tool-use", "http", "security", "testing"]

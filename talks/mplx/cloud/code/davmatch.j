@@ -1,4 +1,4 @@
-use convert;
+use encoding;
 use io;
 use os;
 import "webdav.j" as webdav;
@@ -6,7 +6,7 @@ import "webdav.j" as webdav;
 func save(c as webdav.Client, p as string, s as string, t as string) {
     def o as webdav.PutOptions;
     $o.ifMatch = $t;                      # only if nobody changed it
-    webdav.putWith($c, $p, convert.bytesFromString("utf-8", $s), $o);
+    webdav.putWith($c, $p, encoding.encode("utf-8", $s), $o);
 }
 
 def c as webdav.Client init webdav.connect(os.getEnv("DAV_URL"));

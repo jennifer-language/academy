@@ -17,7 +17,7 @@ func loadConfig(text as string) {
     }
 }
 
-for (def text in [strings.repeat("[", 5000), '{"port": 80']) {
+for (def text in [strings.replicate("[", 5000), '{"port": 80']) {
     try {
         loadConfig($text);
     } catch (e) {

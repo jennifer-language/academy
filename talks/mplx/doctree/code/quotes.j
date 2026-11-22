@@ -11,7 +11,7 @@ func ms(t0 as int) {
 def o as doctree.PdfOptions init doctree.pdfDefaults();
 $o.quoteFill = doctree.gray(240);
 for (def depth in [4, 8, 10, 12, 14]) {
-    def md as string init strings.repeat(">", $depth) + " deep\n";
+    def md as string init strings.replicate(">", $depth) + " deep\n";
     def t0 as int init time.unixMillis(time.now());
     def out as bytes init doctree.renderPdf(markdown.parse($md), $o);
     io.printf("depth %d: %d ms, %d bytes\n", $depth, ms($t0), len($out));

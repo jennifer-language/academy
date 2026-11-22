@@ -28,7 +28,7 @@ func records(b as bytes) {
         need($b, $at, 2);
         def n as int init binary.readUint("be", $b, $at, 2);
         need($b, $at + 2, $n);
-        $out[] = binary.slice($b, $at + 2, $at + 2 + $n);
+        $out[] = $b[$at + 2..$at + 2 + $n];
         $at = $at + 2 + $n;
     }
     return $out;
@@ -39,7 +39,7 @@ func recordsUnchecked(b as bytes) {
     def at as int init 0;
     while ($at < len($b)) {
         def n as int init binary.readUint("be", $b, $at, 2);
-        $out[] = binary.slice($b, $at + 2, $at + 2 + $n);
+        $out[] = $b[$at + 2..$at + 2 + $n];
         $at = $at + 2 + $n;
     }
     return $out;

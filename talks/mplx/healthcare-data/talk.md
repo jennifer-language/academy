@@ -11,7 +11,7 @@ transition: slide
 A lab result on its way from the analyzer to a FHIR server: ASTM, HL7 v2 and
 FHIR with the `@deckyard/astm`, `@deckyard/hl7` and `@deckyard/fhir` decks.
 
-Based on **Jennifer 0.26.0**, November 2026, by [@mplx](https://github.com/mplx).
+Based on **Jennifer 0.27.0**, November 2026, by [@mplx](https://github.com/mplx).
 
 <!-- notes:
 Healthcare IT is three generations of standards talking to each other. This
@@ -461,7 +461,7 @@ because every hop retries: an Observation posted twice is a duplicate result.
 - The language: [jennifer-lang.dev](https://jennifer-lang.dev/), more talks
   in the [Jennifer Academy](https://academy.jennifer-lang.dev/)
 
-Based on Jennifer 0.26.0, November 2026.
+Based on Jennifer 0.27.0, November 2026.
 
 <!-- notes:
 Each deck's manual has a guide per layer and a cheatsheet of every function.

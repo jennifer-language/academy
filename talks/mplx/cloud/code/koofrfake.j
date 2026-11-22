@@ -97,7 +97,7 @@ func handle(s as Store, req as httpd.Request) {
         }
         reply($req, 200, $d);
     } elseif (strings.endsWith($route, "/files/folder") and $m == "POST") {
-        def name as string init json.asString(json.decode(convert.stringFromBytes("utf-8",
+        def name as string init json.asString(json.decode(encoding.decode("utf-8",
             httpd.body($req))), "/name");
         def at as string init joined($p, $name);
         if (not maps.has($s.dirs, $p)) {
@@ -130,7 +130,7 @@ func handle(s as Store, req as httpd.Request) {
         httpd.setHeader($req, "Content-Type", "application/octet-stream");
         httpd.respond($req, 200, $s.files[$p]);
     } elseif (strings.endsWith($route, "/links") and $m == "POST") {
-        def at as string init json.asString(json.decode(convert.stringFromBytes("utf-8",
+        def at as string init json.asString(json.decode(encoding.decode("utf-8",
             httpd.body($req))), "/path");
         $s.links = $s.links + 1;
         def id as string init "l-" + convert.toString($s.links);

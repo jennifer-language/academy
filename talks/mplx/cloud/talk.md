@@ -11,7 +11,7 @@ transition: slide
 Object storage, a file protocol and two file-sync services from one
 Jennifer program, and a backup job that mirrors a folder to two of them.
 
-Based on **Jennifer 0.26.0**, November 2026, by [@mplx](https://github.com/mplx).
+Based on **Jennifer 0.27.0**, November 2026, by [@mplx](https://github.com/mplx).
 
 <!-- notes:
 This talk puts files into four kinds of cloud storage from Jennifer: an S3
@@ -264,7 +264,7 @@ a locked file shows up as status 423.
 func save(c as webdav.Client, p as string, s as string, t as string) {
     def o as webdav.PutOptions;
     $o.ifMatch = $t;                      # only if nobody changed it
-    webdav.putWith($c, $p, convert.bytesFromString("utf-8", $s), $o);
+    webdav.putWith($c, $p, encoding.encode("utf-8", $s), $o);
 }
 def mine as string init webdav.stat($c, $p).etag;
 save($c, $p, "buy milk and bread\n", $mine);      # another writer
@@ -599,7 +599,7 @@ func mirror(t as Target, root as string,
     }
     ...                    # remove what is in $remote, not in $local
     def text as string init render($local);
-    send($t, MANIFEST, convert.bytesFromString("utf-8", $text)); # last
+    send($t, MANIFEST, encoding.encode("utf-8", $text)); # last
 ```
 
 <!-- notes:
@@ -656,7 +656,7 @@ exit status of the successful runs were added and left out for the slide.
 - [The alerting talk](https://academy.jennifer-lang.dev/talks/mplx/alerting/),
   [the registry](https://registry.jennifer-lang.dev/)
 
-Based on Jennifer 0.26.0, November 2026.
+Based on Jennifer 0.27.0, November 2026.
 
 <!-- notes:
 The four backends look different but fail alike, which is why one backup job

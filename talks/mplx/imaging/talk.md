@@ -11,13 +11,13 @@ transition: slide
 Pictures with `images` and ImageMagick, barcodes you can scan, labels a
 printer understands, a scanner that hands you a PDF.
 
-Based on **Jennifer 0.26.0**, November 2026, by [@mplx](https://github.com/mplx).
+Based on **Jennifer 0.27.0**, November 2026, by [@mplx](https://github.com/mplx).
 
 <!-- notes:
 This talk follows a parcel through a small warehouse office: a photo is shrunk
 for a web shop, a tracking code is printed as a barcode, a label goes to a
 thermal printer, and the signed delivery note comes back through a network
-scanner as a PDF. Every program shown was run with Jennifer 0.26.0 and every
+scanner as a PDF. Every program shown was run with Jennifer 0.27.0 and every
 output and picture is what it printed or wrote. There is no label printer or
 scanner on the desk: those two are played by small loopback stand-ins, which
 the notes point out where they appear.
@@ -562,7 +562,7 @@ into one copy. Validate those inputs yourself until then.
 - [Making PDFs with Jennifer](https://academy.jennifer-lang.dev/talks/mplx/pdf-reports/),
   the companion talk
 
-Based on Jennifer 0.26.0, November 2026.
+Based on Jennifer 0.27.0, November 2026.
 
 <!-- notes:
 The reference pages list every option this talk skipped: resize filters,

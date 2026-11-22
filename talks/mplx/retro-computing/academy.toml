@@ -1,9 +1,9 @@
 title = "Retro computing with Jennifer"
-description = "Commodore 1541 disk images and Infocom-style text adventures from Jennifer: format a D64, put a tokenized BASIC program on it, read the BAM byte by byte, then play a Z-machine story from a script, with undo and Quetzal saves. Based on Jennifer 0.26.0."
+description = "Commodore 1541 disk images and Infocom-style text adventures from Jennifer: format a D64, put a tokenized BASIC program on it, read the BAM byte by byte, then play a Z-machine story from a script, with undo and Quetzal saves. Based on Jennifer 0.27.0."
 author = "mplx"
 license = "CC-BY-4.0"
 lang = "en"
-jennifer = "0.26.0"
+jennifer = "0.27.0"
 date = "2026-11"
 level = "beginner"
 tags = ["retro", "c64", "d64", "z-machine", "interactive-fiction", "bytes"]

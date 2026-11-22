@@ -1,5 +1,5 @@
 use io;
-use convert;
+use encoding;
 import "amqp.j" as amqp;
 
 def opts as amqp.Options init amqp.withPort(
@@ -14,7 +14,7 @@ def p as amqp.Properties init amqp.Properties{contentType: "application/json",
 for (def id in [17, 18, 19]) {
     def body as string init "\{\"order\": {$id}\}";
     amqp.publishWith($c, "orders", "order.created",
-        convert.bytesFromString("utf-8", $body), $p);
+        encoding.encode("utf-8", $body), $p);
     io.printf("order %d confirmed: %t\n", $id, amqp.waitConfirm($c));
 }
 amqp.publishText($c, "orders", "invoice.sent", "nobody is bound");

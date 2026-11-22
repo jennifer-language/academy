@@ -12,14 +12,14 @@ transition: slide
 doctree, MyST, reStructuredText and fonts: the model under Grimoire and
 Cantrip, and how to extend it.
 
-Based on **Jennifer 0.26.0**, November 2026, by [@mplx](https://github.com/mplx).
+Based on **Jennifer 0.27.0**, November 2026, by [@mplx](https://github.com/mplx).
 
 <!-- notes:
 This talk is for people who build or extend document tools: a docs site
 generator, a slide builder, a report writer. It opens the box that Grimoire and
 Cantrip sit on: one document tree, three readers that fill it, transforms that
 rewrite it, and renderers that turn it into HTML and PDF. Then fonts, hostile
-input and performance. Every output shown was produced by the released 0.26.0
+input and performance. Every output shown was produced by the released 0.27.0
 modules in /usr/share/jennifer/modules, and every program is in the talk's
 code folder.
 -->
@@ -555,7 +555,7 @@ transform that copies the tree per node is quadratic.
 - Every program from these slides: the talk's `code/` folder
 - Fonts: DejaVu Sans (Bitstream Vera licence), from `/usr/share/fonts/TTF/`
 
-Based on Jennifer 0.26.0, November 2026.
+Based on Jennifer 0.27.0, November 2026.
 
 <!-- notes:
 The module pages list every function and option this talk only touched. The

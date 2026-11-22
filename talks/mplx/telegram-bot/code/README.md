@@ -3,7 +3,7 @@
 The dice bot behind the slides and the fake Bot API it was run against. The
 bot uses the `@jennifer/telegram` deck, listed in `deck.toml`, so run
 `jvc install` once in this folder to fill `vendor/`. Run everything from this
-folder with Jennifer 0.26.0.
+folder with Jennifer 0.27.0.
 
 Nothing here talks to the real Telegram: `fake-telegram.j` stands in for the
 Bot API on a loopback port, and the bot is pointed at it with

@@ -11,7 +11,7 @@ transition: slide
 A complete interactive bot in one short program: commands, buttons, photos,
 flood control, and a clean stop, with the `@jennifer/telegram` deck.
 
-Based on **Jennifer 0.26.0**, November 2026, by [@mplx](https://github.com/mplx).
+Based on **Jennifer 0.27.0**, November 2026, by [@mplx](https://github.com/mplx).
 
 <!-- notes:
 We build a dice bot: it answers /start with buttons, rolls dice on /roll 2d6,
@@ -371,7 +371,7 @@ The deck's own tests work the same way.
 - The language: [jennifer-lang.dev](https://jennifer-lang.dev/), this talk in
   the [Jennifer Academy](https://academy.jennifer-lang.dev/)
 
-Based on Jennifer 0.26.0, November 2026.
+Based on Jennifer 0.27.0, November 2026.
 
 <!-- notes:
 A webhook removes the polling connection and delivers each update as an HTTPS

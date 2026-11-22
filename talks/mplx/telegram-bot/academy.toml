@@ -1,9 +1,9 @@
 title = "How to code a Telegram bot with Jennifer"
-description = "A complete interactive Telegram bot in one short Jennifer program with the @jennifer/telegram deck: long polling and the offset, commands, inline buttons and callback queries, photo uploads, flood control and typed errors, a clean stop under systemd, and offline tests. Based on Jennifer 0.26.0."
+description = "A complete interactive Telegram bot in one short Jennifer program with the @jennifer/telegram deck: long polling and the offset, commands, inline buttons and callback queries, photo uploads, flood control and typed errors, a clean stop under systemd, and offline tests. Based on Jennifer 0.27.0."
 author = "mplx"
 license = "CC-BY-4.0"
 lang = "en"
-jennifer = "0.26.0"
+jennifer = "0.27.0"
 date = "2026-11"
 level = "intermediate"
 tags = ["telegram", "bot", "chat", "http", "automation"]

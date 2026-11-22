@@ -11,7 +11,7 @@ transition: slide
 From a messy till export to an XLSX with formulas and number formats: the
 `csv` module and the `@deckyard/sheets` deck.
 
-Based on **Jennifer 0.26.0**, November 2026, by [@mplx](https://github.com/mplx).
+Based on **Jennifer 0.27.0**, November 2026, by [@mplx](https://github.com/mplx).
 
 <!-- notes:
 Almost every program that touches business data meets a CSV file sooner or
@@ -487,7 +487,7 @@ refuses a sheet above 100,000 rows with kind "limit".
 - Guides there: streaming, number formats, evaluation, untrusted files
 - This talk: in the [Jennifer Academy](https://academy.jennifer-lang.dev/)
 
-Based on Jennifer 0.26.0, November 2026.
+Based on Jennifer 0.27.0, November 2026.
 
 <!-- notes:
 The csv module's page lists every dialect option and the streaming writer. The

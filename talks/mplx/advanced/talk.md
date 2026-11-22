@@ -12,7 +12,7 @@ transition: zoom
 A highly optimized interpreted programming language, and how to get even
 more speed out of it: concurrency, errors, profiling, memory.
 
-Based on **Jennifer 0.26.0**, November 2026, by [@mplx](https://github.com/mplx).
+Based on **Jennifer 0.27.0**, November 2026, by [@mplx](https://github.com/mplx).
 
 <!-- notes:
 The classroom talk showed how Jennifer explains itself. This one is for people
@@ -369,7 +369,7 @@ the line the profiler names: everywhere else, readable small functions win.
 - Language: [jennifer-lang.dev](https://jennifer-lang.dev/)
 - This talk: in the [Jennifer Academy](https://academy.jennifer-lang.dev/), made with [Cantrip](https://github.com/jennifer-language/cantrip)
 
-Based on Jennifer 0.26.0, November 2026.
+Based on Jennifer 0.27.0, November 2026.
 
 <!-- notes:
 Everything here is in the user guide, with more examples. The figures are from

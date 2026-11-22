@@ -1,9 +1,9 @@
 title = "Hardware with Jennifer: GPIO, I2C, SPI and serial"
-description = "Drive a Raspberry Pi's pins from Jennifer: blink an LED, poll a button, read an SHT31 over I2C and an MCP3008 over SPI, talk to a microcontroller over serial with timeouts, test it all without hardware, stay safe at 3.3 V, and build a temperature logger. Based on Jennifer 0.26.0."
+description = "Drive a Raspberry Pi's pins from Jennifer: blink an LED, poll a button, read an SHT31 over I2C and an MCP3008 over SPI, talk to a microcontroller over serial with timeouts, test it all without hardware, stay safe at 3.3 V, and build a temperature logger. Based on Jennifer 0.27.0."
 author = "mplx"
 license = "CC-BY-4.0"
 lang = "en"
-jennifer = "0.26.0"
+jennifer = "0.27.0"
 date = "2026-11"
 level = "beginner"
 tags = ["hardware", "gpio", "serial", "testing", "automation"]

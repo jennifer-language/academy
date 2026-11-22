@@ -13,4 +13,4 @@ homepage = "https://github.com/mplx/deck-beaufort"
 manual = "https://mplx.github.io/deck-beaufort/"
 
 [engines]
-jennifer = ">=0.26.0"
+jennifer = ">=0.27.0"

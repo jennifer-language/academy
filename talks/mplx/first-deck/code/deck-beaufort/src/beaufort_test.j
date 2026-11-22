@@ -1,6 +1,6 @@
 # SPDX-License-Identifier: LGPL-3.0-only
 # SPDX-FileCopyrightText: Copyright (C) 2026 mplx <mplx@jennifer-lang.dev>
-# pragma-jennifer-version: >=0.26.0
+# pragma-jennifer-version: >=0.27.0
 
 /**
  * White-box tests for the entry module: jennifer test src/beaufort_test.j
@@ -22,5 +22,5 @@ func testHurricaneIsTheTop() {
 }
 
 func testNegativeSpeedThrows() {
-    testing.assertThrowsWith("force", [-1], "beaufort");
+    testing.assertThrowsArgs("force", [-1], "beaufort");
 }

@@ -1,6 +1,6 @@
 # Code for "Infrastructure as code for MikroTik routers"
 
-The program behind the slides, for Jennifer 0.26.0, and the fake routers
+The program behind the slides, for Jennifer 0.27.0, and the fake routers
 it was run against. Run everything from this folder. No real router is
 touched: `fakerouter.j` is a stand-in for the RouterOS API service, written
 in Jennifer, that listens on loopback ports and keeps its state in memory.
@@ -13,7 +13,7 @@ export MT_USER=iac MT_PASSWORD=lab-only MT_BACKUP_PASSWORD=placeholder-backup-pw
 ```
 
 The routeros deck speaks the binary API through the `mikrotik` module
-bundled with Jennifer 0.26.0. The fake accepts only the user `iac` with the
+bundled with Jennifer 0.27.0. The fake accepts only the user `iac` with the
 password `lab-only`.
 
 ## Programs and files

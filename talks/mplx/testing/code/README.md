@@ -1,6 +1,6 @@
 # Testing in Jennifer: the code
 
-The shop modules and tests behind the slides. They run with Jennifer 0.26.0
+The shop modules and tests behind the slides. They run with Jennifer 0.27.0
 from this folder and need no decks and no network (the HTTP tests start a
 server on `127.0.0.1:0`). Test times in milliseconds differ by machine.
 Some test files fail on purpose because the slide shows the failure; they

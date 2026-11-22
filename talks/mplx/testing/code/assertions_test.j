@@ -22,5 +22,5 @@ func testAllSeven() {
     testing.assertContains([1, 2, 3], 2);                    # list element
     testing.assertContains({"a": 1}, "a");                   # map key
     testing.assertThrows("notANumber", "runtime");
-    testing.assertThrowsWith("half", [3], "value");
+    testing.assertThrowsArgs("half", [3], "value");
 }

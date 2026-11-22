@@ -11,6 +11,7 @@ use time;
 import "uri.j" as uri;
 use regex;
 use maps;
+use encoding;
 
 def const SHUTDOWN_MS as int init 3000;
 def const NODE as string init "pve1";
@@ -110,7 +111,7 @@ func handle(w as World, req as httpd.Request) {
     def v as Vm init $w.vms[$id];
     match ($action) {
         when "POST /clone" {
-            def form as map of string to string init uri.parseQuery(convert.stringFromBytes(
+            def form as map of string to string init uri.parseQuery(encoding.decode(
                 "utf-8",
                 httpd.body($req)));
             def newid as int init convert.toInt($form["newid"]);

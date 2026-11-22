@@ -1,9 +1,9 @@
 title = "Queues and messaging: Resque, AMQP, MQTT and ZeroMQ"
-description = "Background jobs and messaging with Jennifer's bundled resque, amqp, mqtt and zmq modules: Redis job queues, RabbitMQ acks and confirms, MQTT QoS, retained messages and wills, brokerless ZeroMQ patterns, delivery guarantees, error kinds and spawn-based workers. Based on Jennifer 0.26.0."
+description = "Background jobs and messaging with Jennifer's bundled resque, amqp, mqtt and zmq modules: Redis job queues, RabbitMQ acks and confirms, MQTT QoS, retained messages and wills, brokerless ZeroMQ patterns, delivery guarantees, error kinds and spawn-based workers. Based on Jennifer 0.27.0."
 author = "mplx"
 license = "CC-BY-4.0"
 lang = "en"
-jennifer = "0.26.0"
+jennifer = "0.27.0"
 date = "2026-11"
 level = "intermediate"
 tags = ["messaging", "concurrency", "errors", "modules", "stdlib", "automation", "networking"]

@@ -1,9 +1,9 @@
 title = "Talking to LLMs from Jennifer"
-description = "Claude, GPT and Gemini side by side with the @deckyard/anthropic, openai and gemini decks: API keys from the environment, a first message, conversations, tool use with the tool loop, typed error structs and retries, streaming status, and testing against a fake server. Based on Jennifer 0.26.0."
+description = "Claude, GPT and Gemini side by side with the @deckyard/anthropic, openai and gemini decks: API keys from the environment, a first message, conversations, tool use with the tool loop, typed error structs and retries, streaming status, and testing against a fake server. Based on Jennifer 0.27.0."
 author = "mplx"
 license = "CC-BY-4.0"
 lang = "en"
-jennifer = "0.26.0"
+jennifer = "0.27.0"
 date = "2026-11"
 level = "intermediate"
 tags = ["llm", "anthropic", "openai", "gemini", "tool-use", "http"]

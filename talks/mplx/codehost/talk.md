@@ -11,14 +11,14 @@ transition: slide
 One Jennifer script that releases a project on every forge it is
 mirrored to: notes, a CI gate, assets, and a check of what landed.
 
-Based on **Jennifer 0.26.0**, November 2026, by [@mplx](https://github.com/mplx).
+Based on **Jennifer 0.27.0**, November 2026, by [@mplx](https://github.com/mplx).
 
 <!-- notes:
 This talk is about the forge APIs, not about CI: the pipeline that runs on
 GitHub, Gitea and Forgejo has its own talk. We use the codehost deck and the
 three decks under it to do the work that otherwise means clicking through two
 or three web interfaces. Every output on the slides is from a real run with
-the released 0.26.0 interpreter and the released decks: against Forgejo 13.0.5
+the released 0.27.0 interpreter and the released decks: against Forgejo 13.0.5
 and GitLab CE 19.5.5 in throwaway local containers, and against a small GitHub
 stand-in written in Jennifer, as no real GitHub account was touched.
 -->

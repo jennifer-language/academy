@@ -1,4 +1,4 @@
-use convert;
+use encoding;
 use io;
 use os;
 import "@deckyard/koofr/" as koofr;
@@ -10,7 +10,7 @@ def m as koofr.Mount init koofr.primaryMount($c);
 io.printf("mount %s (%s), id %s\n", $m.name, $m.origin, $m.id);
 koofr.mkdirAll($c, $m.id, "/Backups/2026/11");
 def opts as koofr.PutOptions;                     # zero value: refuse
-def data as bytes init convert.bytesFromString("utf-8", "buy milk\n");
+def data as bytes init encoding.encode("utf-8", "buy milk\n");
 def f as koofr.File init koofr.put($c, $m.id,
     "/Backups/2026/11/notes.txt", $data, $opts);
 io.printf("put %s, %d bytes\n", $f.path, $f.size);

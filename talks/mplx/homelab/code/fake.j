@@ -14,6 +14,7 @@ use time;
 use httpd;
 use strings;
 use convert;
+use encoding;
 import "uri.j" as uri;
 
 def const GIB as int init 1073741824;
@@ -159,7 +160,7 @@ func docker(path as string) {
 
 func route(req as httpd.Request) {
     def path as string init httpd.path($req);
-    def body as string init convert.stringFromBytes("utf-8", httpd.body($req));
+    def body as string init encoding.decode("utf-8", httpd.body($req));
     def out as string init "";
     if (strings.startsWith($path, "/api2/json/")) {
         $out = proxmox($path[10..]);

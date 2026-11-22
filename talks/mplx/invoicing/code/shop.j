@@ -87,9 +87,7 @@ def orders as list of Order init [
 ];
 
 func cursor(i as int) {
-    return encoding.toText(
-        "base64",
-        convert.bytesFromString("utf-8", "order:" + convert.toString($i)));
+    return encoding.toText("base64", encoding.encode("utf-8", "order:" + convert.toString($i)));
 }
 
 func errorBody(msg as string, code as string, path as string) {
@@ -163,7 +161,7 @@ while (true) { # lint-disable: L105
         httpd.respond($req, 401, errorBody("not authenticated", "UNAUTHENTICATED", ""));
         continue;
     }
-    def body as json.Value init json.decode(convert.stringFromBytes("utf-8", httpd.body($req)));
+    def body as json.Value init json.decode(encoding.decode("utf-8", httpd.body($req)));
     def name as string init "";
     if (json.typeOf($body, "/operationName") == "string") {
         $name = json.asString($body, "/operationName");

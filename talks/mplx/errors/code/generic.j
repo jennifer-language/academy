@@ -10,7 +10,7 @@ use channel;
 func fail(what as string) {
     def ch as channel of int init channel.make(1);
     match ($what) {
-        when "limit" { json.decode(strings.repeat("[", 5000)); }
+        when "limit" { json.decode(strings.replicate("[", 5000)); }
         when "timeout" { channel.recvTimeout($ch, 20); }
         when "closed" {
             channel.close($ch);

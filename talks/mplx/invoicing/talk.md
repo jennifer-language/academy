@@ -12,14 +12,14 @@ Orders from a GraphQL API, EU VAT numbers checked with VIES over SOAP,
 reverse charge, exact amounts, a PDF per invoice, and what to do when a
 service is down.
 
-Based on **Jennifer 0.26.0**, November 2026, by [@mplx](https://github.com/mplx).
+Based on **Jennifer 0.27.0**, November 2026, by [@mplx](https://github.com/mplx).
 
 <!-- notes:
 One program, built step by step: an invented Austrian consultancy turns the
 open orders of its shop into invoices. Business customers in other member
 states get their VAT number checked first, because that decides whether the
 invoice carries Austrian VAT or none at all. Every output on these slides is
-from a real run of Jennifer 0.26.0, against the Commission's VIES test service
+from a real run of Jennifer 0.27.0, against the Commission's VIES test service
 and a small stand-in GraphQL server written in Jennifer. Nothing here is tax
 or legal advice.
 -->
@@ -606,7 +606,7 @@ closed in the next release.
   `jsonl.md` in [jennifer-language/jennifer](https://github.com/jennifer-language/jennifer)
 - The programs behind these slides: the `code/` folder of this talk
 
-Based on Jennifer 0.26.0, November 2026.
+Based on Jennifer 0.27.0, November 2026.
 
 <!-- notes:
 The code folder has everything that ran for these slides: the invoicing

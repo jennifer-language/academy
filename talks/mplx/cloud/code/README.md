@@ -1,6 +1,6 @@
 # Storing data in the cloud: the code
 
-The programs behind the slides, for Jennifer 0.26.0. S3 and WebDAV use the
+The programs behind the slides, for Jennifer 0.27.0. S3 and WebDAV use the
 bundled `s3.j` and `webdav.j` modules; Koofr and Seafile use the
 `@deckyard/koofr` and `@deckyard/seafile` decks listed in `deck.toml`, so run
 `jvc install` once in this folder to fill `vendor/`. Run everything from this

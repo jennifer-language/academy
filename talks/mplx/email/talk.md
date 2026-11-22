@@ -11,13 +11,13 @@ transition: slide
 Composing, sending, reading and filtering mail with the modules that ship
 with the interpreter: `mime`, `smtp`, `imap` and `pop`.
 
-Based on **Jennifer 0.26.0**, November 2026, by [@mplx](https://github.com/mplx).
+Based on **Jennifer 0.27.0**, November 2026, by [@mplx](https://github.com/mplx).
 
 <!-- notes:
 This talk walks through email end to end: build a message, hand it to a
 server, read it back, react to new mail, and take attachments apart without
 getting hurt. Every program and every output on these slides was run with
-the released Jennifer 0.26.0 and its bundled modules against local
+the released Jennifer 0.27.0 and its bundled modules against local
 containers: GreenMail 2.1.2 for SMTP, IMAP and POP3, Dovecot 2.3.21 for
 STARTTLS and XOAUTH2, and Mailpit 1.21 for a STARTTLS submission server. All
 addresses are example.com or example.org, and every password is a

@@ -4,6 +4,7 @@
 # hands out six scripted updates, three per getUpdates, logs every call
 # and answers the fifth sendMessage with a 429 (retry_after 2).
 use convert;
+use encoding;
 use httpd;
 use io;
 use json;
@@ -107,7 +108,7 @@ while (true) { # lint-disable: L105
     def body as bytes init httpd.body($req);
     def form as map of string to string init {};
     if (strings.startsWith(httpd.header($req, "Content-Type"), "application/x-www-form")) {
-        $form = uri.parseQuery(convert.stringFromBytes("utf-8", $body));
+        $form = uri.parseQuery(encoding.decode("utf-8", $body));
     }
     match ($method) {
         when "getMe" {

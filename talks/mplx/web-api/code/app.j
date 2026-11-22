@@ -15,6 +15,7 @@ use convert;
 use strings;
 use maps;
 use httpd;
+use encoding;
 import "web.j" as web;
 import "orm.j" as orm;
 import "webapi.j" as webapi;
@@ -269,7 +270,7 @@ func createOrder(ctx as web.Context) {
         webapi.fail($ctx, 400, "Idempotency-Key: 8 to 64 letters, digits, -");
         return;
     }
-    def raw as string init convert.stringFromBytes("utf-8", web.body($ctx));
+    def raw as string init encoding.decode("utf-8", web.body($ctx));
     def doc as json.Value init json.map({});
     try {
         $doc = json.decode($raw);
@@ -398,7 +399,7 @@ func fireEvent(ctx as web.Context) {
 
 # POST from the payment provider: signed with our shared secret.
 func paymentHook(ctx as web.Context) {
-    def body as string init convert.stringFromBytes("utf-8", web.body($ctx));
+    def body as string init encoding.decode("utf-8", web.body($ctx));
     def now as int init time.unix(time.now());
     if (not webhook.stripeVerify($paySecret, $body,
         web.header($ctx, "Payment-Signature"), 300, $now)) {

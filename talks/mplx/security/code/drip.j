@@ -4,17 +4,17 @@
 import "http.j" as http;
 use io;
 use net;
-use convert;
 use task;
 use time;
+use encoding;
 
 func serveDrip(ln as net.Listener) {
     def conn as net.Conn init net.accept($ln);
     net.readBytes($conn, 4096);
     try {
-        net.writeBytes($conn, convert.bytesFromString("utf-8",
+        net.writeBytes($conn, encoding.encode("utf-8",
             "HTTP/1.1 200 OK\r\nContent-Length: 100000\r\n\r\n"));
-        def one as bytes init convert.bytesFromString("utf-8", "x");
+        def one as bytes init encoding.encode("utf-8", "x");
         for (def i in 0..100000) {
             net.writeBytes($conn, $one);
             time.sleep(time.fromMilliseconds(200));

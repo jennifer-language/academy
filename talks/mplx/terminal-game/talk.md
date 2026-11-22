@@ -11,7 +11,7 @@ transition: slide
 A small snake game, one idea at a time: keys, frames, a loop, a ring buffer
 and a high score file you can trust.
 
-Based on **Jennifer 0.26.0**, November 2026, by [@mplx](https://github.com/mplx).
+Based on **Jennifer 0.27.0**, November 2026, by [@mplx](https://github.com/mplx).
 
 <!-- notes:
 Games are a fun way to learn programming, because you see every mistake at

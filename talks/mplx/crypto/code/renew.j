@@ -4,7 +4,6 @@ use asn1;
 use time;
 use strings;
 use encoding;
-use convert;
 
 # notBefore / notAfter of a PEM certificate (UTCTime, YYMMDDHHMMSSZ)
 func validity(pem as string, which as int) {
@@ -14,7 +13,7 @@ func validity(pem as string, which as int) {
         if (not strings.startsWith($line, "-----")) { $b64 = $b64 + strings.trim($line); }
     }
     def cert as asn1.Value init asn1.decode(encoding.fromText("base64", $b64));
-    def s as string init convert.stringFromBytes("utf-8",
+    def s as string init encoding.decode("utf-8",
         asn1.asBytes($cert, "/0/4/{$which}"));
     return time.fromIso("20" + $s[0..2] + "-" + $s[2..4] + "-" + $s[4..6] + "T" +
         $s[6..8] + ":" + $s[8..10] + ":" + $s[10..12] + "Z");

@@ -1,6 +1,6 @@
 # SPDX-License-Identifier: LGPL-3.0-only
 # SPDX-FileCopyrightText: Copyright (C) 2026 mplx <mplx@jennifer-lang.dev>
-# pragma-jennifer-version: >=0.26.0
+# pragma-jennifer-version: >=0.27.0
 
 /**
  * The academy's own pages, as strings: the front page, one page per author
@@ -1156,10 +1156,7 @@ export func withHead(page as string, t as Talk, v as meta.Version) {
     $links = $links + "\n<link rel=\"alternate\" hreflang=\"x-default\" href=\"";
     $links = $links + esc(SITE_URL + talkPath($t)) + "\">";
     def at as int init strings.indexOf($page, "<head>");
-    return strings.substring($page, 0, $at) + $links + strings.substring(
-        $page,
-        $at + 6,
-        len($page));
+    return $page[..$at] + $links + $page[$at + 6..len($page)];
 }
 
 # ---------------------------------------------------------------------------
@@ -1205,7 +1202,7 @@ export func zipOnly(f as CodeFile) {
 
 /** The way from a page at `code/<rel>` back to the site root. */
 func codeBase(rel as string) {
-    return strings.repeat("../", 4 + strings.count($rel, "/"));
+    return strings.replicate("../", 4 + strings.count($rel, "/"));
 }
 
 /** A size as people read it: "812 B", "3.4 KiB". */
@@ -1280,7 +1277,7 @@ export func codePage(t as Talk, readme as string) {
  */
 export func codeFilePage(t as Talk, f as CodeFile, code as string) {
     def base as string init codeBase($f.path);
-    def up as string init strings.repeat("../", strings.count($f.path, "/"));
+    def up as string init strings.replicate("../", strings.count($f.path, "/"));
     if ($up == "") {
         $up = "./";
     }

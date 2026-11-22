@@ -1,6 +1,6 @@
 # Code for "Healthcare data with Jennifer"
 
-The programs behind the slides, for Jennifer 0.26.0. Run everything from
+The programs behind the slides, for Jennifer 0.27.0. Run everything from
 this folder. Every patient, value and identifier is invented: Jane Doe,
 PAT-1001 and specimen S-2001 do not exist. Nothing here talks to a real
 analyzer, LIS or FHIR server: the analyzer is `analyzer.j` and the FHIR

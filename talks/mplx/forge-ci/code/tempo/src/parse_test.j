@@ -7,7 +7,7 @@ func testSeconds() {
 }
 
 func testRejects() {
-    testing.assertThrowsWith("seconds", ["90"], "tempo");
-    testing.assertThrowsWith("seconds", [""], "tempo");
-    testing.assertThrowsWith("seconds", ["1m1h"], "tempo");
+    testing.assertThrowsArgs("seconds", ["90"], "tempo");
+    testing.assertThrowsArgs("seconds", [""], "tempo");
+    testing.assertThrowsArgs("seconds", ["1m1h"], "tempo");
 }

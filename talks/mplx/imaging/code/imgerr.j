@@ -1,8 +1,8 @@
 use io;
 use images;
-use convert;
+use encoding;
 
-def junk as bytes init convert.bytesFromString("utf-8", "not an image");
+def junk as bytes init encoding.encode("utf-8", "not an image");
 try {
     images.decode($junk);
 } catch (e) {

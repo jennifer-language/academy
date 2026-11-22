@@ -5,9 +5,9 @@ import "http.j" as http;
 use io;
 use net;
 use httpd;
-use convert;
 use strings;
 use task;
+use encoding;
 
 func upload(ctx as web.Context) {
     def n as int init len(web.body($ctx));
@@ -23,9 +23,9 @@ func post(url as string, headers as map of string to string, body as string) {
 # Promises 100 bytes, sends 10, then waits for the server's answer.
 func slowBody(addr as string) {
     def c as net.Conn init net.connect($addr);
-    net.writeBytes($c, convert.bytesFromString("utf-8",
+    net.writeBytes($c, encoding.encode("utf-8",
         "POST /upload HTTP/1.1\r\nHost: {$addr}\r\nContent-Length: 100\r\n\r\n0123456789"));
-    def reply as string init convert.stringFromBytes("utf-8", net.readBytes($c, 4096));
+    def reply as string init encoding.decode("utf-8", net.readBytes($c, 4096));
     net.close($c);
     return strings.split($reply, "\r\n")[0];
 }
@@ -39,9 +39,9 @@ def worker as task of null init spawn { web.serveOn($app, $srv); };
 
 def addr as string init httpd.address($srv);
 def url as string init "http://{$addr}/upload";
-io.printf("small  -> %s\n", post($url, {}, strings.repeat("a", 100)));
-io.printf("large  -> %s\n", post($url, {}, strings.repeat("a", 4096)));
-def big as map of string to string init {"X-Big": strings.repeat("b", 70000)};
+io.printf("small  -> %s\n", post($url, {}, strings.replicate("a", 100)));
+io.printf("large  -> %s\n", post($url, {}, strings.replicate("a", 4096)));
+def big as map of string to string init {"X-Big": strings.replicate("b", 70000)};
 def hr as http.Response init http.requestWith("GET", $url, $big, "", 5000, 0);
 io.printf("header -> %d\n", $hr.status);
 io.printf("slow   -> %s\n", slowBody($addr));

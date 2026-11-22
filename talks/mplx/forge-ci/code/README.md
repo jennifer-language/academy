@@ -2,7 +2,7 @@
 
 `tempo/` is the example project of the talk, complete: a made-up command
 line tool that adds up durations, with its modules, tests, book and CI. It
-runs with Jennifer 0.26.0 and needs no decks and no server. To try the
+runs with Jennifer 0.27.0 and needs no decks and no server. To try the
 pipeline on a forge, copy `tempo/` into a new repository of its own; the
 workflow expects it at the repository root. `site/` (the built book) and
 `.ci/` (the downloaded interpreter and Grimoire) are generated, keep them out
@@ -25,7 +25,7 @@ of git.
   into `.ci/` and writes `GITHUB_PATH` / `GITHUB_ENV` ("Installing Jennifer:
   from the release"). Meant for CI; run locally it needs those two variables
   set to files, for example `GITHUB_PATH=/dev/null GITHUB_ENV=/dev/null sh
-  tools/install-jennifer.sh 0.26.0`. Needs `curl`, `tar`, `sha256sum` and
+  tools/install-jennifer.sh 0.27.0`. Needs `curl`, `tar`, `sha256sum` and
   network access.
 - `tempo/tools/docs.sh`, `tempo/grimoire.toml`, `tempo/docs/`: build the book
   with a pinned Grimoire into `site/` ("The book: a pinned Grimoire").

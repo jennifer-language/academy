@@ -1,6 +1,7 @@
 # A branch, a commit and a draft change request on each forge, then a
 # rebase merge, which only some forges do.
 use convert;
+use encoding;
 use io;
 
 import "./forges.j" as forges;
@@ -11,7 +12,7 @@ for (def s in forges.load()) {
     def fix as string init "zero-seconds";
     codehost.createBranch($f, $s.repo, $fix, "");
     codehost.writeFile($f, $s.repo, "ZERO",
-        convert.bytesFromString("utf-8", "0s\n"), "format: 0s", $fix);
+        encoding.encode("utf-8", "0s\n"), "format: 0s", $fix);
     def c as codehost.ChangeRequest init codehost.createChangeRequest(
         $f, $s.repo, $fix, "main", "Print 0s for zero", "Fixes #1.", true);
     io.printf("%s: !%d %s, %s, draft %s, mergeable %s\n",

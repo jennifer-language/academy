@@ -12,7 +12,7 @@ A controller that watches a Resque queue, launches workers on Docker,
 VirtualBox, Proxmox or VMware when the backlog grows, and drains them
 when it is gone.
 
-Based on **Jennifer 0.26.0**, November 2026, by [@mplx](https://github.com/mplx).
+Based on **Jennifer 0.27.0**, November 2026, by [@mplx](https://github.com/mplx).
 
 <!-- notes:
 This talk builds one program of about six hundred lines: an autoscaler for
@@ -55,12 +55,12 @@ known here.
 
 | Piece | Version | Used for |
 | --- | --- | --- |
-| `resque.j` + `redis.j` (bundled) | 0.26.0 | queue lengths, the worker loop |
+| `resque.j` + `redis.j` (bundled) | 0.27.0 | queue lengths, the worker loop |
 | `@deckyard/docker` | 0.2.0 | containers, by label |
 | `@deckyard/virtualbox` | 0.1.0 | `VBoxManage`: linked clones, ACPI |
 | `@deckyard/proxmox` | 0.2.0 | API token, clone, start, shutdown |
 | `@deckyard/vmware` | 0.3.0 | vCenter REST: clone, guest shutdown |
-| `log.j` (bundled) | 0.26.0 | one logfmt record per decision |
+| `log.j` (bundled) | 0.27.0 | one logfmt record per decision |
 
 ```sh
 jvc add @deckyard/docker      # ... and proxmox, virtualbox, vmware

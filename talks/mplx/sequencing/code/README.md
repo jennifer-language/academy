@@ -1,6 +1,6 @@
 # Sequencing data with Jennifer: the programs
 
-The full programs behind the slides, for Jennifer 0.26.0. Run everything from
+The full programs behind the slides, for Jennifer 0.27.0. Run everything from
 this folder.
 
 ## Setup

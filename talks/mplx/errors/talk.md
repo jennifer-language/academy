@@ -11,7 +11,7 @@ transition: slide
 
 Kinds, error structs, and the handful of rules that keep a catch honest.
 
-Based on **Jennifer 0.26.0**, November 2026, by [@mplx](https://github.com/mplx).
+Based on **Jennifer 0.27.0**, November 2026, by [@mplx](https://github.com/mplx).
 
 <!-- notes:
 The Advanced programming talk showed try, catch and defer in one slide each.
@@ -19,7 +19,7 @@ This talk is the long version: what a thrown value really is, how a module
 reports an HTTP status or an SMTP reply code without anyone parsing a message,
 which kinds mean the same thing in every library, and the traps that bite once
 errors cross a module boundary. Every program and every error message on these
-slides was run with Jennifer 0.26.0; long file paths in the messages are
+slides was run with Jennifer 0.27.0; long file paths in the messages are
 shortened to the file name.
 -->
 
@@ -341,7 +341,7 @@ func loadConfig(text as string) {
         throw Error{kind: "config", message: $e.message};
     }
 }
-loadConfig(strings.repeat("[", 5000));
+loadConfig(strings.replicate("[", 5000));
 ```
 
 ```text
@@ -487,7 +487,7 @@ func soldOut() { reserve("tea", 5); }
 
 func testSoldOut() {
     testing.assertThrows("soldOut", "stock");   # matched by kind
-    testing.assertThrowsWith("reserve", ["tea", 5], "stock");
+    testing.assertThrowsArgs("reserve", ["tea", 5], "stock");
 }
 ```
 
@@ -537,7 +537,7 @@ holds one type, and the tools tell you where the two disagree.
 - Language: [jennifer-lang.dev](https://jennifer-lang.dev/)
 - More talks: the [Jennifer Academy](https://academy.jennifer-lang.dev/)
 
-Based on Jennifer 0.26.0, November 2026.
+Based on Jennifer 0.27.0, November 2026.
 
 <!-- notes:
 The control flow guide has the table of error kinds with every library that

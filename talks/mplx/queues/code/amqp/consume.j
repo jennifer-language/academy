@@ -1,10 +1,10 @@
 use io;
 use task;
-use convert;
+use encoding;
 import "amqp.j" as amqp;
 
 func text(b as bytes) {
-    return convert.stringFromBytes("utf-8", $b);
+    return encoding.decode("utf-8", $b);
 }
 
 def opts as amqp.Options init amqp.withPort(

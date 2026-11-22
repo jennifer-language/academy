@@ -1,4 +1,4 @@
-use convert;
+use encoding;
 use io;
 use os;
 import "webdav.j" as webdav;
@@ -6,7 +6,7 @@ import "webdav.j" as webdav;
 def const FILE as string init "/Backups/2026/11/notes.txt";
 
 func attempt(c as webdav.Client, what as string) {
-    def data as bytes init convert.bytesFromString("utf-8", "v2\n");
+    def data as bytes init encoding.encode("utf-8", "v2\n");
     def o as webdav.PutOptions;
     try {
         match ($what) {

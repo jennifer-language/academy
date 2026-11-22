@@ -16,8 +16,8 @@ for (def i in 0..9) {
     $prev = $n;
 }
 try { yaml.decode($bomb); } catch (e) { io.printf("%s: %s\n", $e.kind, $e.message); }
-try { yaml.decode("k: " + strings.repeat("x", 5000000)); } catch (e) { io.printf("%s: %s\n", $e.kind, $e.message); }
+try { yaml.decode("k: " + strings.replicate("x", 5000000)); } catch (e) { io.printf("%s: %s\n", $e.kind, $e.message); }
 def lol as string init "<!DOCTYPE l [<!ENTITY a \"aaaa\"><!ENTITY b \"&a;&a;\">]><l>&b;</l>";
 try { xml.decode($lol); } catch (e) { io.printf("%s: %s\n", $e.kind, $e.message); }
-try { json.decode(strings.repeat("[", 2000)); } catch (e) { io.printf("%s: %s\n", $e.kind, $e.message); }
-try { xml.decode(strings.repeat("<a>", 2000)); } catch (e) { io.printf("%s: %s\n", $e.kind, $e.message); }
+try { json.decode(strings.replicate("[", 2000)); } catch (e) { io.printf("%s: %s\n", $e.kind, $e.message); }
+try { xml.decode(strings.replicate("<a>", 2000)); } catch (e) { io.printf("%s: %s\n", $e.kind, $e.message); }

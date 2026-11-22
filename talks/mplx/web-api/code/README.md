@@ -1,7 +1,7 @@
 # A production web API in Jennifer: the code
 
 The programs behind the slides: the order API of a small shop. Run
-everything from this folder with Jennifer 0.26.0. The API uses the
+everything from this folder with Jennifer 0.27.0. The API uses the
 `@deckyard/jsonschema`, `@deckyard/jsonpath` and `@deckyard/fsm` decks,
 listed in `deck.toml`, so run `jvc install` once here to fill `vendor/`.
 

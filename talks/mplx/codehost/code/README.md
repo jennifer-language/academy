@@ -1,6 +1,6 @@
 # Code for "One API over GitHub, GitLab and Forgejo"
 
-The programs behind the slides, for Jennifer 0.26.0 and the released decks
+The programs behind the slides, for Jennifer 0.27.0 and the released decks
 `@deckyard/codehost` 0.3.0 (with github 0.3.0, gitlab 0.4.0, forgejo 0.4.0)
 and `@deckyard/git` 0.2.0. Everything runs against local throwaway servers:
 Forgejo and GitLab CE in docker, and a GitHub stand-in written in Jennifer.

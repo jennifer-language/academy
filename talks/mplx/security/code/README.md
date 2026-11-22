@@ -1,6 +1,6 @@
 # Jennifer facing hostile input: the code
 
-The programs behind the slides. They run with Jennifer 0.26.0 from this
+The programs behind the slides. They run with Jennifer 0.27.0 from this
 folder and need nothing else: every network demo starts its own fake server
 in a task on a free 127.0.0.1 port. Error messages print full file paths
 where the slides shorten them to the file name.

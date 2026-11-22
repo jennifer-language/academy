@@ -5,7 +5,7 @@ import "@deckyard/sheets/" as sheet;
 
 def wb as sheet.Workbook init sheet.open("week44.xlsx");
 io.printf("%s\n", sheet.asString(sheet.evaluate($wb, "Week 44", "E6/0")));
-def deep as string init strings.repeat("(", 70) + "1" + strings.repeat(")", 70);
+def deep as string init strings.replicate("(", 70) + "1" + strings.replicate(")", 70);
 for (def src in ["SUM(E2:E5", "'Week 9'!A1", $deep]) {
     try {
         sheet.evaluate($wb, "Week 44", $src);

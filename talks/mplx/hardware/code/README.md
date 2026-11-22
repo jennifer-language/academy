@@ -1,6 +1,6 @@
 # GPIO, I2C, SPI and serial: the code
 
-The programs behind the slides, for Jennifer 0.26.0. On a Raspberry Pi they
+The programs behind the slides, for Jennifer 0.27.0. On a Raspberry Pi they
 talk to real pins and buses (see "Switch it on, then get permission" for the
 setup). Without a Pi, the GPIO module and the serial programs run against
 stand-ins: a directory of files instead of `/sys/class/gpio`, and a Python

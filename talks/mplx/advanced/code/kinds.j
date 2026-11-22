@@ -13,7 +13,7 @@ func show(what as string, e as Error) {
 }
 
 try {
-    json.decode(strings.repeat("[", 5000));
+    json.decode(strings.replicate("[", 5000));
 } catch (e) {
     show("limit", $e);
 }

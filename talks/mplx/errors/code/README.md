@@ -1,6 +1,6 @@
 # Errors done right in Jennifer: the code
 
-The programs behind the slides. They run with Jennifer 0.26.0 from this
+The programs behind the slides. They run with Jennifer 0.27.0 from this
 folder (the imports of `stock.j` and `fakeapi.j` are relative). They need no
 decks; the HTTP examples start their own server on a loopback port. Error
 messages print full paths where the slides shorten them to the file name.

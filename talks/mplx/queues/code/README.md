@@ -2,7 +2,7 @@
 
 The programs behind the slides, grouped by module. They use only bundled
 modules (`resque`, `redis`, `amqp`, `mqtt`, `zmq`), need no decks, and run
-with Jennifer 0.26.0. Run every command from this folder. All passwords are
+with Jennifer 0.27.0. Run every command from this folder. All passwords are
 placeholders (`demo` / `changeme`, `ada` / `s3cret`).
 
 ## Servers

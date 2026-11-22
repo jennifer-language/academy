@@ -1,4 +1,4 @@
-use convert;
+use encoding;
 use io;
 use os;
 import "@deckyard/seafile/" as seafile;
@@ -24,7 +24,7 @@ def v as seafile.Library init seafile.createLibrary($c, "Vault", $secret);
 io.printf("%s encrypted=%t\n", $v.name, $v.encrypted);
 unlock($c, $v.id, "not-the-password");
 unlock($c, $v.id, $secret);
-def pin as bytes init convert.bytesFromString("utf-8", "pin 0000\n");
+def pin as bytes init encoding.encode("utf-8", "pin 0000\n");
 seafile.put($c, $v.id, "/secret.txt", $pin, true);
 def back as bytes init seafile.get($c, $v.id, "/secret.txt", 0);
-io.printf("get: %s", convert.stringFromBytes("utf-8", $back));
+io.printf("get: %s", encoding.decode("utf-8", $back));

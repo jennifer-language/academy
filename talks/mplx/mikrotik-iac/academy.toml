@@ -1,9 +1,9 @@
 title = "Infrastructure as code for MikroTik routers"
-description = "Scripting the setup of new MikroTik devices with Jennifer and the RouterOS deck: desired state in TOML files, a plan and a dry run, backup, apply with an undo list, verify, typed errors, and many routers at once with spawn. Based on Jennifer 0.26.0."
+description = "Scripting the setup of new MikroTik devices with Jennifer and the RouterOS deck: desired state in TOML files, a plan and a dry run, backup, apply with an undo list, verify, typed errors, and many routers at once with spawn. Based on Jennifer 0.27.0."
 author = "mplx"
 license = "CC-BY-4.0"
 lang = "en"
-jennifer = "0.26.0"
+jennifer = "0.27.0"
 date = "2026-11"
 level = "intermediate"
 tags = ["mikrotik", "routeros", "iac", "networking", "automation"]

@@ -9,7 +9,7 @@ use json;
 use strings;
 use httpd;
 use maps;
-use convert;
+use encoding;
 
 def patients as map of string to json.Value;
 def observations as list of json.Value;
@@ -95,7 +95,7 @@ while (true) {   # until stopped # lint-disable: L105
     try {
         if (httpd.method($req) == "POST" and $path == "/fhir") {
             answer($req, 200, transaction(json.decode(
-                convert.stringFromBytes("utf-8", httpd.body($req)))));
+                encoding.decode("utf-8", httpd.body($req)))));
         } elseif ($path == "/fhir/Observation") {
             answer($req, 200, searchset(bySubject(httpd.query($req, "subject"))));
         } elseif (strings.startsWith($path, "/fhir/Patient/")) {

@@ -1,6 +1,6 @@
 # Code for "Dynamic workloads: autoscaling Resque workers with Jennifer"
 
-Every program behind the slides, for Jennifer 0.26.0. Run everything from
+Every program behind the slides, for Jennifer 0.27.0. Run everything from
 this folder. The decks come from the registry: `jvc install` reads
 `deck.toml` and copies them into `vendor/`.
 

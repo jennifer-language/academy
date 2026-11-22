@@ -10,6 +10,7 @@ use time;
 use json;
 use maps;
 use regex;
+use encoding;
 
 def const SHUTDOWN_MS as int init 3000;
 def const SESSION as string init "b00c-standin-session";
@@ -76,7 +77,7 @@ func handle(w as World, req as httpd.Request) {
         return $w;
     }
     if ($path == "/api/vcenter/vm" and $action == "clone") {
-        def body as json.Value init json.decode(convert.stringFromBytes("utf-8", httpd.body($req)));
+        def body as json.Value init json.decode(encoding.decode("utf-8", httpd.body($req)));
         def id as string init "vm-" + convert.toString($w.next);
         $w.next = $w.next + 1;
         def power as string init "POWERED_OFF";

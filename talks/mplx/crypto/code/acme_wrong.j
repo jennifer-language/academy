@@ -3,7 +3,7 @@ use fs;
 use crypto;
 use httpd;
 use task;
-use convert;
+use encoding;
 import "acme.j" as acme;
 
 def const CA as string init "https://127.0.0.1:14000/dir";   # pebble
@@ -38,7 +38,7 @@ func notValidated(a as acme.Authorization) {
 
 func accountKey(path as string) {
     if (fs.exists($path)) {
-        return convert.bytesFromString("utf-8", fs.readString($path));
+        return encoding.encode("utf-8", fs.readString($path));
     }
     def k as bytes init crypto.keypair("p256").private;
     fs.writeNew($path, "");

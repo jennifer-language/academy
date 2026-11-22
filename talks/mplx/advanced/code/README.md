@@ -1,7 +1,7 @@
 # Advanced programming with Jennifer: the code
 
 The programs behind the slides. They use only system libraries and bundled
-modules, need no server and no decks, and run with Jennifer 0.26.0 from this
+modules, need no server and no decks, and run with Jennifer 0.27.0 from this
 folder. Timings and profile figures depend on the machine (the slides were
 measured on an 8-core laptop); the shapes, counts and positions do not.
 

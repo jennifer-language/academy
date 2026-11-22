@@ -11,7 +11,7 @@ transition: slide
 Blink an LED, read a button, a sensor, an ADC and a microcontroller from a
 Raspberry Pi, and test all of it on a laptop.
 
-Based on **Jennifer 0.26.0**, November 2026, by [@mplx](https://github.com/mplx).
+Based on **Jennifer 0.27.0**, November 2026, by [@mplx](https://github.com/mplx).
 
 <!-- notes:
 This talk is for people who have a Raspberry Pi or a similar Linux board in a
@@ -350,14 +350,14 @@ drives more than the Pi can take.
 
 ```jennifer excerpt
 func ask(port as serial.Port, cmd as string) {
-    serial.write($port, convert.bytesFromString("utf-8", $cmd + "\n"));
+    serial.write($port, encoding.encode("utf-8", $cmd + "\n"));
     serial.setReadDeadline($port, 500); # the whole reply
     def buf as bytes;
     while (not binary.contains($buf, NL)) {
         $buf = binary.concat($buf, serial.read($port, 64));
     }
     serial.setReadDeadline($port, 0);
-    return strings.trim(convert.stringFromBytes("utf-8", $buf));
+    return strings.trim(encoding.decode("utf-8", $buf));
 }
 ```
 

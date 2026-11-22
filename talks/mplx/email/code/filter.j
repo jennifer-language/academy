@@ -1,10 +1,9 @@
 use io;
 use fs;
 use regex;
-use binary;
-use convert;
 use strings;
 use lists;
+use encoding;
 import "imap.j" as imap;
 import "mime.j" as mime;
 import "transport.j" as transport;
@@ -26,8 +25,8 @@ func safeName(raw as string) {
 }
 
 func isPdf(data as bytes) {
-    def magic as bytes init convert.bytesFromString("utf-8", "%PDF-");
-    return len($data) >= 5 and binary.slice($data, 0, 5) == $magic;
+    def magic as bytes init encoding.encode("utf-8", "%PDF-");
+    return len($data) >= 5 and $data[..5] == $magic;
 }
 
 # addrOf returns the bare, lower-case address of a From header value.

@@ -1,17 +1,16 @@
 use io;
-use convert;
 use encoding;
 use crypto;
 import "@deckyard/sealbox/" as sealbox;
 
 def key as bytes init sealbox.newKey();
-def plain as bytes init convert.bytesFromString("utf-8", "db password: PLACEHOLDER");
-def id as bytes init convert.bytesFromString("utf-8", "row 17");
+def plain as bytes init encoding.encode("utf-8", "db password: PLACEHOLDER");
+def id as bytes init encoding.encode("utf-8", "row 17");
 def box as bytes init sealbox.sealWith($plain, $key, $id);
 io.printf("box %d bytes for %d\n", len($box), len($plain));
-io.printf("%s\n", convert.stringFromBytes("utf-8", sealbox.openWith($box, $key, $id)));
+io.printf("%s\n", encoding.decode("utf-8", sealbox.openWith($box, $key, $id)));
 try {
-    def other as bytes init convert.bytesFromString("utf-8", "row 18");
+    def other as bytes init encoding.encode("utf-8", "row 18");
     sealbox.openWith($box, $key, $other);
 } catch (e) {
     io.printf("%s | %s\n", $e.kind, $e.message);

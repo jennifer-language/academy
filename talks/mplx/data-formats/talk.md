@@ -11,7 +11,7 @@ transition: slide
 One small config in four formats: how each maps to Jennifer values, where
 they differ, and what happens when the input is wrong or hostile.
 
-Based on **Jennifer 0.26.0**, November 2026, by [@mplx](https://github.com/mplx).
+Based on **Jennifer 0.27.0**, November 2026, by [@mplx](https://github.com/mplx).
 
 <!-- notes:
 Most programs read some kind of configuration or exchange data with another
@@ -19,7 +19,7 @@ program, and the four formats you meet most are JSON, TOML, YAML and XML. All
 four ship with the interpreter. We take one small config, write it in each
 format, read it back into the same typed struct, and then look at the places
 where the formats really differ. Every output in this talk comes from running
-the code with Jennifer 0.26.0.
+the code with Jennifer 0.27.0.
 -->
 
 ---
@@ -437,7 +437,7 @@ edge of the program, and let the rest of the code work with typed values.
 - The interpreter: [jennifer-language/jennifer](https://github.com/jennifer-language/jennifer)
 - More talks: the [Jennifer Academy](https://academy.jennifer-lang.dev/)
 
-Based on Jennifer 0.26.0, November 2026.
+Based on Jennifer 0.27.0, November 2026.
 
 <!-- notes:
 The library pages cover what this talk left out: JSON merge patch and

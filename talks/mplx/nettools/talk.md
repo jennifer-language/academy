@@ -12,13 +12,13 @@ Five bundled modules for the jobs a network admin scripts every week:
 addresses and subnets, domain names, interface counters, clocks and
 directories.
 
-Based on **Jennifer 0.26.0**, November 2026, by [@mplx](https://github.com/mplx).
+Based on **Jennifer 0.27.0**, November 2026, by [@mplx](https://github.com/mplx).
 
 <!-- notes:
 This talk walks through five modules that ship with the interpreter: ipnet,
 idna, snmp, ntp and ldap. Each gets a few slides with a small program, and at
 the end they come together in a network health report. Every program on the
-slides was run with the released 0.26.0 against real servers: net-snmp and
+slides was run with the released 0.27.0 against real servers: net-snmp and
 chrony in Alpine containers, an OpenLDAP container with its own certificate
 authority, and one query to pool.ntp.org. Where 0.26.0 has a known bug that
 the next release fixes, the notes say so.
@@ -153,7 +153,7 @@ only addresses that classify as Global are real ones on the internet.
 io.printf("%s\n", idna.toAscii("Bücher.Example"));
 io.printf("%s\n", idna.toAscii("straße.example.org"));
 io.printf("%s\n", idna.toUnicode("xn--mnchen-3ya.example"));
-def long as string init "über-" + strings.repeat("x", 60);
+def long as string init "über-" + strings.replicate("x", 60);
 try {
     io.printf("%s\n", idna.toAscii($long + ".example"));
 } catch (e) {
@@ -612,7 +612,7 @@ code makes the run fail for cron, systemd or CI.
 - More: [Errors](https://academy.jennifer-lang.dev/talks/mplx/errors/),
   [MikroTik as code](https://academy.jennifer-lang.dev/talks/mplx/mikrotik-iac/)
 
-Based on Jennifer 0.26.0, November 2026.
+Based on Jennifer 0.27.0, November 2026.
 
 <!-- notes:
 Five modules, no external tools, and each is small enough to read: ldap.j is

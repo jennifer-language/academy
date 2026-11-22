@@ -4,7 +4,6 @@ use httpd;
 use json;
 use hash;
 use crypto;
-use convert;
 use encoding;
 use strings;
 use maps;
@@ -17,7 +16,7 @@ func b64u(b as bytes) {
 }
 
 func same(a as string, b as string) {
-    return hash.equal(convert.bytesFromString("utf-8", $a), convert.bytesFromString("utf-8", $b));
+    return hash.equal(encoding.encode("utf-8", $a), encoding.encode("utf-8", $b));
 }
 
 func tokenJson(refresh as string) {
@@ -63,7 +62,7 @@ while (true) { # lint-disable: L105
         continue;
     }
     def f as map of string to string init uri.parseQuery(
-        convert.stringFromBytes("utf-8", httpd.body($r)));
+        encoding.decode("utf-8", httpd.body($r)));
     def grant as string init $f["grant_type"];
     httpd.setHeader($r, "Content-Type", "application/json");
     if ($grant == "client_credentials") {
@@ -80,7 +79,7 @@ while (true) { # lint-disable: L105
         }
         def want as string init $codes[$code];
         def got as string init b64u(hash.compute("sha256",
-            convert.bytesFromString("utf-8", $f["code_verifier"])));
+            encoding.encode("utf-8", $f["code_verifier"])));
         $codes = maps.delete($codes, $code);
         if (not same($got, $want) or $f["redirect_uri"] != $redirects[$code]) {
             oauthErr($r, "invalid_grant", "PKCE verifier does not match");

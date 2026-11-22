@@ -10,14 +10,14 @@ transition: fade
 
 From the first test function to fake servers, fixtures and a CI gate.
 
-Based on **Jennifer 0.26.0**, November 2026, by [@mplx](https://github.com/mplx).
+Based on **Jennifer 0.27.0**, November 2026, by [@mplx](https://github.com/mplx).
 
 <!-- notes:
 Jennifer ships its test runner in the interpreter: there is nothing to install
 and nothing to configure. This talk follows one small shop module through its
 tests, from a plain assertion to a test against a fake HTTP server, and ends
 with the checks a continuous integration job runs. Every command and every
-output on these slides was run with Jennifer 0.26.0; long paths in the output
+output on these slides was run with Jennifer 0.27.0; long paths in the output
 are shortened to the file name.
 -->
 
@@ -140,8 +140,8 @@ func badQty() {
 
 func testParseQtyRejects() {
     testing.assertThrows("badQty", "cart");
-    testing.assertThrowsWith("parseQty", ["0"], "cart");
-    testing.assertThrowsWith("parseQty", ["100"], "cart");
+    testing.assertThrowsArgs("parseQty", ["0"], "cart");
+    testing.assertThrowsArgs("parseQty", ["100"], "cart");
 }
 ```
 
@@ -450,7 +450,7 @@ interpreter and its standard library.
 - Language: [jennifer-lang.dev](https://jennifer-lang.dev/)
 - More talks: the [Jennifer Academy](https://academy.jennifer-lang.dev/)
 
-Based on Jennifer 0.26.0, November 2026.
+Based on Jennifer 0.27.0, November 2026.
 
 <!-- notes:
 The testing library page also documents the primitives the runner is built

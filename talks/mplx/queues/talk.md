@@ -12,7 +12,7 @@ Background jobs on Redis, a RabbitMQ broker with acks, pub/sub for small
 devices, and ZeroMQ without any broker: four modules that ship with the
 interpreter.
 
-Based on **Jennifer 0.26.0**, November 2026, by [@mplx](https://github.com/mplx).
+Based on **Jennifer 0.27.0**, November 2026, by [@mplx](https://github.com/mplx).
 
 <!-- notes:
 This talk is about handing work to someone else and trusting that it gets
@@ -20,7 +20,7 @@ done. Jennifer ships four modules for that in its standard module directory:
 resque for job queues on Redis, amqp for RabbitMQ and other AMQP 0-9-1
 brokers, mqtt for MQTT 3.1.1, and zmq, which speaks ZeroMQ's wire protocol
 with no server at all. Every program and every output on these slides was
-run with Jennifer 0.26.0 against Redis 7, RabbitMQ 4, Mosquitto 2 and pyzmq
+run with Jennifer 0.27.0 against Redis 7, RabbitMQ 4, Mosquitto 2 and pyzmq
 27.3 with libzmq 4.3.5 in local containers. The passwords are placeholders.
 -->
 
@@ -318,7 +318,7 @@ mqtt.publish($pub, "home/kitchen/temp", "21.5");
 mqtt.publish($pub, "home/kitchen/humidity", "48");
 mqtt.publish($pub, "home/garage/temp", "9.0");
 mqtt.publishQos1($pub, "alarm/garage/door",
-    convert.bytesFromString("utf-8", "open"), false);
+    encoding.encode("utf-8", "open"), false);
 ```
 
 ```text
@@ -367,7 +367,7 @@ acknowledged but dropped. Two clients avoid both.
 
 ```jennifer excerpt
 def will as mqtt.Will init mqtt.Will{topic: "status/sensor7",
-    payload: convert.bytesFromString("utf-8", "offline"),
+    payload: encoding.encode("utf-8", "offline"),
     qos: 1, retain: true};
 def sensor as mqtt.Client init mqtt.connectWith(opts("sensor7"),
     $will, true);

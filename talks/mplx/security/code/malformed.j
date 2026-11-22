@@ -9,7 +9,7 @@ use images;
 def jpeg as bytes init images.encode("jpeg", images.create(64, 64));
 def sof as bytes init encoding.fromText("hex", "ffc0");   # SOF0
 def at as int init binary.indexOf($jpeg, $sof);
-def cut as bytes init binary.slice($jpeg, 0, $at + 3);   # mid header
+def cut as bytes init $jpeg[..$at + 3];   # mid header
 try {
     pdf.loadImage("Logo", $cut);
 } catch (e) {

@@ -11,7 +11,7 @@ transition: slide
 Commodore 1541 disk images and Infocom-style text adventures, byte by byte,
 with the `@deckyard/d64` and `@deckyard/zmachine` decks.
 
-Based on **Jennifer 0.26.0**, November 2026, by [@mplx](https://github.com/mplx).
+Based on **Jennifer 0.27.0**, November 2026, by [@mplx](https://github.com/mplx).
 
 <!-- notes:
 Two pieces of 1980s home computing, taken apart and put back together in
@@ -467,7 +467,7 @@ which is a one-liner widely published as a program listing.
 - The language: [jennifer-lang.dev](https://jennifer-lang.dev/), more talks
   in the [Jennifer Academy](https://academy.jennifer-lang.dev/)
 
-Based on Jennifer 0.26.0, November 2026.
+Based on Jennifer 0.27.0, November 2026.
 
 <!-- notes:
 Both decks have a manual with guides and a cheatsheet of every function. For

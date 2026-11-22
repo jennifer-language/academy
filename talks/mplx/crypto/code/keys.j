@@ -2,7 +2,7 @@ use io;
 use fs;
 use os;
 use json;
-use convert;
+use encoding;
 import "jwt.j" as jwt;
 
 # a key file must be owner-only, like ssh's private keys
@@ -25,9 +25,9 @@ $keys["2026-11"] = keyFile($dir + "/jwt-2026-11");
 
 def c as json.Value init json.decode('{"sub":"ada","exp":9999999999}');
 def old as string init jwt.signWithKid("HS256", $c,
-    convert.bytesFromString("utf-8", $keys["2026-10"]), "2026-10");
+    encoding.encode("utf-8", $keys["2026-10"]), "2026-10");
 def fresh as string init jwt.signWithKid("HS256", $c,
-    convert.bytesFromString("utf-8", $keys["2026-11"]), "2026-11");
+    encoding.encode("utf-8", $keys["2026-11"]), "2026-11");
 for (def t in [$old, $fresh]) {
     def back as json.Value init jwt.verifyWithKeys("HS256", $t, $keys);
     io.printf("kid %s: sub=%s\n", json.asString(jwt.header($t), "/kid"),

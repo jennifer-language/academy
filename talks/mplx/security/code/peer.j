@@ -5,9 +5,9 @@ import "http.j" as http;
 use io;
 use net;
 use binary;
-use convert;
 use task;
 use time;
+use encoding;
 
 func serveStall(conn as net.Conn) {
     net.readBytes($conn, 4096);
@@ -18,7 +18,7 @@ func serveStall(conn as net.Conn) {
 func serveEndless(conn as net.Conn) {
     net.readBytes($conn, 4096);
     try {
-        net.writeBytes($conn, convert.bytesFromString("utf-8",
+        net.writeBytes($conn, encoding.encode("utf-8",
             "HTTP/1.1 200 OK\r\nContent-Length: 999999999\r\n\r\n"));
         def chunk as bytes init binary.make(65536);
         for (def i in 0..15259) {

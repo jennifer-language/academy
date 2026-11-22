@@ -12,11 +12,11 @@ func forgedPng(w as int, h as int) {
     def dims as bytes init encoding.fromText("hex",
         io.sprintf("%d|base=16|pad=8|fill=0%d|base=16|pad=8|fill=0", $w, $h));
     # IHDR: type at 12..16, width and height at 16..24, the rest to 29, CRC.
-    def ihdr as bytes init binary.concat(binary.slice($small, 12, 16),
-        binary.concat($dims, binary.slice($small, 24, 29)));
+    def ihdr as bytes init binary.concat($small[12..16],
+        binary.concat($dims, $small[24..29]));
     def sum as bytes init crc.compute("crc32", $ihdr);
-    return binary.join([binary.slice($small, 0, 12), $ihdr, $sum,
-        binary.slice($small, 33, len($small))]);
+    return binary.join([$small[..12], $ihdr, $sum,
+        $small[33..len($small)]]);
 }
 
 func report(n as int, e as Error) {

@@ -12,7 +12,7 @@ Counters, gauges and histograms from a Jennifer service: scraped by
 Prometheus, pushed by a batch job, sent over UDP to StatsD, written as
 points to InfluxDB.
 
-Based on **Jennifer 0.26.0**, November 2026, by [@mplx](https://github.com/mplx).
+Based on **Jennifer 0.27.0**, November 2026, by [@mplx](https://github.com/mplx).
 
 <!-- notes:
 This talk instruments a small Jennifer web service and a queue worker with
@@ -124,7 +124,7 @@ Prometheus pulls: your program keeps its counters and serves them over HTTP,
 and the server fetches them every few seconds. StatsD and InfluxDB are pushed:
 StatsD fires a line over UDP for each event and an agent adds them up;
 InfluxDB takes points over HTTP and stores every one. All three decks need the
-net capability and the default jennifer binary. Jennifer 0.26.0 still bundles
+net capability and the default jennifer binary. Jennifer 0.27.0 still bundles
 the three modules, frozen; the decks started as copies and export the same
 functions, so moving is jvc add plus one import line per file, from
 import "influxdb.j" to import "@jennifer/influxdb/". Do it before 0.28.0.
@@ -656,7 +656,7 @@ puts StatsD into Prometheus. Whatever you count, keep the tags bounded.
 - [Alerting with Jennifer](https://academy.jennifer-lang.dev/talks/mplx/alerting/),
   [jennifer-lang.dev](https://jennifer-lang.dev/)
 
-Based on Jennifer 0.26.0, November 2026.
+Based on Jennifer 0.27.0, November 2026.
 
 <!-- notes:
 Metrics are the cheapest way to know how a program is doing over time, as

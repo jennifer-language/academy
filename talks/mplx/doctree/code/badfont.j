@@ -1,4 +1,3 @@
-use binary;
 use fs;
 use io;
 import "font.j" as font;
@@ -14,5 +13,5 @@ func attempt(what as string, b as bytes) {
 }
 
 def ttf as bytes init fs.readBytes("/usr/share/fonts/TTF/DejaVuSans.ttf");
-attempt("truncated", binary.slice($ttf, 0, 4000));
+attempt("truncated", $ttf[..4000]);
 attempt("otf", fs.readBytes("/usr/share/fonts/cantarell/Cantarell-VF.otf"));

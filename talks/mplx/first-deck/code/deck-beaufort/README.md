@@ -28,7 +28,7 @@ io.printf("force %d\n", beaufort.force(45));
 
 ## Requirements
 
-Jennifer 0.26.0 or newer. Pure Jennifer, no capabilities; runs on
+Jennifer 0.27.0 or newer. Pure Jennifer, no capabilities; runs on
 `jennifer-tiny` too.
 
 ## Development

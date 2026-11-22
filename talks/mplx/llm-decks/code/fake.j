@@ -8,6 +8,7 @@
 # 30 for the model "fake-429". It logs which key header arrived, never its
 # value.
 use convert;
+use encoding;
 use httpd;
 use io;
 use os;
@@ -124,7 +125,7 @@ while (true) { # lint-disable: L105
     def req as httpd.Request init httpd.accept($srv);
     def path as string init httpd.path($req);
     def raw as bytes init httpd.body($req);
-    def body as string init convert.stringFromBytes("utf-8", $raw);
+    def body as string init encoding.decode("utf-8", $raw);
     def answer as string init "";
     def what as string init "";
     if ($path == "/v1/messages") {

@@ -18,4 +18,4 @@ func parse(text as string) {
 }
 
 parse('[1, 2, 3, 4,');
-parse(strings.repeat("[", 5000));
+parse(strings.replicate("[", 5000));

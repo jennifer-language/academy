@@ -5,13 +5,13 @@ use strings;
 use crypto;
 
 # The same situation in three libraries: input nested too deep.
-def deep as string init strings.repeat("[", 2000) + strings.repeat("]", 2000);
+def deep as string init strings.replicate("[", 2000) + strings.replicate("]", 2000);
 try {
     json.decode($deep);
 } catch (e) {
     io.printf("json.decode, too deep:  %s\n", $e.kind);
 }
-def nested as string init strings.repeat("<a>", 2000) + strings.repeat("</a>", 2000);
+def nested as string init strings.replicate("<a>", 2000) + strings.replicate("</a>", 2000);
 try {
     xml.decode($nested);
 } catch (e) {

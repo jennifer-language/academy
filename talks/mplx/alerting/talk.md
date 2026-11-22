@@ -11,7 +11,7 @@ transition: slide
 One alert, four channels: Gotify, Telegram, Slack and Discord, sent once when
 something breaks and once when it is fixed.
 
-Based on **Jennifer 0.26.0**, November 2026, by [@mplx](https://github.com/mplx).
+Based on **Jennifer 0.27.0**, November 2026, by [@mplx](https://github.com/mplx).
 
 <!-- notes:
 This talk builds a small alerting layer: four decks that send messages, one
@@ -563,7 +563,7 @@ the same way.
   [the registry](https://registry.jennifer-lang.dev/),
   [jennifer-lang.dev](https://jennifer-lang.dev/)
 
-Based on Jennifer 0.26.0, November 2026.
+Based on Jennifer 0.27.0, November 2026.
 
 <!-- notes:
 The four decks are small on purpose: they format a message and send it, and

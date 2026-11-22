@@ -1,7 +1,7 @@
 # MCP servers in Jennifer: the code
 
 The documentation server from the slides and its two test clients, for
-Jennifer 0.26.0. The `mcp` and `web` modules ship with the interpreter, so no
+Jennifer 0.27.0. The `mcp` and `web` modules ship with the interpreter, so no
 `jvc install` is needed. Every program takes or serves a documentation
 folder: use the `docs/` directory of a Jennifer source checkout (written
 `DOCS_DIR` below). Run everything from this folder.
