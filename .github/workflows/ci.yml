@@ -28,7 +28,7 @@ env:
   JENNIFER_REF: "0.27.0"
   # The cantrip release the talks are built with; 0.6.0 is the first that runs
   # the plugins a talk names in cantrip.toml.
-  CANTRIP_REF: "0.7.0"
+  CANTRIP_REF: "0.7.2"
   # The plugins a talk may name in cantrip.toml (PLUGINS in tools/rules.j), and
   # the renderers they run, as checked by the plugins' own READMEs.
   GRIMOIRE_MERMAID_REF: "0.1.0"
