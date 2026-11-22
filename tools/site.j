@@ -172,10 +172,11 @@ a.level:hover { text-decoration: underline; }
 .langs .badge { font: 600 0.75rem ui-monospace, monospace; padding: 0.1rem 0.4rem;
   border-radius: 0.3rem; border: 1px solid var(--accent); text-decoration: none; }
 .actions { margin-top: auto; padding-top: 0.4rem; display: flex; flex-wrap: wrap; gap: 0.4rem; }
-.actions a { font-size: 0.85rem; padding: 0.25rem 0.65rem; border-radius: 999px; white-space: nowrap;
-  border: 1px solid var(--accent); text-decoration: none; }
+.actions a { font-size: 0.85rem; padding: 0.25rem 0.65rem; border-radius: 999px;
+  white-space: nowrap; border: 1px solid var(--accent); text-decoration: none; }
 .actions a.primary { background: var(--accent); color: var(--accent-fg); }
-.actions a:not(.primary) { border-color: transparent; padding-left: 0.35rem; padding-right: 0.35rem; }
+.actions a:not(.primary) { border-color: transparent; padding-left: 0.35rem;
+  padding-right: 0.35rem; }
 .actions a:not(.primary):hover { border-color: var(--accent); }
 .empty { color: var(--muted); }
 .prose { max-width: 44rem; }
@@ -612,13 +613,7 @@ func filters(talks as list of Talk) {
     if (len($langs) > 1) {
         def items as list of string;
         for (def lang in $langs) {
-            def n as int init 0;
-            for (def t in $talks) {
-                if (lists.contains(langsOf($t), $lang)) {
-                    $n = $n + 1;
-                }
-            }
-            $items[] = option($lang, strings.upper($lang), $n);
+            $items[] = option($lang, strings.upper($lang), countInLang($talks, $lang));
         }
         $out = $out + dropdown("lang", "Language", "All languages", $items);
     }
@@ -628,6 +623,17 @@ func filters(talks as list of Talk) {
     $out = $out + "<option value=\"title\">By title</option></select></label>\n";
     $out = $out + "<button type=\"reset\" class=\"reset\">Reset</button>\n";
     return $out + "<p class=\"count\" id=\"count\" aria-live=\"polite\"></p>\n</form>\n";
+}
+
+/** How many talks are available in a language. */
+func countInLang(talks as list of Talk, lang as string) {
+    def n as int init 0;
+    for (def t in $talks) {
+        if (lists.contains(langsOf($t), $lang)) {
+            $n = $n + 1;
+        }
+    }
+    return $n;
 }
 
 /** One labelled dropdown of the filter bar, its first option meaning "any". */

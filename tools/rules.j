@@ -120,7 +120,8 @@ export def const CODE_LICENSE_ID as string init "MIT-0";
 export def const MIT0_TITLE as string init "MIT No Attribution";
 
 /** The MIT-0 licence text after its copyright line, compared word for word. */
-export def const MIT0_BODY as string init 'Permission is hereby granted, free of charge, to any person obtaining a copy of this
+export def const MIT0_BODY as string init
+    'Permission is hereby granted, free of charge, to any person obtaining a copy of this
 software and associated documentation files (the "Software"), to deal in the Software
 without restriction, including without limitation the rights to use, copy, modify,
 merge, publish, distribute, sublicense, and/or sell copies of the Software, and to

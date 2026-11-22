@@ -224,7 +224,8 @@ func testTranslationsGetBadgesAndHreflang() {
     testing.assertEqual(strings.count($index, "<ul class=\"langs\">"), 1);
     testing.assertContains(
         $index,
-        "<a class=\"badge\" href=\"talks/ada/duo/\" hreflang=\"en\" title=\"Two languages\">EN</a>");
+        "<a class=\"badge\" href=\"talks/ada/duo/\" hreflang=\"en\" " +
+            "title=\"Two languages\">EN</a>");
     testing.assertContains(
         $index,
         "href=\"talks/ada/duo/de/\" hreflang=\"de\" title=\"Zwei Sprachen &lt;de&gt;\">DE</a>");
@@ -242,7 +243,8 @@ func testTranslationsGetBadgesAndHreflang() {
     testing.assertContains($map2, "<loc>" + SITE_URL + "talks/ada/duo/de/</loc>");
     testing.assertContains(
         $map2,
-        "<xhtml:link rel=\"alternate\" hreflang=\"de\" href=\"" + SITE_URL + "talks/ada/duo/de/\"/>");
+        "<xhtml:link rel=\"alternate\" hreflang=\"de\" href=\"" + SITE_URL +
+            "talks/ada/duo/de/\"/>");
     testing.assertContains($map2, "<loc>" + SITE_URL + "talks/ada/duo/de/index.pdf</loc>");
     def doc as json.Value init json.decode(catalogue($all));
     testing.assertEqual(json.asString($doc, "/talks/0/topic"), "duo");
