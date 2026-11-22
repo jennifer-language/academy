@@ -175,7 +175,9 @@ its own output, which is already stored in the node.
 ```mermaid
 flowchart LR
   accTitle: The parameters #0 to #1327 stay; each step's graph after them is dropped
-  p["#0 .. #1327: the parameters<br/>resetTo keeps them, zeroes their gradients"] --> g["#1328 ..: this step's graph<br/>embeddings, attention, MLP, loss<br/>resetTo drops it"]
+  keep(["resetTo keeps them,<br/>zeroes their gradients"]) -.- p["#0 .. #1327<br/>the parameters"]
+  p --> g["#1328 ..<br/>this step's graph"]
+  g -.- drop(["resetTo<br/>drops it"])
 ```
 
 `resetTo(numParams)` drops last step's graph and keeps the weights.
