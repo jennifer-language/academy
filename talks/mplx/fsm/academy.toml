@@ -1,0 +1,9 @@
+title = "Finite state machines in Jennifer"
+description = "Explicit states instead of flags and nested ifs: a turnstile by hand with an enum and match, then @deckyard/fsm for an order life cycle with guards, hooks, a definition check, TOML loading, Mermaid diagrams, tests and pitfalls. Based on Jennifer 0.27.0."
+author = "mplx"
+license = "CC-BY-4.0"
+lang = "en"
+jennifer = "0.27.0"
+date = "2026-11"
+level = "intermediate"
+tags = ["state-machines", "fsm", "decks", "testing", "errors", "toml"]

@@ -1,0 +1,40 @@
+# The order life cycle of orders.j, as data.
+name = "order"
+initial = "draft"
+states = ["draft", "review", "approved", "rejected", "shipped", "cancelled"]
+final = ["rejected", "shipped", "cancelled"]
+
+[[transitions]]
+event = "submit"
+from = "draft"
+to = "review"
+
+[[transitions]]
+event = "edit"
+from = "review"
+to = "draft"
+
+[[transitions]]
+event = "approve"
+from = "review"
+to = "approved"
+guard = "isManager"
+
+[[transitions]]
+event = "reject"
+from = "review"
+to = "rejected"
+
+[[transitions]]
+event = "ship"
+from = "approved"
+to = "shipped"
+guard = "isPaid"
+
+[[transitions]]
+event = "cancel"
+from = ["draft", "review", "approved"]
+to = "cancelled"
+
+[enter]
+approved = "stamp"
