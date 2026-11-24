@@ -1,4 +1,4 @@
-# Code for "Infrastructure as code for MikroTik routers"
+# Code for "Infrastructure as code with Jennifer on MikroTik routers"
 
 The program behind the slides, for Jennifer 0.27.0, and the fake routers
 it was run against. Run everything from this folder. No real router is

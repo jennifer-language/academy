@@ -4,12 +4,12 @@ ratio: 16:9
 transition: slide
 ---
 
-# Queues and messaging: Resque, AMQP, MQTT and ZeroMQ
+# Queues and messaging: Resque™, AMQP, MQTT and ZeroMQ™
 
 ![Jennifer](jennifer-logo.png)
 
-Background jobs on Redis, a RabbitMQ broker with acks, pub/sub for small
-devices, and ZeroMQ without any broker: four modules that ship with the
+Background jobs on Redis™, a RabbitMQ™ broker with acks, pub/sub for small
+devices, and ZeroMQ™ without any broker: four modules that ship with the
 interpreter.
 
 Based on **Jennifer 0.27.0**, November 2026, by [@mplx](https://github.com/mplx).
@@ -20,7 +20,7 @@ done. Jennifer ships four modules for that in its standard module directory:
 resque for job queues on Redis, amqp for RabbitMQ and other AMQP 0-9-1
 brokers, mqtt for MQTT 3.1.1, and zmq, which speaks ZeroMQ's wire protocol
 with no server at all. Every program and every output on these slides was
-run with Jennifer 0.27.0 against Redis 7, RabbitMQ 4, Mosquitto 2 and pyzmq
+run with Jennifer 0.27.0 against Redis 7, RabbitMQ 4, Mosquitto™ 2 and pyzmq
 27.3 with libzmq 4.3.5 in local containers. The passwords are placeholders.
 -->
 
@@ -46,7 +46,7 @@ worker sends it later, retries it when it fails, and a burst of uploads
 becomes a queue that four workers drain at their own pace. The price is a new
 moving part, a server that holds the messages, except for ZeroMQ, which has
 none. All four modules speak their protocol over the net library, so they
-need the default jennifer binary, not jennifer-tiny. Resque also needs
+need the default jennifer binary, not jennifer-tiny. Resque™ also needs
 redis.j, and most Options structs take a transport.Security value.
 -->
 

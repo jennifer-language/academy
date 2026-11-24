@@ -222,7 +222,7 @@ allowInsecureRedirect in the http options.
 - `webapi.limiter` returns a `ratelimit.Result`, not a `bool`
 
 <!-- notes:
-markdown, reStructuredText and MyST now share one document tree, doctree, with
+markdown, reStructuredText and MyST™ now share one document tree, doctree, with
 renderers for HTML, ANSI and PDF. If you called markdown.toHtml nothing
 changes; if you walked the tree yourself, the node functions moved. The two
 provider helpers in oauth moved into a deck, because they track two vendors'
@@ -313,7 +313,7 @@ new-libraries.j runs both.
 <!-- notes:
 Most of the new surface is in the bundled modules. The document modules are
 what Grimoire and Cantrip build on. The protocol modules close gaps that came
-up in decks: SOAP for invoicing services, WebDAV for cloud storage, ZeroMQ for
+up in decks: SOAP for invoicing services, WebDAV for cloud storage, ZeroMQ™ for
 messaging. Each has its own page in the module reference with examples.
 -->
 
@@ -324,7 +324,7 @@ messaging. Each has its own page in the module reference with examples.
 - `lint`: L116 (a slot holding only a literal), L104 accepts error structs,
   L205 catches more accumulators, L303 checks pragma ranges
 - `profile --allocs` ranks copies by bytes and shows module rebuilds
-- `jennifer-tiny-dev`: `fmt`, `lint`, `test` on the TinyGo build
+- `jennifer-tiny-dev`: `fmt`, `lint`, `test` on the TinyGo™ build
 - Deep recursion on `jennifer-tiny` is a catchable `"limit"`
 - New `alpine` image; the images bundle `jvc`
 

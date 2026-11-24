@@ -18,8 +18,8 @@ This talk walks through email end to end: build a message, hand it to a
 server, read it back, react to new mail, and take attachments apart without
 getting hurt. Every program and every output on these slides was run with
 the released Jennifer 0.27.0 and its bundled modules against local
-containers: GreenMail 2.1.2 for SMTP, IMAP and POP3, Dovecot 2.3.21 for
-STARTTLS and XOAUTH2, and Mailpit 1.21 for a STARTTLS submission server. All
+containers: GreenMail™ 2.1.2 for SMTP, IMAP and POP3, Dovecot™ 2.3.21 for
+STARTTLS and XOAUTH2, and Mailpit™ 1.21 for a STARTTLS submission server. All
 addresses are example.com or example.org, and every password is a
 placeholder.
 -->
@@ -481,7 +481,7 @@ func action(s as imap.Session, uid as int, tooBig as list of int) {
 
 <!-- notes:
 The decision needs three headers, so only they are downloaded. X-Spam-Flag
-is what SpamAssassin and similar filters add on the server. List-Id marks
+is what SpamAssassin™ and similar filters add on the server. List-Id marks
 mail from a mailing list or newsletter system. addrOf takes the address out
 of angle brackets and lowercases it, so a display name cannot fake a VIP
 match. A From header can be forged; for anything that matters, check the

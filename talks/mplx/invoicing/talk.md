@@ -4,11 +4,11 @@ ratio: 16:9
 transition: slide
 ---
 
-# Invoicing with web services: VAT, SOAP and GraphQL
+# Invoicing with web services: VAT, SOAP and GraphQL™
 
 ![Jennifer](jennifer-logo.png)
 
-Orders from a GraphQL API, EU VAT numbers checked with VIES over SOAP,
+Orders from a GraphQL™ API, EU VAT numbers checked with VIES over SOAP,
 reverse charge, exact amounts, a PDF per invoice, and what to do when a
 service is down.
 

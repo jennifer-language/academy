@@ -33,7 +33,7 @@ release tag. Outputs shown are from real runs of Grimoire 0.5.0.
 - The site works from a web root, a subdirectory, or **straight off the disk**
   over `file://`, search included
 - Nothing is fetched unless you opt in; same input, **byte-identical** output
-- What mdBook and MkDocs do, as one Jennifer program
+- What mdBook™ and MkDocs™ do, as one Jennifer program
 
 <!-- notes:
 The search index is loaded as a script rather than fetched, which is why
@@ -66,7 +66,7 @@ Needs Jennifer 0.26.0 or newer; `serve` needs the default binary.
 jvc, the Jennifer package manager, installs Grimoire as an app, a program with
 a command on your PATH, rather than as a library. The container image has
 Grimoire as its entrypoint, so everything after the image name is a Grimoire
-command; mount the book at /work and that is it. With Podman the flag is
+command; mount the book at /work and that is it. With Podman™ the flag is
 --userns=keep-id instead of --user. The --user flag keeps the files it writes
 owned by you rather than by root.
 -->
@@ -121,7 +121,7 @@ chapters render in parallel, and the 727-page PDF about half a minute.
 <!-- notes:
 This is the file init wrote. It is the mdBook shape, so a book can move over
 from mdBook without rewriting its outline, and the heading anchors match
-mdBook's and GitHub's too, so hand-written cross references keep working. A
+mdBook's and GitHub™'s too, so hand-written cross references keep working. A
 link like guide/syntax.md#anchor is rewritten to the HTML page. For a quick
 book, or a generated reference, leave the summary out and Grimoire walks the
 folders the way MkDocs does.

@@ -196,7 +196,7 @@ for the next person who edits it.
 A greater-than sign starts a quotation, as in an email reply. A quotation that
 opens with an exclamation mark in brackets becomes a callout: NOTE, TIP,
 IMPORTANT, WARNING or CAUTION, each in its own colour. The syntax is the one
-GitHub uses, so the same file reads correctly there, in Grimoire and in
+GitHub™ uses, so the same file reads correctly there, in Grimoire and in
 Cantrip, and a tool that does not know it shows a plain quotation.
 -->
 

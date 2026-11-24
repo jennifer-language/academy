@@ -36,7 +36,7 @@ in a tab: it is the map you come back to when you wonder where something lives.
 <!-- notes:
 Seven addresses cover it. The website explains the language, the documentation
 site holds the guides and the reference for every library and module, and the
-source lives on GitHub. Extra packages are called decks: the registry indexes
+source lives on GitHub™. Extra packages are called decks: the registry indexes
 them, jvc installs them, and Deckyard is where the community ones are kept.
 The academy collects talks that teach Jennifer, written by its users.
 -->
@@ -47,13 +47,13 @@ The academy collects talks that teach Jennifer, written by its users.
 
 **One static binary:** no runtime, no system libraries, copy it and run it.
 
-Runs on Linux (amd64, arm64), OpenWrt routers (`.ipk`) and Android in Termux;
-macOS and Windows builds are best-effort.
+Runs on Linux™ (amd64, arm64), OpenWrt™ routers (`.ipk`) and Android™ in Termux™;
+macOS™ and Windows™ builds are best-effort.
 
 Two builds from the same source:
 
 - `jennifer`: the full build, multi-core `spawn`, network, processes, SQL
-- `jennifer-tiny`: the TinyGo build, small and embeddable
+- `jennifer-tiny`: the TinyGo™ build, small and embeddable
 
 43 built-in libraries and 80 shipped modules, over 2,300 functions.
 
@@ -71,7 +71,7 @@ an Android phone inside Termux, where network name lookups need 0.27.0, which
 reads Termux's own resolver configuration. macOS and Windows get the standard
 build on every release, unsigned and unsupported but working. The default build is the one to install; the tiny build is for small
 systems and for embedding. Both come as
-release archives and a .deb, Arch users get it from the AUR, and the container
+release archives and a .deb, Arch™ users get it from the AUR, and the container
 image carries both builds plus jvc. The standard library is large on purpose:
 databases, HTTP, crypto, formats, and the modules are plain Jennifer source
 you can read and fork.
@@ -162,7 +162,7 @@ The best evidence that a language works is the tools built with it. Grimoire
 builds the documentation of every deck, Cantrip made the slides you are
 looking at, jvc and the registry run the package ecosystem, and ocsaml gets
 people through a corporate VPN. Grimoire takes plugins; user plugins such as
-mermaid diagrams and KaTeX maths are tagged grimoire-plugin on GitHub.
+mermaid diagrams and KaTeX™ maths are tagged grimoire-plugin on GitHub.
 -->
 
 ---

@@ -21,7 +21,7 @@ It walks from the primitives in the hash and crypto libraries up to the
 bundled totp, jwt, oauth and acme modules and the sealbox deck. Every output
 was produced with the released Jennifer 0.27.0 and its modules: OAuth2
 against a small fake authorization server written in Jennifer, ACME against
-Let's Encrypt's test CA pebble in a container, both on 127.0.0.1. Every key
+Let's Encrypt™'s test CA pebble in a container, both on 127.0.0.1. Every key
 and secret shown is a placeholder or a throwaway from a demo run.
 -->
 

@@ -40,7 +40,7 @@ output on these slides is from a real run.
 Two layers. The csv module ships with the interpreter: it knows quoting and
 delimiters and turns text into rows of strings, nothing more. The sheets deck
 is a community deck from the deckyard scope: it reads and writes ODS, XLSX and
-Gnumeric files over one cell model, evaluates formulas and applies number
+Gnumeric™ files over one cell model, evaluates formulas and applies number
 formats. Neither needs a network, a subprocess or an office suite installed,
 which also means they run in CI and inside a container.
 -->
@@ -235,7 +235,7 @@ note
 '-5 kg
 ```
 
-- a field starting with `=`, `+`, `-`, `@`, tab or CR is a formula to Excel
+- a field starting with `=`, `+`, `-`, `@`, tab or CR is a formula to Excel™
 - `formatSafe` prefixes it with `'`: literal text on import
 - `format` writes it unchanged: only for programs, never for people
 
@@ -329,7 +329,7 @@ stays 3.2; the format code in the cell's style says to show it with two decimal
 places and a thousands separator. Styles are values too, built from the
 default with `with` functions, and `setAreaStyle` applies one style to a range
 in a single copy of the sheet. The format engine was checked against
-LibreOffice and Gnumeric, and `applyFormatIn` renders in another locale.
+LibreOffice™ and Gnumeric, and `applyFormatIn` renders in another locale.
 -->
 
 ---

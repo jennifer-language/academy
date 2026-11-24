@@ -412,7 +412,7 @@ cap; asking for more than the default is itself an error.
 - **JSON**: data between programs, HTTP APIs, `flatdb` stores
 - **TOML**: config people edit, typed, with dates; Jennifer's own
   `deck.toml` and `academy.toml`
-- **YAML**: when a tool you talk to speaks it (CI, Compose, Kubernetes);
+- **YAML**: when a tool you talk to speaks it (CI, Compose, Kubernetes™);
   quote what looks like a number
 - **XML**: when the other side demands it (feeds, office files, SOAP);
   convert every value yourself

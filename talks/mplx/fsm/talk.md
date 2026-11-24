@@ -438,7 +438,7 @@ stateDiagram-v2
     s3 --> [*]
 ```
 
-- Mermaid renders in Markdown on GitHub and GitLab
+- Mermaid™ renders in Markdown on GitHub™ and GitLab™
 - `dot -Tsvg order.dot > order.svg`; final states get a double border
 - the diagram comes from the definition the code runs
 

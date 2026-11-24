@@ -8,7 +8,7 @@ transition: fade
 
 ![Jennifer](jennifer-logo.png)
 
-Colour for `.j` files in Vim, Neovim, VS Code, Sublime Text, JetBrains IDEs,
+Colour for `.j` files in Vim™, Neovim™, VS Code™, Sublime Text™, JetBrains™ IDEs,
 `bat`, web pages and self-hosted forges.
 
 by [@mplx](https://github.com/mplx)
@@ -29,10 +29,10 @@ editor; you can skip the rest.
 | --- | --- |
 | `vim/` | Vim and Neovim |
 | `vscode/` | VS Code (a small extension) |
-| `textmate/jennifer.tmLanguage.json` | editors that read TextMate grammars |
+| `textmate/jennifer.tmLanguage.json` | editors that read TextMate™ grammars |
 | `sublime/jennifer.sublime-syntax` | Sublime Text and `bat` |
 | `highlightjs/jennifer.js` | web pages with highlight.js |
-| `chroma/jennifer.xml` | Forgejo, Gitea, Hugo (a draft) |
+| `chroma/jennifer.xml` | Forgejo™, Gitea™, Hugo™ (a draft) |
 
 <!-- notes:
 All definitions live in the editors folder of the Jennifer repository. They
@@ -50,7 +50,7 @@ The packages install two of them for you:
 
 | Package | Installs |
 | --- | --- |
-| Arch, Debian | Vim and Neovim syntax, `jennifer.sublime-syntax` |
+| Arch™, Debian™ | Vim and Neovim syntax, `jennifer.sublime-syntax` |
 | any | nothing for VS Code or the others |
 
 Everything else comes from the repository:
@@ -144,7 +144,7 @@ the extension's version. After a reload, VS Code knows Jennifer.
 
 ## VS Code on Windows
 
-PowerShell:
+PowerShell™:
 
 ```powershell
 Copy-Item -Recurse vscode `
@@ -158,10 +158,10 @@ xcopy /E /I vscode "%USERPROFILE%\.vscode\extensions\jennifer-0.2.0"
 ```
 
 <!-- notes:
-On Windows the extensions folder is in your user profile. Use whichever shell
+On Windows™ the extensions folder is in your user profile. Use whichever shell
 you have; both commands copy the whole folder. A symbolic link works too but
 needs an administrator shell or developer mode, so a copy is simpler. If you
-use VS Code inside WSL, follow the Linux slide for the Linux side.
+use VS Code inside WSL™, follow the Linux™ slide for the Linux side.
 -->
 
 ---
@@ -180,7 +180,7 @@ Check: open a `.j` file; the status bar shows **Jennifer** as its language.
 
 <!-- notes:
 If you want to install the extension on several machines, package it once as a
-vsix file and install that. It needs Node for the packaging step only. To check
+vsix file and install that. It needs Node™ for the packaging step only. To check
 that it works, open any Jennifer file and look at the language name in the
 bottom right corner. It should say Jennifer, not Plain Text.
 -->
@@ -195,7 +195,7 @@ Copy the syntax into your `User` package
 | System | Folder |
 | --- | --- |
 | Linux | `~/.config/sublime-text/Packages/User/` |
-| macOS | `~/Library/Application Support/Sublime Text/Packages/User/` |
+| macOS™ | `~/Library/Application Support/Sublime Text/Packages/User/` |
 | Windows | `%APPDATA%\Sublime Text\Packages\User\` |
 
 ```sh
@@ -237,7 +237,7 @@ there.
 `textmate/jennifer.tmLanguage.json` is a TextMate grammar, scope
 `source.jennifer`.
 
-- **IntelliJ, PyCharm, GoLand, ...**: Settings, Editor, TextMate Bundles,
+- **IntelliJ™, PyCharm™, GoLand™, ...**: Settings, Editor, TextMate Bundles,
   add the `editors/vscode` folder
 - **Any editor with TextMate grammars**: point it at the `textmate/` file
 
@@ -270,14 +270,14 @@ For a blog, a documentation site or any page that already uses highlight.js,
 load jennifer.js after highlight.js and it registers itself. Code blocks marked
 as jennifer are coloured from then on. In a build pipeline, require it and
 register it by hand. It works with highlight.js versions 10 and 11, so older
-tools like mdBook can use it too.
+tools like mdBook™ can use it too.
 -->
 
 ---
 
 ## Forgejo, Gitea and Hugo
 
-- They highlight with Chroma, which compiles its lexers in
+- They highlight with Chroma™, which compiles its lexers in
 - `chroma/jennifer.xml` is a draft for Chroma itself: no server shows
   Jennifer until a release carries it
 - Until then, a rough stand-in in Forgejo's or Gitea's `app.ini`:
@@ -299,7 +299,7 @@ variables and strings roughly right.
 
 ## GitHub
 
-- GitHub's language detection assigns `.j` to Objective-J
+- GitHub™'s language detection assigns `.j` to Objective-J
 - So `.j` files on github.com are not coloured as Jennifer
 - Nothing to do on our side: it works everywhere else
 
@@ -333,8 +333,8 @@ need the setup shown here.
 
 ## Your editor is missing?
 
-Welcome as contributions: Emacs (`jennifer-mode.el`), nano (`.nanorc`), a
-tree-sitter grammar (for Zed, Helix, Neovim).
+Welcome as contributions: Emacs™ (`jennifer-mode.el`), nano (`.nanorc`), a
+tree-sitter grammar (for Zed™, Helix™, Neovim).
 
 - `editors/README.md` lists the token classes to cover
 - Check your definition against `jennifer tokens file.j`

@@ -9,12 +9,12 @@ transition: slide
 ![Jennifer](jennifer-logo.png)
 
 Blink an LED, read a button, a sensor, an ADC and a microcontroller from a
-Raspberry Pi, and test all of it on a laptop.
+Raspberry Pi™, and test all of it on a laptop.
 
 Based on **Jennifer 0.27.0**, November 2026, by [@mplx](https://github.com/mplx).
 
 <!-- notes:
-This talk is for people who have a Raspberry Pi or a similar Linux board in a
+This talk is for people who have a Raspberry Pi or a similar Linux™ board in a
 drawer and want to make it do something physical. We go through the four ways
 a board talks to the outside world, write a small program for each, and end
 with a temperature logger that lights an LED. The talk was written without a
@@ -42,7 +42,7 @@ GPIO is a single pin that is either high or low, nothing more. I2C puts many
 slow chips on two shared wires and picks one by its address. SPI is faster and
 full-duplex but needs a chip-enable line per chip. A UART is a plain byte
 stream between two devices, which is what you want when the other side is a
-computer of its own, such as an Arduino or a GPS receiver. Many sensors come in
+computer of its own, such as an Arduino™ or a GPS receiver. Many sensors come in
 an I2C and an SPI version; take I2C unless you need the speed.
 -->
 
@@ -63,7 +63,7 @@ an I2C and an SPI version; take I2C unless you need the speed.
 
 <!-- notes:
 The GPIO module is plain Jennifer that writes files under /sys/class/gpio, so
-it runs on the small TinyGo build too. The four libraries use ioctls through
+it runs on the small TinyGo™ build too. The four libraries use ioctls through
 Go's unix package, which the tiny build does not carry, so there they are stubs
 that throw a clear message. If you deploy jennifer-tiny on a board to save
 space, use the GPIO module and nothing else. The library and the module share
@@ -92,7 +92,7 @@ raspi-config does the same under Interface Options. Each device file belongs to
 a group: gpio for the GPIO devices, i2c for /dev/i2c-1, spi for
 /dev/spidev0.0, dialout for serial ports. Add yourself to the groups instead of
 running scripts as root. The error line is a real run on a desktop where the
-serial port belongs to the uucp group (Arch names it that way); the message
+serial port belongs to the uucp group (Arch™ names it that way); the message
 names the file, so ls -l on it tells you which group you are missing.
 -->
 
@@ -445,7 +445,7 @@ PASS testDecode (0 ms)
 <!-- notes:
 sht31_test.j is a white-box overlay next to sht31.j, so it sees the private
 word function too; frame turns a list of ints into bytes. The first test uses
-the checksum example from the Sensirion datasheet, 0xBEEF gives 0x92. The
+the checksum example from the Sensirion™ datasheet, 0xBEEF gives 0x92. The
 second builds a frame by hand: 0x6666 is 25.0 degrees and 0x8000 is 50 percent.
 The MCP3008 tests work the same way: build the reply bytes, check the value.
 The output is a real run.
@@ -527,7 +527,7 @@ A logger runs until it is stopped, so the loop is while true, and the trailing
 comment tells the linter that this is on purpose. One failed reading must not
 end the program: the catch flushes the port, reports on stderr and carries on.
 convert.toInt turns the comparison into the 0 or 1 that gpio.write wants, and
-gpio.read reads the pin back for the log line. Under systemd, Restart=on-failure
+gpio.read reads the pin back for the log line. Under systemd™, Restart=on-failure
 brings it back if something unexpected throws.
 -->
 

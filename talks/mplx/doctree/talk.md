@@ -9,7 +9,7 @@ transition: slide
 
 ![Jennifer](jennifer-logo.png)
 
-doctree, MyST, reStructuredText and fonts: the model under Grimoire and
+doctree, MyST™, reStructuredText and fonts: the model under Grimoire and
 Cantrip, and how to extend it.
 
 Based on **Jennifer 0.27.0**, November 2026, by [@mplx](https://github.com/mplx).
@@ -156,7 +156,7 @@ Warning</p><p>Back up <em>first</em>.</p></div>
 ```
 
 <!-- notes:
-A GitHub style alert in Markdown, a MyST directive and a reStructuredText
+A GitHub™ style alert in Markdown, a MyST directive and a reStructuredText
 directive all become the same node: kind admonition, the warning kind in the
 lang field, a paragraph inside. Each line came from doctree.get of admonition,
 then typeOf, lang and text. The HTML line, wrapped here, is identical for all
@@ -218,7 +218,7 @@ error line 12: Unknown target name: "missing".
 The rST reader builds the very same figure, admonition and link nodes, which is
 the whole point: a numbering transform written against the tree works for both.
 Differences live in the reader. A lone top title is promoted and classed title;
-every section gets a slug id; kbd is a Sphinx role, not docutils, so it stays
+every section gets a slug id; kbd is a Sphinx™ role, not docutils, so it stays
 text with an error. Parsing is lenient and never throws for bad markup; check
 returns the diagnostics, and strict mode turns the first one into an error.
 -->
@@ -409,7 +409,7 @@ needs the font in the file: pdf embeds a TrueType font as a Type0 composite with
 Identity-H encoding, so each character goes through the font's cmap to a glyph
 id, and writes a ToUnicode map so the text can still be copied. The price shows
 in the size: 0.26.0 embeds the whole 760 KB font, compressed, because there is
-no subsetting yet. DejaVu Sans is under the Bitstream Vera licence. doctree's
+no subsetting yet. DejaVu™ Sans is under the Bitstream Vera™ licence. doctree's
 layout itself still uses the standard-14 fonts only.
 -->
 

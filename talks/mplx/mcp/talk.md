@@ -10,7 +10,7 @@ transition: slide
 
 A small server that serves the Jennifer documentation to an assistant:
 two tools, every page as a resource and a prompt, tested with real
-clients and connected to Claude Code and VS Code.
+clients and connected to Claude™ Code and VS Code™.
 
 Based on **Jennifer 0.27.0**, November 2026, by [@mplx](https://github.com/mplx).
 
@@ -266,7 +266,7 @@ handler, which gets the URI it was asked for. Cutting the scheme off and
 reading the file looks dangerous, but only registered URIs ever reach the
 handler: the module answered the traversal URI with invalid params. Hosts
 use resources differently: Claude Code lets you mention one with an at sign;
-VS Code's Copilot sessions do not list them, which is why read_doc exists.
+VS Code's Copilot™ sessions do not list them, which is why read_doc exists.
 -->
 
 ---

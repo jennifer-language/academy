@@ -4,13 +4,13 @@ ratio: 16:9
 transition: slide
 ---
 
-# Metrics with Jennifer: Prometheus, StatsD and InfluxDB
+# Metrics with Jennifer: Prometheus™, StatsD™ and InfluxDB™
 
 ![Jennifer](jennifer-logo.png)
 
 Counters, gauges and histograms from a Jennifer service: scraped by
-Prometheus, pushed by a batch job, sent over UDP to StatsD, written as
-points to InfluxDB.
+Prometheus™, pushed by a batch job, sent over UDP to StatsD™, written as
+points to InfluxDB™.
 
 Based on **Jennifer 0.27.0**, November 2026, by [@mplx](https://github.com/mplx).
 
@@ -19,8 +19,8 @@ This talk instruments a small Jennifer web service and a queue worker with
 the three metrics decks, @jennifer/prometheus, @jennifer/statsd and
 @jennifer/influxdb. Every program, every line of exposition text, every line
 protocol and every query result on the slides is from a real run on one
-laptop: the official Prometheus, Pushgateway, statsd_exporter and InfluxDB 2
-images in Docker, bound to 127.0.0.1, scraping and receiving from Jennifer
+laptop: the official Prometheus, Pushgateway™, statsd_exporter and InfluxDB 2
+images in Docker™, bound to 127.0.0.1, scraping and receiving from Jennifer
 programs. Alerting itself has its own talk, linked at the end.
 -->
 
@@ -106,7 +106,7 @@ adds one series, not ten thousand. InfluxDB's tags follow the same rule.
 | --- | --- | --- | --- |
 | Model | **pull**: scraped | **push**: UDP | **push**: HTTP POST |
 | Keeps | totals, in your program | totals, in the agent | every point, raw |
-| Dimensions | labels | dots, DogStatsD tags | tags |
+| Dimensions | labels | dots, DogStatsD™ tags | tags |
 
 ```sh
 jvc add @jennifer/prometheus
@@ -614,8 +614,8 @@ counter. The rule ran in the same Prometheus; with one checkout in ten
 failing, about five percent of all requests, it went pending and after
 thirty seconds firing (the summary annotation is left out here), and the ALERTS series shows it. Single quotes matter:
 in a double-quoted Jennifer string the braces would be interpolation.
-Alertmanager would route the alert onwards; the alerting talk shows how a
-Jennifer program sends it to Gotify, Telegram, Slack and Discord itself.
+Alertmanager™ would route the alert onwards; the alerting talk shows how a
+Jennifer program sends it to Gotify™, Telegram™, Slack™ and Discord™ itself.
 -->
 
 ---

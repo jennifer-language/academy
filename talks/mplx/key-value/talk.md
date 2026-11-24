@@ -4,7 +4,7 @@ ratio: 16:9
 transition: slide
 ---
 
-# Key-value stores: kv, Redis and memcached
+# Key-value stores: kv, Redis™ and memcached
 
 ![Jennifer](jennifer-logo.png)
 
@@ -16,7 +16,7 @@ Based on **Jennifer 0.27.0**, November 2026, by [@mplx](https://github.com/mplx)
 <!-- notes:
 Almost every service ends up needing a small, fast place for state that is not
 worth a table: a cache, a counter, a login session, a lock. Jennifer gives you
-three of them: the kv library inside the process, and clients for Redis and
+three of them: the kv library inside the process, and clients for Redis™ and
 memcached that ship with the interpreter. We try each against a real server,
 break each on purpose, and finish with kvstore, which hides the choice.
 -->

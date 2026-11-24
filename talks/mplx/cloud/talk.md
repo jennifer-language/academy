@@ -4,7 +4,7 @@ ratio: 16:9
 transition: slide
 ---
 
-# Storing data in the cloud: S3, WebDAV, Koofr and Seafile
+# Storing data in the cloud: S3, WebDAV, Koofr™ and Seafile™
 
 ![Jennifer](jennifer-logo.png)
 
@@ -16,8 +16,8 @@ Based on **Jennifer 0.27.0**, November 2026, by [@mplx](https://github.com/mplx)
 <!-- notes:
 This talk puts files into four kinds of cloud storage from Jennifer: an S3
 bucket with the bundled s3 module, a WebDAV server with the bundled webdav
-module, and the file-sync services Koofr and Seafile with two Deckyard decks.
-Every output is from a real run on a laptop: MinIO for S3, Apache httpd with
+module, and the file-sync services Koofr™ and Seafile™ with two Deckyard decks.
+Every output is from a real run on a laptop: MinIO™ for S3, Apache™ httpd with
 mod_dav for WebDAV, and the official Seafile 12 image. Koofr is a hosted
 service, so its slides ran against a small stand-in server written in
 Jennifer that answers the endpoints the deck calls; no request went to Koofr.
@@ -31,7 +31,7 @@ left out, everything shown ran as it stands.
 
 | | Object storage | WebDAV | File sync |
 | --- | --- | --- | --- |
-| Examples | S3, MinIO, R2, B2 | Nextcloud, a NAS, Apache | Koofr, Seafile |
+| Examples | S3, MinIO, R2, B2 | Nextcloud™, a NAS, Apache | Koofr, Seafile |
 | You store | an object under a key | a file in a folder | a file in a library |
 | Folders | none: `/` is part of the key | real collections | real folders |
 | Sharing | presigned URLs | depends on the server | public and upload links |
@@ -56,10 +56,10 @@ reads the data: a machine, a person, or both.
 
 | Backend | In Jennifer 0.26.0 | For this talk, on 127.0.0.1 |
 | --- | --- | --- |
-| S3 | `import "s3.j"`, bundled | MinIO (Bitnami image) |
+| S3 | `import "s3.j"`, bundled | MinIO (Bitnami™ image) |
 | WebDAV | `import "webdav.j"`, bundled | Apache httpd 2.4 with `mod_dav` |
 | Koofr | `@deckyard/koofr` 0.3.0 | a stand-in written in Jennifer |
-| Seafile | `@deckyard/seafile` 0.2.0 | Seafile 12.0.14, MariaDB |
+| Seafile | `@deckyard/seafile` 0.2.0 | Seafile 12.0.14, MariaDB™ |
 
 ```sh
 jvc add @deckyard/koofr
@@ -71,7 +71,7 @@ jvc install                  # copies both into vendor/deckyard/
 The two protocols are bundled modules, so they need no install. The two
 services are community decks from Deckyard; jvc copies their sources into
 vendor and the programs import them as "@deckyard/koofr/". Both decks need
-the net capability and nothing else. MinIO's own image is no longer on Docker
+the net capability and nothing else. MinIO's own image is no longer on Docker™
 Hub, so the S3 server here is Bitnami's MinIO image. All four servers were
 bound to the loopback address, and every credential on these slides is a
 placeholder.
@@ -205,10 +205,10 @@ bucket cleans up after crashed jobs.
 
 | Store | endpoint | region |
 | --- | --- | --- |
-| AWS S3 | `https://s3.<region>.amazonaws.com` | the bucket's region |
+| AWS™ S3 | `https://s3.<region>.amazonaws.com` | the bucket's region |
 | MinIO | `http://host:9000` | `us-east-1` or as configured |
-| Cloudflare R2 | `https://<account>.r2.cloudflarestorage.com` | `auto` |
-| Backblaze B2 | `https://s3.<region>.backblazeb2.com` | the bucket's region |
+| Cloudflare™ R2 | `https://<account>.r2.cloudflarestorage.com` | `auto` |
+| Backblaze™ B2 | `https://s3.<region>.backblazeb2.com` | the bucket's region |
 
 - Path-style addressing, Signature Version 4, a 30 s timeout per request
 - Not in the module: creating buckets, ACLs, policies, prefix listings
@@ -310,7 +310,7 @@ for (def r in webdav.propfind($c, "/report.txt", 0, [FAV, $size])) {
 ```
 
 <!-- notes:
-Nextcloud and ownCloud serve every user's files below remote.php/dav, and
+Nextcloud and ownCloud™ serve every user's files below remote.php/dav, and
 favourites, file ids and tags are WebDAV properties in the owncloud
 namespace. The output here is from Apache, which stores any property you set
 as a dead property, so the same two calls ran; on Nextcloud they star the

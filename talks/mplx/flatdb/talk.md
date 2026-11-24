@@ -432,13 +432,13 @@ that a server reads and occasionally writes.
 | Data much larger than memory | no | `sql` |
 | Several changes, all or none | one file only | `sql` transactions |
 
-`sql` talks to MariaDB / MySQL or PostgreSQL servers, default binary only.
+`sql` talks to MariaDB™ / MySQL™ or PostgreSQL™ servers, default binary only.
 
 <!-- notes:
 flatdb fits when the data is small, mostly yours, and nice to read as a file.
 Once you write SQL-like loops over records, need two files to change together,
 or several processes write constantly, a database server is the right tool.
-Jennifer's sql library has no embedded SQLite, so that step also means running
+Jennifer's sql library has no embedded SQLite™, so that step also means running
 a server, which is the real price to weigh.
 -->
 

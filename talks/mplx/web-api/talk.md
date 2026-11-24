@@ -20,7 +20,7 @@ companion talk, A web app in Jennifer from scratch, covers routes, forms,
 sessions and CSRF for a browser app. Here the client is a program, so the
 questions change: how errors look, what happens when a request is sent twice,
 which state changes are legal, how the schema changes at deploy time. Every
-response on these slides comes from a real run against PostgreSQL 16 in a
+response on these slides comes from a real run against PostgreSQL™ 16 in a
 container.
 -->
 
@@ -157,7 +157,7 @@ A migration is a version, a description and lists of statements. Write them
 out, or use orm's DDL helpers like createIndex, but never build an old
 migration from the live orm schema: when the schema grows a column,
 migration 002 would silently change. On PostgreSQL DDL is transactional, so a
-failed step rolls back completely. On MariaDB each CREATE commits on its own
+failed step rolls back completely. On MariaDB™ each CREATE commits on its own
 and the docs' claim that a step rolls back is false in 0.26.0: keep one
 statement per migration there. The fix and a doc correction are in the next
 release.
@@ -552,7 +552,7 @@ sink: order.paid order 2 (paid)
 <!-- notes:
 After a state change commits, the shop tells subscribers. The delivery runs
 in a spawned task, so a slow subscriber never delays the API's answer. The
-signature is the Stripe scheme, t=timestamp and v1=HMAC over timestamp and
+signature is the Stripe™ scheme, t=timestamp and v1=HMAC over timestamp and
 body, so a receiver can reject replays. The URL is checked at startup with
 uri.parse: https only, except loopback for the demo. For delivery that
 survives a crash, write an outbox row in the transaction and send from a
@@ -673,6 +673,6 @@ The shop covers the parts that are hard to add later: a stable error shape,
 versioned routes, migrations that run once, a contract, idempotency, a
 lifecycle that refuses illegal moves, signed webhooks both ways, request ids
 and tests against the real thing. What remains is mostly operations. The
-companion talks cover the browser side, packaging with Docker, and hostile
+companion talks cover the browser side, packaging with Docker™, and hostile
 input; the code folder of this talk has every program shown here.
 -->

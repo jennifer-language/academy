@@ -5,7 +5,7 @@ ratio: 16:9
 transition: slide
 ---
 
-# Packaging a Jennifer app with Docker
+# Packaging a Jennifer app with Docker™
 
 ![Jennifer](jennifer-logo.png)
 
@@ -17,11 +17,11 @@ Based on **Jennifer 0.26.0**, November 2026, by [@mplx](https://github.com/mplx)
 
 <!-- notes:
 We package Shelf, the book club reading list from the talk "A web app in
-Jennifer from scratch": a Jennifer web app with a MariaDB database. You do not
+Jennifer from scratch": a Jennifer web app with a MariaDB™ database. You do not
 need to have seen that talk; all that matters here is that it is a few .j
 files, a CSS file and a handbook in Markdown, configured through environment
 variables. Every output on these slides is from a real build and run with
-Docker on Linux.
+Docker™ on Linux™.
 -->
 
 ---
@@ -30,8 +30,8 @@ Docker on Linux.
 
 | Tag | Base | Size | Use |
 | --- | --- | --- | --- |
-| `jennifer:0.26.0` | Debian trixie-slim | 168 MB | default; shell, apt, `jvc` |
-| `jennifer:0.26.0-alpine` | Alpine | 60 MB | small, still a build base |
+| `jennifer:0.26.0` | Debian™ trixie-slim | 168 MB | default; shell, apt, `jvc` |
+| `jennifer:0.26.0-alpine` | Alpine™ | 60 MB | small, still a build base |
 | `jennifer:0.26.0-static` | distroless | 51 MB | no shell: runtime only |
 | `jennifer:dev` | Debian | ~170 MB | every push to `main` |
 
@@ -454,7 +454,7 @@ start there, so an app that shells out to a tool stays on slim.
 - **Decks:** run `jvc install` in a slim stage, copy `vendor/` into the
   runtime stage; `jvc` is not in the static image
 - **Pin both images** to exact releases; move them on purpose
-- **One replica** while sessions live in-process; Redis for more
+- **One replica** while sessions live in-process; Redis™ for more
 - **Back up the volume**, not the container: `mariadb-dump`
 - Images: [packaging/docker](https://github.com/jennifer-language/jennifer/tree/main/packaging/docker),
   Grimoire: [grimoire.jennifer-lang.dev](https://grimoire.jennifer-lang.dev/)

@@ -8,7 +8,7 @@ transition: slide
 
 ![Jennifer](jennifer-logo.png)
 
-Claude, GPT and Gemini side by side, with the `@deckyard/anthropic`,
+Claude™, GPT™ and Gemini™ side by side, with the `@deckyard/anthropic`,
 `@deckyard/openai` and `@deckyard/gemini` decks: messages, tools, errors,
 and tests that need no key.
 
@@ -33,7 +33,7 @@ port; no request went to a vendor and no real key was used.
 | Key in the examples | `ANTHROPIC_API_KEY` | `OPENAI_API_KEY` | `GEMINI_API_KEY` |
 | Model in the docs | `claude-opus-5-5` | `gpt-5.4-mini` | `gemini-3.8-flash` |
 | Error struct | `AnthropicError` | `OpenaiError` | `GeminiError` |
-| Also | batches, caching | Ollama, vLLM, Azure | files, caches |
+| Also | batches, caching | Ollama™, vLLM™, Azure™ | files, caches |
 
 Requests and replies are `json.Value` documents in each API's own shape.
 
@@ -64,9 +64,9 @@ export ANTHROPIC_API_KEY=...             # from a secret store
 
 <!-- notes:
 Read the key with os.getEnv at startup, fill the environment from a secret
-store or a systemd credential, and keep it out of the repository. The decks
-do their part: the key travels only as a header, x-api-key for Anthropic,
-Authorization Bearer for OpenAI, x-goog-api-key for Gemini, and server text
+store or a systemd™ credential, and keep it out of the repository. The decks
+do their part: the key travels only as a header, x-api-key for Anthropic™,
+Authorization Bearer for OpenAI™, x-goog-api-key for Gemini, and server text
 that echoes it is cleaned before it reaches an error. What you print
 yourself is your responsibility, so log errors, not clients.
 -->
@@ -391,13 +391,13 @@ def az as openai.Client init openai.azure($endpoint, $azureKey);
 ```
 
 - One client for OpenAI, Azure OpenAI, Ollama, vLLM, the llama.cpp
-  server, LM Studio, OpenRouter, Groq, Mistral and more
+  server, LM Studio™, OpenRouter™, Groq™, Mistral™ and more
 - `client("")` sends no key; a local Ollama needs none
 - Plain `http` goes only to loopback unless `withPlainHttp(c)`
 
 <!-- notes:
 The openai deck is the one that reaches local models. Its live test ran
-against Ollama with a small Qwen model: chat, parallel tool calls through the
+against Ollama with a small Qwen™ model: chat, parallel tool calls through the
 loop, a strict schema and embeddings. Error bodies of compatible servers
 differ, a numeric code from llama.cpp for instance, and the deck reads those
 variants into the same OpenaiError. Plain http to another machine would send

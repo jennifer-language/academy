@@ -8,7 +8,7 @@ transition: slide
 
 ![Jennifer](jennifer-logo.png)
 
-Pictures with `images` and ImageMagick, barcodes you can scan, labels a
+Pictures with `images` and ImageMagick™, barcodes you can scan, labels a
 printer understands, a scanner that hands you a PDF.
 
 Based on **Jennifer 0.27.0**, November 2026, by [@mplx](https://github.com/mplx).
@@ -33,7 +33,7 @@ the notes point out where they appear.
 | `@deckyard/magick` | deck: ImageMagick 7, needs `exec` | `jennifer` |
 | `import "barcode.j"` | module: QR, DataMatrix, 1D codes as SVG or PNG | both |
 | `import "label.j"` | module: ZPL and cab printer commands | both; `send` needs `jennifer` |
-| `@deckyard/escl` | deck: network scanners (AirScan, Mopria), needs `net` | `jennifer` |
+| `@deckyard/escl` | deck: network scanners (AirScan™, Mopria™), needs `net` | `jennifer` |
 | `import "pdf.j"` | module: the PDF writer | both |
 
 <!-- notes:
@@ -215,7 +215,7 @@ H: QR-Code:https://academy.jennifer-lang.dev/
 
 <!-- notes:
 The images library paints an opaque square over a quarter of each code's width,
-right through the data. zbarimg, the reader from the ZBar project, gives up on
+right through the data. zbarimg, the reader from the ZBar™ project, gives up on
 L and M and still reads Q and H. That is the case for Q or H on anything that
 gets handled: a parcel label gets scuffed, folded and stamped. For a URL shown
 on a screen, M is the usual choice and the default. Test your codes with a
@@ -323,7 +323,7 @@ barcode draws a picture; label writes commands, and the printer draws the
 barcode itself with its own fonts and at its own resolution. A Label is plain
 data in millimetres with the origin at the top left. Options structs start as
 zero values, so you set only what you need. render picks the language: ZPL for
-Zebra and most compatible printers, which needs the printer's dots per inch,
+Zebra™ and most compatible printers, which needs the printer's dots per inch,
 and cab's JScript, which works in millimetres. The same Label goes to both.
 -->
 

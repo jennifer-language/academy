@@ -31,10 +31,10 @@ public test files or files the code folder generates.
 | `@deckyard/` deck | Reads | Sample here |
 | --- | --- | --- |
 | `bioinformatics` 0.4.0 | DNA, RNA, protein, FASTA | calls of `3730.ab1` |
-| `abif` 0.1.0 | .ab1, .fsa, .hid | Biopython's test files |
+| `abif` 0.1.0 | .ab1, .fsa, .hid | Biopython™'s test files |
 | `ngs` 0.3.0 | FASTQ, SAM, VCF, BED, GFF | 2000 generated reads |
 | `mitoleaf` 0.3.0 | mitoLEAF tree XML | the deck's test tree |
-| `statfiles` 0.1.0 | Stata, SPSS, SAS | a generated `.dta` |
+| `statfiles` 0.1.0 | Stata™, SPSS™, SAS™ | a generated `.dta` |
 
 `jvc install` brings `forensicgenetics` 0.5.0 along with mitoleaf.
 
@@ -160,7 +160,7 @@ ABIF 101, 123 tags, base order GATC
 
 <!-- notes:
 An ABIF file is a header, a directory and the data the directory points to.
-Applied Biosystems published the format, and every capillary instrument
+Applied Biosystems™ published the format, and every capillary instrument
 since the 310 writes it: .ab1 for sequencing, .fsa for fragment analysis.
 parse checks every directory entry against the file before anything is read.
 info gathers the metadata a lab usually wants. FWO_ says which base each of
@@ -267,7 +267,7 @@ syn1: 100 bases, mean Q 30.1, last five [15, 17, 19, 18, 13]
 <!-- notes:
 The 2000 reads are made up by make_reads.j: random bases, a quality that
 falls towards the 3' end as it does on short-read instruments, and one read
-in eight a short insert that runs into the TruSeq adapter. The reader holds
+in eight a short insert that runs into the TruSeq™ adapter. The reader holds
 one record at a time, so a file of hundreds of millions of reads costs no
 more memory than this one. Streaming gzip needs the exec capability, which
 the deck manifest declares.

@@ -8,7 +8,7 @@ transition: slide
 
 ![Jennifer](jennifer-logo.png)
 
-Music tags, film data, a Jellyfin server and the Steam pile of shame,
+Music tags, film data, a Jellyfin™ server and the Steam™ pile of shame,
 with four community decks and a picker for tonight at the end.
 
 Based on **Jennifer 0.26.0**, November 2026, by [@mplx](https://github.com/mplx).
@@ -268,7 +268,7 @@ Jellyfin Server 12.4.0
 
 <!-- notes:
 Jellyfin is a free media server: it reads folders of films and music and
-streams them to apps and browsers. For this talk it runs in Docker, bound to
+streams them to apps and browsers. For this talk it runs in Docker™, bound to
 127.0.0.1 only. The library is four short test-pattern films made with
 ffmpeg, each with an NFO file giving title and year, and the tidy music
 folder. serverInfo needs no sign-in and also checks the URL really is
@@ -357,7 +357,7 @@ items passes Jellyfin's own query parameters through: here only films,
 in every folder, not played yet, sorted by name. The answer is a Page with
 the items and the total count; allItems reads page after page for you when
 there are more. Runtime comes from the files, and our films really are four
-seconds long, which is why we ask TMDB for the real story next.
+seconds long, which is why we ask TMDB™ for the real story next.
 -->
 
 ---
@@ -564,6 +564,6 @@ Each deck has a manual with guides and a cheatsheet, linked from its
 repository. A good next step is to run tidy on a copy of your own music
 folder, without --write, and read what it would change. If you liked the
 Jellyfin part, the homelab talk shows the same pattern of one guarded check
-per service for Proxmox, Synology and friends. The language itself is at
+per service for Proxmox™, Synology™ and friends. The language itself is at
 jennifer-lang.dev. Have a good evening, whatever you end up watching.
 -->

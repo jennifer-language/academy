@@ -28,7 +28,7 @@ name.
 ## The script is trusted, the input is not
 
 - **Trusted:** your program and every deck it imports. `fs`, `net`,
-  `os.run` and `meta.call` reach the whole host, like Python or Node.
+  `os.run` and `meta.call` reach the whole host, like Python or Node™.
 - **Not trusted:** request bodies and headers, uploads, files from users,
   replies from servers you call, messages off a queue.
 - **Untrusted code?** Isolate the whole interpreter: a container, a VM, an
@@ -63,7 +63,7 @@ hurt through its input alone. Those cases are fixed with a regression test.
 Report them privately, with the module, a minimal reproducer and the path the
 hostile data takes to the sink. Send a description rather than a patch: the
 project has no inbound licensing policy yet, so the maintainer writes the
-fix. Deckyard decks take reports through GitHub's private vulnerability
+fix. Deckyard decks take reports through GitHub™'s private vulnerability
 reporting, and a problem in the interpreter belongs to the Jennifer project.
 -->
 

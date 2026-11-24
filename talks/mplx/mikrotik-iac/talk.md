@@ -4,11 +4,11 @@ ratio: 16:9
 transition: none
 ---
 
-# Infrastructure as code for MikroTik routers
+# Infrastructure as code with Jennifer on MikroTik™ routers
 
 ![Jennifer](jennifer-logo.png)
 
-Scripting the setup of new MikroTik devices with the RouterOS deck: desired
+Scripting the setup of new MikroTik™ devices with the RouterOS™ deck: desired
 state in a file, a plan, a dry run, backup, apply, verify, roll back.
 
 Based on **Jennifer 0.27.0**, November 2026, by [@mplx](https://github.com/mplx).
@@ -26,7 +26,7 @@ program itself does not know the difference.
 
 ## Why infrastructure as code
 
-- **Clicking in WinBox** works for one router. For thirty branch offices it
+- **Clicking in WinBox™** works for one router. For thirty branch offices it
   means thirty slightly different configurations, and nobody knows which.
 - **A file per device** in a repository: reviewed, diffed, versioned.
 - **A program** that reads the router, compares, and changes only what
@@ -149,7 +149,7 @@ defer mt.disconnect($c);
 - a dedicated RouterOS user for the program, its password never in the repository
 
 <!-- notes:
-The credentials come from the environment: a CI secret, a systemd credential,
+The credentials come from the environment: a CI secret, a systemd™ credential,
 or a password manager that exports them. They are never in the device file, so
 the repository can be read by everyone who reviews changes. Use api-ssl: the
 plain API port sends the password in the clear on current RouterOS. Give the
@@ -378,6 +378,6 @@ The routeros deck itself has no plan or diff step and does not detect drift;
 it applies what a script says. This talk added that layer in about four
 hundred lines, on top of the deck's generic getAll, add, set and remove. The
 deck's guides cover the typed verbs for bridges, VLANs, the firewall, DHCP and
-WireGuard, which make good next items for the device files. Test against a
+WireGuard™, which make good next items for the device files. Test against a
 lab router first: this program changes live network equipment.
 -->

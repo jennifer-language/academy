@@ -180,6 +180,10 @@ them). The build sets Cantrip's `notes: open` for that, so a talk does not set
 `notes` itself, and since the notes are part of what readers see, write them
 for readers as well as for yourself.
 
+Put ™ after the first prose use of each third-party brand in a talk (slide
+text or notes, not code): `GitHub™`, later uses unmarked. Slide headings stay
+unmarked, except the title on slide 1, which marks each brand it names.
+
 ## The code folder
 
 A talk should ship the full programs its slides show in

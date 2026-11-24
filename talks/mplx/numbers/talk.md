@@ -34,7 +34,7 @@ these slides is from a real run of Jennifer 0.26.0.
 | How do I show it to a reader in Vienna? | `intl`, `printf` grouping |
 | What does a normal day look like? | `stats` |
 | How much does the weather sell? | `stats`, `linalg`, `ml` |
-| Can I see it? | `plot` (SVG), `dot` (Graphviz) |
+| Can I see it? | `plot` (SVG), `dot` (Graphviz™) |
 
 Reading the data in is the [CSV and spreadsheets talk](https://academy.jennifer-lang.dev/talks/mplx/csv-sheets/).
 

@@ -224,7 +224,7 @@ This is index.tmpl, the home page, slightly shortened. define content fills
 the hole the layout left open. range repeats its part once for each post in
 the list, and inside it the dot means the current post. post.tmpl looks the
 same, without range: it shows one title, one date and the body. The tengine
-module follows the style of Go and Hugo templates, if you know those.
+module follows the style of Go and Hugo™ templates, if you know those.
 -->
 
 ---

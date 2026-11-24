@@ -18,8 +18,8 @@ We build Shelf, a reading list for a book club: members sign in, add books,
 and mark them as read. It is small on purpose, about 360 lines of Jennifer in
 three files, but it has every part a real web application needs, and each one
 is done the safe way. Every output on these slides comes from a real run
-against MariaDB 11.4 in a container. The companion talk packages the same app
-with Docker.
+against MariaDB™ 11.4 in a container. The companion talk packages the same app
+with Docker™.
 -->
 
 ---
@@ -130,7 +130,7 @@ if ($dsn == "" or len($csrfSecret) < 32) {
 
 <!-- notes:
 No configuration file: everything comes from the environment, which is what
-a container, a systemd unit and a test all provide easily. The _FILE variant
+a container, a systemd™ unit and a test all provide easily. The _FILE variant
 reads a secret from a mounted file instead, so it never shows up in the
 process environment. A missing setting stops the program before it listens,
 with exit code 2, so a service manager can tell a configuration error from a
@@ -146,11 +146,11 @@ def conn as sql.Connection init sql.open("mariadb", $dsn);
 # "shelf:PASSWORD@tcp(127.0.0.1:3306)/shelf"
 ```
 
-- Drivers: `mysql` / `mariadb` and `postgres`; **no SQLite**
+- Drivers: `mysql` / `mariadb` and `postgres`; **no SQLite™**
 - `open` pings, so a wrong DSN fails at startup; the password is redacted
   from the error
 - The connection is a **pool**: one per program, shared by all handlers
-- Values go in only through placeholders: `?` here, `$1` on PostgreSQL
+- Values go in only through placeholders: `?` here, `$1` on PostgreSQL™
 
 <!-- notes:
 The sql library is part of the default jennifer binary; jennifer-tiny does

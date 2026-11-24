@@ -4,12 +4,12 @@ ratio: 16:9
 transition: slide
 ---
 
-# Dynamic workloads: autoscaling Resque workers with Jennifer
+# Dynamic workloads: autoscaling Resque™ workers with Jennifer
 
 ![Jennifer](jennifer-logo.png)
 
-A controller that watches a Resque queue, launches workers on Docker,
-VirtualBox, Proxmox or VMware when the backlog grows, and drains them
+A controller that watches a Resque™ queue, launches workers on Docker™,
+VirtualBox™, Proxmox™ or VMware™ when the backlog grows, and drains them
 when it is gone.
 
 Based on **Jennifer 0.27.0**, November 2026, by [@mplx](https://github.com/mplx).
@@ -19,7 +19,7 @@ This talk builds one program of about six hundred lines: an autoscaler for
 Resque workers. It reads the waiting counts, decides how many workers there
 should be, and starts or drains them through four Deckyard decks. Resque
 itself, enqueue and the worker loop, is covered in the queues talk, so here we
-only use it. The Docker run on these slides is real: Redis 7 and worker
+only use it. The Docker run on these slides is real: Redis™ 7 and worker
 containers of the official 0.26.0 image on this machine. VirtualBox, Proxmox
 and VMware ran against small local stand-ins, and every slide that shows
 their output says so. Credentials are placeholders.
@@ -59,7 +59,7 @@ known here.
 | `@deckyard/docker` | 0.2.0 | containers, by label |
 | `@deckyard/virtualbox` | 0.1.0 | `VBoxManage`: linked clones, ACPI |
 | `@deckyard/proxmox` | 0.2.0 | API token, clone, start, shutdown |
-| `@deckyard/vmware` | 0.3.0 | vCenter REST: clone, guest shutdown |
+| `@deckyard/vmware` | 0.3.0 | vCenter™ REST: clone, guest shutdown |
 | `log.j` (bundled) | 0.27.0 | one logfmt record per decision |
 
 ```sh
@@ -235,7 +235,7 @@ ends only by return, so lint has nothing to say about while true.
 | Backend | Drain request | The worker sees |
 | --- | --- | --- |
 | Docker | `killContainer(c, id, "SIGTERM")` | SIGTERM, as PID 1 |
-| VirtualBox | `acpiShutdown(h, vm)` | systemd stops the service: SIGTERM |
+| VirtualBox | `acpiShutdown(h, vm)` | systemd™ stops the service: SIGTERM |
 | Proxmox | `shutdown(c, g, 0)` | ACPI, then the same |
 | VMware | `shutdownGuest(c, vm)` | VMware Tools shutdown, the same |
 
@@ -432,7 +432,7 @@ if ($k < len($warm) and $k < $st.warm) {
 
 <!-- notes:
 Output from a stand-in vCenter in Jennifer, so the times say nothing about
-real vSphere. A real VM clone takes tens of seconds to minutes, then the
+real vSphere™. A real VM clone takes tens of seconds to minutes, then the
 guest boots. Two knobs help: a warm pool of stopped clones that only need to
 boot, set with WARM, and a minimum of running idle workers, which costs
 memory but answers at once. The warm one, w-1, was kept stopped and started
@@ -606,7 +606,7 @@ logfmt record; the timestamps here are shortened to fit the slide. When
 someone asks why there were five VMs at three in the morning, the answer is
 one grep away, because each record carries the numbers the decision was made
 from. For dashboards, export waiting, have, want and the launch count as
-gauges and counters to Prometheus, StatsD or InfluxDB, as the metrics talk
+gauges and counters to Prometheus™, StatsD™ or InfluxDB™, as the metrics talk
 shows; alert on the hold key and on fatal exits.
 -->
 

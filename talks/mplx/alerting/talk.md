@@ -8,7 +8,7 @@ transition: slide
 
 ![Jennifer](jennifer-logo.png)
 
-One alert, four channels: Gotify, Telegram, Slack and Discord, sent once when
+One alert, four channels: Gotify™, Telegram™, Slack™ and Discord™, sent once when
 something breaks and once when it is fixed.
 
 Based on **Jennifer 0.27.0**, November 2026, by [@mplx](https://github.com/mplx).
@@ -120,7 +120,7 @@ POST /gotify/message   X-Gotify-Key: AbCdEf123456789
 <!-- notes:
 push sends a form with title, message and priority to the server's /message
 path, with the application token in the X-Gotify-Key header. In Gotify's
-Android app the priority decides how loud the notification is: zero shows
+Android™ app the priority decides how loud the notification is: zero shows
 nothing, low numbers are quiet, from four up it makes a sound, and eight and
 up is the loud end. So severity maps straight to priority. pushMarkdown renders
 the body as Markdown, and pushWith adds a URL that opens when the
@@ -414,7 +414,7 @@ Four secrets: the Gotify token, the bot token, and two webhook URLs, which are
 secrets in full because whoever has the URL can post. None of them belongs in
 the repository. dotenv.autoload reads .env, .env.local and the file for the
 profile named in JENNIFER_ENV, and never overrides a variable that is already
-set, so on the server systemd's EnvironmentFile wins and in a test the
+set, so on the server systemd™'s EnvironmentFile wins and in a test the
 .env.test file points everything at the mock. The Gotify deck does not check
 the scheme, so make sure GOTIFY_URL starts with https. Never print the
 Channels value: it holds every secret in plain fields.

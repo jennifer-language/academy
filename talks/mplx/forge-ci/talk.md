@@ -4,7 +4,7 @@ ratio: 16:9
 transition: slide
 ---
 
-# One CI pipeline for GitHub, Gitea and Forgejo
+# One CI pipeline for GitHub™, Gitea™ and Forgejo™
 
 ![Jennifer](jennifer-logo.png)
 
@@ -14,7 +14,7 @@ docs, for a small Jennifer app.
 Based on **Jennifer 0.27.0**, November 2026, by [@mplx](https://github.com/mplx).
 
 <!-- notes:
-GitHub Actions, Gitea Actions and Forgejo Actions all read the same workflow
+GitHub™ Actions, Gitea™ Actions and Forgejo™ Actions all read the same workflow
 syntax, so one file can serve all three. It does not run unchanged by magic,
 though: the forges differ in where they look for workflows, where an action
 comes from, what a runner label means, what the token is called and which
@@ -248,7 +248,7 @@ built 2 pages into site/ (62 KiB, 0 assets) in 9 ms
 Grimoire is itself a Jennifer program, so the interpreter that just ran the
 tests can also build the book: clone the release tag and run its launcher.
 Grimoire 0.5.0 needs no decks, so there is nothing to vendor. The container
-image is the other way, but a job that starts its own containers needs Docker
+image is the other way, but a job that starts its own containers needs Docker™
 on the runner, which a forge runner does not always offer. Pinning the version
 keeps next year's build identical to today's.
 -->

@@ -372,7 +372,7 @@ Before touching anything, tidy checks every argument and records a plan
 step: the file, its new name, and a problem if there is one. A typo on the
 command line becomes not a file instead of a crash. The warning below the
 code matters most. fs.rename replaces a file that already has the new name,
-without asking, the same as mv on Linux. A rename tool must check that
+without asking, the same as mv on Linux™. A rename tool must check that
 itself, or it destroys photos.
 -->
 

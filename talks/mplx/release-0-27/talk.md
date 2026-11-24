@@ -122,7 +122,7 @@ the limit kind, never runtime.
 
 ## Breaking: behaviour
 
-- `gpio` numbers pins through the Raspberry Pi header chip (`useChip(gpio.GLOBAL)` for the old way)
+- `gpio` numbers pins through the Raspberry Pi™ header chip (`useChip(gpio.GLOBAL)` for the old way)
 - `serial.open` claims the port exclusively (`shared: true` opts out)
 - `session.save` returns `bool` and writes only a live session
 - `webapi`: the guard runs for every route; rate limiting before 401 / 403 / 422
@@ -130,7 +130,7 @@ the limit kind, never runtime.
 
 <!-- notes:
 These change what a call does rather than what it accepts. The gpio change
-follows Linux 6.2, which moved the sysfs pin numbers of the Raspberry Pi; the
+follows Linux™ 6.2, which moved the sysfs pin numbers of the Raspberry Pi; the
 old global numbering is one call away. In webapi, the guard now wraps every
 route's handler, and a rate limit answers before any authentication check.
 Check these if your program touches hardware, sessions or a webapi.
@@ -197,7 +197,7 @@ forms. Decoding is strict and names the byte offset of the error.
 <!-- notes:
 Turning text into bytes was possible in two libraries. Now it lives in
 encoding, with the same arguments, so the change is a rename. encoding also
-learned the UTF-16 and UTF-32 family, which Windows files and some protocols
+learned the UTF-16 and UTF-32 family, which Windows™ files and some protocols
 need. As everywhere in Jennifer, invalid input is an error, here with the
 offset of the first bad byte.
 -->
@@ -232,11 +232,11 @@ def key as bytes init fs.readSecretBytes("/etc/myapp/signing-key.pem");
 ```
 
 - Refused: any group or other permission bit, or a file someone else owns
-- Accepted: read-only secret mounts from Docker, Compose and Kubernetes
+- Accepted: read-only secret mounts from Docker™, Compose and Kubernetes™
 - Over 1 MiB is `"limit"`; a secret is small
 
 <!-- notes:
-OpenSSH refuses a private key that others can read, and now Jennifer can do
+OpenSSH™ refuses a private key that others can read, and now Jennifer can do
 the same for your program's keys and tokens. The check runs on the opened
 file, so the file read is the file checked. Container secret mounts are
 read-only, so nothing in the container can replace them, and they are

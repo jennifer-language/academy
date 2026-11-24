@@ -106,7 +106,7 @@ wider than three dots at this size.
 
 <!-- notes:
 This is the top of page one at 110 dpi. A title, a grey header bar, and then
-rows in 8 point Helvetica, 12 points apart. Long product names end in an
+rows in 8 point Helvetica™, 12 points apart. Long product names end in an
 ellipsis instead of running into the store column. Numbers are right-aligned
 with thousands separators, so the columns of digits line up. "Gda?sk" is not a
 typo: it is how the report shows a character the standard fonts cannot encode,

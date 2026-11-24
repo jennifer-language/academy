@@ -150,7 +150,7 @@ that `include`s `src/topics/*.j`).
 The entry module must be named after the deck. A modules deck lets consumers
 import a second file directly, as @scope/deck/other.j. A topics deck has one
 namespace with everything in it, which reads better when there are many
-subjects; the RouterOS deck is built that way. Only Jennifer source may live
+subjects; the RouterOS™ deck is built that way. Only Jennifer source may live
 in src, since all of it is vendored; a check refuses editor swap files and
 other leftovers.
 -->
@@ -409,7 +409,7 @@ jvc scopes             # who holds what
 - Co-owners via `jvc owners <scope> <subject>`
 
 <!-- notes:
-registry.jennifer-lang.dev derives scopes from GitHub: you may claim the scope
+registry.jennifer-lang.dev derives scopes from GitHub™: you may claim the scope
 matching your username and one for each organisation your login carries. An
 organisation that restricts third-party access must approve the registry's
 application first, then you log in again. Reserved names, the project's own

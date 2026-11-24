@@ -4,7 +4,7 @@ ratio: 16:9
 transition: slide
 ---
 
-# How to code a Telegram bot with Jennifer
+# How to code a Telegram™ bot with Jennifer
 
 ![Jennifer](jennifer-logo.png)
 
@@ -15,7 +15,7 @@ Based on **Jennifer 0.27.0**, November 2026, by [@mplx](https://github.com/mplx)
 
 <!-- notes:
 We build a dice bot: it answers /start with buttons, rolls dice on /roll 2d6,
-sends a picture on /logo, and survives Telegram's rate limits. The whole
+sends a picture on /logo, and survives Telegram™'s rate limits. The whole
 program is about 170 lines. Every output on these slides is from a real run,
 against a fake Bot API server on a loopback port, so it can be repeated on a
 laptop without an account; the last slides show how that works.
@@ -37,7 +37,7 @@ There are two ways to receive messages. With a webhook, Telegram calls you,
 so you need a public HTTPS server and must check that each request really
 comes from Telegram. With long polling you call Telegram and the request
 simply stays open until something happens or the timeout passes. For a bot
-on a home server, a Raspberry Pi or a laptop, that is the simple choice, and
+on a home server, a Raspberry Pi™ or a laptop, that is the simple choice, and
 it is the one the deck supports.
 -->
 
@@ -64,7 +64,7 @@ BotFather is Telegram's own bot for making bots. Besides the token it lets
 you set the description, the profile picture and the command list users see
 when they type a slash. The token is the bot's whole identity: whoever has it
 can read the bot's messages and send in its name. So it lives in the
-environment, filled from a secret store or a systemd credential, and never in
+environment, filled from a secret store or a systemd™ credential, and never in
 the repository. If it leaks, BotFather's /revoke issues a new one.
 -->
 

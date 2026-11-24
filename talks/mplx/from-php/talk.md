@@ -236,13 +236,13 @@ next to the line that needed it, such as closing a file right after opening it.
 | extension, `ext-json` | `use json;` (built in) |
 | `composer require x/y` | `jvc add "@scope/deck"` |
 | `composer.lock` | `camcorder.lock` |
-| Packagist | [registry.jennifer-lang.dev](https://registry.jennifer-lang.dev/) |
+| Packagist™ | [registry.jennifer-lang.dev](https://registry.jennifer-lang.dev/) |
 
 <!-- notes:
 import loads a file as a module under its own name, so nothing leaks into your
 scope except what the module exports. The standard library is built into the
 binary and switched on with use, so there are no extensions to install. A
-package is called a deck; jvc plays Composer's role, with a lock file, and the
+package is called a deck; jvc plays Composer™'s role, with a lock file, and the
 registry indexes decks the way Packagist indexes packages.
 -->
 
@@ -285,11 +285,11 @@ while (sql.next($rows)) {
 ```
 
 <!-- notes:
-The sql library talks to PostgreSQL, MySQL and MariaDB directly. Values are
+The sql library talks to PostgreSQL™, MySQL™ and MariaDB™ directly. Values are
 bound only through placeholders, so there is no way to build a query by
 pasting user input into a string by accident. Rows are read with a cursor and
 typed accessors, and transactions and prepared statements work as they do with
-PDO. SQLite is not supported, so plan for a server database.
+PDO. SQLite™ is not supported, so plan for a server database.
 -->
 
 ---
@@ -299,9 +299,9 @@ PDO. SQLite is not supported, so plan for a server database.
 | PHP | Jennifer |
 | --- | --- |
 | `php -l` | `jennifer lint` |
-| PHP-CS-Fixer | `jennifer fmt -w` |
-| PHPUnit | `jennifer test` |
-| Xdebug profiler | `jennifer profile` |
+| PHP-CS-Fixer™ | `jennifer fmt -w` |
+| PHPUnit™ | `jennifer test` |
+| Xdebug™ profiler | `jennifer profile` |
 | `php -a` | `jennifer repl` |
 
 <!-- notes:

@@ -164,7 +164,7 @@ line and col plus its own fields: the grep keeps only the node types, which
 shows the shape. Before the parser, the preprocessor has spliced every include
 into the token stream and passed use and import through. The emitter avoids
 encoding/json on purpose: its reflection-based marshaling is fragile under
-TinyGo, and both binaries are built from the same source.
+TinyGo™, and both binaries are built from the same source.
 -->
 
 ---

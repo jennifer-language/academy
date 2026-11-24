@@ -34,8 +34,8 @@ What you need:
 | Piece | Here |
 | --- | --- |
 | The language | `jennifer`, installed |
-| An editor | VS Code, or none at all |
-| An assistant | Claude Code, or another one |
+| An editor | VS Code™, or none at all |
+| An assistant | Claude™ Code, or another one |
 | The rule book | `JENNIFER.md` |
 
 <!-- notes:
@@ -111,9 +111,9 @@ That is what JENNIFER.md is for.
 
 | Installed with | JENNIFER.md is at |
 | --- | --- |
-| Arch, Debian, Docker | `/usr/share/doc/jennifer/JENNIFER.md` |
-| Homebrew | `$(brew --prefix)/share/doc/jennifer/` |
-| Windows installer | beside `jennifer.exe` |
+| Arch™, Debian™, Docker™ | `/usr/share/doc/jennifer/JENNIFER.md` |
+| Homebrew™ | `$(brew --prefix)/share/doc/jennifer/` |
+| Windows™ installer | beside `jennifer.exe` |
 
 <!-- notes:
 JENNIFER.md is a single file that describes the whole language for an assistant
@@ -275,7 +275,7 @@ to .claude/settings.json in your project.
    (see the talk *Syntax highlighting for Jennifer*)
 2. **An assistant**, from the Extensions view:
    - *Claude Code*: the same assistant, in a side panel
-   - *GitHub Copilot*, or another one you like
+   - *GitHub™ Copilot™*, or another one you like
 
 Open the project folder (File, Open Folder), not a single file.
 
