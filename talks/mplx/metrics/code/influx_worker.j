@@ -3,7 +3,7 @@ use time;
 use math;
 use os;
 use convert;
-import "@jennifer/influxdb/" as influxdb;
+import "@deckyard/influxdb/" as influxdb;
 
 def const URL as string init "http://127.0.0.1:8086";
 

@@ -21,10 +21,10 @@ folder. Only `modules.j` needs a deck; everything else uses system libraries.
   ("Functions are values"). Run: `jennifer run funcs.j`
 - `geo.j`: the module with an exported constant and function ("Libraries,
   modules and decks").
-- `modules.j`: a built-in library, `geo.j` and the `@jennifer/telegram` deck
+- `modules.j`: a built-in library, `geo.j` and the `@deckyard/telegram` deck
   imported together ("Libraries, modules and decks"). Needs the deck: run
   `jvc install` once in this folder, which reads `deck.toml` (the
-  requirement `jvc add "@jennifer/telegram" "^0.1.0"` writes, "Packages with
+  requirement `jvc add "@deckyard/telegram" "^0.4.0"` writes, "Packages with
   jvc") and fills `vendor/`. Then `jennifer run modules.j`
 - `deck.toml`: the jvc manifest for `modules.j`.
 - `spawn.j`: two sums in two tasks ("Concurrency with spawn").

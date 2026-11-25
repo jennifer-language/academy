@@ -1,7 +1,7 @@
 # Alerting with Gotify, Telegram, Slack and Discord: the code
 
-The programs behind the slides. They use the `@jennifer/gotify`,
-`@jennifer/telegram`, `@jennifer/slack` and `@jennifer/discord` decks, listed
+The programs behind the slides. They use the `@deckyard/gotify`,
+`@deckyard/telegram`, `@deckyard/slack` and `@deckyard/discord` decks, listed
 in `deck.toml`, so run `jvc install` once in this folder to fill `vendor/`.
 Run everything from this folder with Jennifer 0.27.0.
 

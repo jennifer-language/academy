@@ -27,7 +27,7 @@ a Jennifer function and have used jvc to install somebody else's deck.
 ## What a deck is
 
 - A **library of Jennifer modules** in its own git repository
-- A **scoped name**: `@jennifer/telegram`, `@deckyard/routeros`, `@you/thing`
+- A **scoped name**: `@deckyard/telegram`, `@mplx/clispinner`, `@you/thing`
 - Consumers get **only `src/`**, copied into their `vendor/` by `jvc`
 - The **registry indexes** decks; the code stays in git, pinned to a commit
 

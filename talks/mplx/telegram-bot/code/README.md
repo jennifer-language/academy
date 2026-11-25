@@ -1,7 +1,7 @@
 # How to code a Telegram bot with Jennifer: the code
 
 The dice bot behind the slides and the fake Bot API it was run against. The
-bot uses the `@jennifer/telegram` deck, listed in `deck.toml`, so run
+bot uses the `@deckyard/telegram` deck, listed in `deck.toml`, so run
 `jvc install` once in this folder to fill `vendor/`. Run everything from this
 folder with Jennifer 0.27.0.
 
@@ -10,7 +10,7 @@ Bot API on a loopback port, and the bot is pointed at it with
 `TELEGRAM_API`. The token `123456:TEST-TOKEN` is a placeholder the fake
 accepts; any other token gets a 401.
 
-- `deck.toml`: the jvc manifest with `@jennifer/telegram` ("Set up").
+- `deck.toml`: the jvc manifest with `@deckyard/telegram` ("Set up").
 - `bot.j`: the whole bot. getMe and the token check ("First contact:
   getMe"), the poll loop and the offset ("The loop and the offset"), the
   commands ("Commands: match on the first word"), the checked `/roll`

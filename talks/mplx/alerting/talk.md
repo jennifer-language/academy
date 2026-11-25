@@ -8,7 +8,7 @@ transition: slide
 
 ![Jennifer](jennifer-logo.png)
 
-One alert, four channels: Gotify™, Telegram™, Slack™ and Discord™, sent once when
+One alert, four channels: Gotify, Telegram™, Slack™ and Discord™, sent once when
 something breaks and once when it is fixed.
 
 Based on **Jennifer 0.27.0**, November 2026, by [@mplx](https://github.com/mplx).
@@ -49,10 +49,10 @@ opening a dashboard first.
 
 | Deck | Sends to | The secret | Success |
 | --- | --- | --- | --- |
-| `@jennifer/gotify` 0.1.0 | your Gotify server | app token, a header | `200` |
-| `@jennifer/telegram` 0.2.0 | the Telegram Bot API | bot token, in the URL path | a `Message` |
-| `@jennifer/slack` 0.1.0 | an Incoming Webhook | the webhook URL | `200 ok` |
-| `@jennifer/discord` 0.1.0 | a channel webhook | the webhook URL | `204` |
+| `@deckyard/gotify` 0.4.0 | your Gotify server | app token, a header | `200` |
+| `@deckyard/telegram` 0.4.0 | the Telegram Bot API | bot token, in the URL path | a `Message` |
+| `@deckyard/slack` 0.2.0 | an Incoming Webhook | the webhook URL | `200 ok` |
+| `@deckyard/discord` 0.2.0 | a channel webhook | the webhook URL | `204` |
 
 The bundled modules `gotify.j`, `telegram.j`, `slack.j` and `discord.j` are
 deprecated since 0.26.0 and **removed in 0.28.0**: use the decks.
@@ -72,16 +72,16 @@ a change of one import line, shown on the next slide.
 ## Set up
 
 ```sh
-jvc add @jennifer/gotify
-jvc add @jennifer/telegram
-jvc add @jennifer/slack
-jvc add @jennifer/discord
-jvc install            # copies each deck into vendor/jennifer/<deck>/
+jvc add @deckyard/gotify
+jvc add @deckyard/telegram
+jvc add @deckyard/slack
+jvc add @deckyard/discord
+jvc install            # copies each deck into vendor/deckyard/<deck>/
 ```
 
 ```jennifer excerpt
 import "slack.j" as slack;              # before: bundled, deprecated
-import "@jennifer/slack/" as slack;     # after: the deck
+import "@deckyard/slack/" as slack;     # after: the deck
 ```
 
 <!-- notes:
@@ -106,8 +106,8 @@ func priority(severity as string) {
         else { return 2; }
     }
 }
-def g as gotify.Config init gotify.Config{
-    url: os.getEnv("GOTIFY_URL"), token: os.getEnv("GOTIFY_TOKEN")};
+def g as gotify.Config init gotify.Config{url: os.getEnv("GOTIFY_URL"),
+    token: os.getEnv("GOTIFY_TOKEN"), allowInsecureHttp: false};
 def r as http.Response init gotify.push($g, $title, $text,
     priority($sev));
 ```
@@ -414,7 +414,7 @@ Four secrets: the Gotify token, the bot token, and two webhook URLs, which are
 secrets in full because whoever has the URL can post. None of them belongs in
 the repository. dotenv.autoload reads .env, .env.local and the file for the
 profile named in JENNIFER_ENV, and never overrides a variable that is already
-set, so on the server systemd™'s EnvironmentFile wins and in a test the
+set, so on the server systemd's EnvironmentFile wins and in a test the
 .env.test file points everything at the mock. The Gotify deck does not check
 the scheme, so make sure GOTIFY_URL starts with https. Never print the
 Channels value: it holds every secret in plain fields.

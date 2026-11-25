@@ -9,7 +9,7 @@ use os;
 use regex;
 use strings;
 use time;
-import "@jennifer/telegram/" as telegram;
+import "@deckyard/telegram/" as telegram;
 
 def const POLL_SECONDS as int init 25;
 def const START as string init "Hi! Pick a roll:";

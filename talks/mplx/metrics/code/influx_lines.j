@@ -1,6 +1,6 @@
 use io;
 use time;
-import "@jennifer/influxdb/" as influxdb;
+import "@deckyard/influxdb/" as influxdb;
 
 def p as influxdb.Point init influxdb.point("shop_job");
 $p = influxdb.tag($p, "queue", "orders");

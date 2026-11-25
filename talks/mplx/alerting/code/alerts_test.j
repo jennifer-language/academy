@@ -6,8 +6,8 @@ use strings;
 use testing;
 use encoding;
 import "./alerts.j" as alerts;
-import "@jennifer/gotify/" as gotify;
-import "@jennifer/telegram/" as telegram;
+import "@deckyard/gotify/" as gotify;
+import "@deckyard/telegram/" as telegram;
 
 # answer accepts one request, answers it, and returns "PATH BODY".
 func answer(srv as httpd.Server, status as int, retryAfter as string) {
@@ -24,7 +24,7 @@ func answer(srv as httpd.Server, status as int, retryAfter as string) {
 func channels(srv as httpd.Server) {
     def base as string init "http://" + httpd.address($srv);
     return alerts.Channels{
-        gotify: gotify.Config{url: $base, token: "t"},
+        gotify: gotify.Config{url: $base, token: "t", allowInsecureHttp: false},
         bot: telegram.botWith("1:T", $base),
         chatId: 0,
         slackUrl: $base + "/hook",

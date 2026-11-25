@@ -4,22 +4,22 @@ ratio: 16:9
 transition: slide
 ---
 
-# Metrics with Jennifer: Prometheus™, StatsD™ and InfluxDB™
+# Metrics with Jennifer: Prometheus™, StatsD and InfluxDB™
 
 ![Jennifer](jennifer-logo.png)
 
 Counters, gauges and histograms from a Jennifer service: scraped by
-Prometheus™, pushed by a batch job, sent over UDP to StatsD™, written as
+Prometheus™, pushed by a batch job, sent over UDP to StatsD, written as
 points to InfluxDB™.
 
 Based on **Jennifer 0.27.0**, November 2026, by [@mplx](https://github.com/mplx).
 
 <!-- notes:
 This talk instruments a small Jennifer web service and a queue worker with
-the three metrics decks, @jennifer/prometheus, @jennifer/statsd and
-@jennifer/influxdb. Every program, every line of exposition text, every line
+the three metrics decks, @deckyard/prometheus, @deckyard/statsd and
+@deckyard/influxdb. Every program, every line of exposition text, every line
 protocol and every query result on the slides is from a real run on one
-laptop: the official Prometheus, Pushgateway™, statsd_exporter and InfluxDB 2
+laptop: the official Prometheus, Pushgateway, statsd_exporter and InfluxDB 2
 images in Docker™, bound to 127.0.0.1, scraping and receiving from Jennifer
 programs. Alerting itself has its own talk, linked at the end.
 -->
@@ -102,16 +102,16 @@ adds one series, not ten thousand. InfluxDB's tags follow the same rule.
 
 ## Pull or push: three decks
 
-| | `@jennifer/prometheus` | `@jennifer/statsd` | `@jennifer/influxdb` |
+| | `@deckyard/prometheus` | `@deckyard/statsd` | `@deckyard/influxdb` |
 | --- | --- | --- | --- |
 | Model | **pull**: scraped | **push**: UDP | **push**: HTTP POST |
 | Keeps | totals, in your program | totals, in the agent | every point, raw |
-| Dimensions | labels | dots, DogStatsD™ tags | tags |
+| Dimensions | labels | dots, DogStatsD tags | tags |
 
 ```sh
-jvc add @jennifer/prometheus
-jvc add @jennifer/statsd
-jvc add @jennifer/influxdb
+jvc add @deckyard/prometheus
+jvc add @deckyard/statsd
+jvc add @deckyard/influxdb
 jvc install
 ```
 
@@ -127,7 +127,7 @@ InfluxDB takes points over HTTP and stores every one. All three decks need the
 net capability and the default jennifer binary. Jennifer 0.27.0 still bundles
 the three modules, frozen; the decks started as copies and export the same
 functions, so moving is jvc add plus one import line per file, from
-import "influxdb.j" to import "@jennifer/influxdb/". Do it before 0.28.0.
+import "influxdb.j" to import "@deckyard/influxdb/". Do it before 0.28.0.
 -->
 
 ---
@@ -614,8 +614,8 @@ counter. The rule ran in the same Prometheus; with one checkout in ten
 failing, about five percent of all requests, it went pending and after
 thirty seconds firing (the summary annotation is left out here), and the ALERTS series shows it. Single quotes matter:
 in a double-quoted Jennifer string the braces would be interpolation.
-Alertmanager™ would route the alert onwards; the alerting talk shows how a
-Jennifer program sends it to Gotify™, Telegram™, Slack™ and Discord™ itself.
+Alertmanager would route the alert onwards; the alerting talk shows how a
+Jennifer program sends it to Gotify, Telegram™, Slack™ and Discord™ itself.
 -->
 
 ---

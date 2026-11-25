@@ -14,9 +14,9 @@ bin-dir = ""
 [engines]
 
 [decks]
-"@jennifer/influxdb" = "*"
-"@jennifer/prometheus" = "*"
-"@jennifer/statsd" = "*"
+"@deckyard/influxdb" = "*"
+"@deckyard/prometheus" = "*"
+"@deckyard/statsd" = "*"
 
 [dev-decks]
 

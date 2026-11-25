@@ -1,6 +1,6 @@
 use io;
 use strings;
-import "@jennifer/influxdb/" as influxdb;
+import "@deckyard/influxdb/" as influxdb;
 
 def db as influxdb.Client init influxdb.clientWith("http://127.0.0.1:8086",
     "shop", "demo", "demo-token-not-secret");

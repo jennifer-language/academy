@@ -9,7 +9,7 @@ transition: slide
 ![Jennifer](jennifer-logo.png)
 
 A complete interactive bot in one short program: commands, buttons, photos,
-flood control, and a clean stop, with the `@jennifer/telegram` deck.
+flood control, and a clean stop, with the `@deckyard/telegram` deck.
 
 Based on **Jennifer 0.27.0**, November 2026, by [@mplx](https://github.com/mplx).
 
@@ -50,13 +50,13 @@ it is the one the deck supports.
 3. Add the deck:
 
 ```sh
-jvc add @jennifer/telegram     # records it in deck.toml
-jvc install                    # into vendor/jennifer/telegram/
+jvc add @deckyard/telegram     # records it in deck.toml
+jvc install                    # into vendor/deckyard/telegram/
 export TELEGRAM_BOT_TOKEN=...  # from a secret store, never in git
 ```
 
 ```jennifer
-import "@jennifer/telegram/" as telegram;
+import "@deckyard/telegram/" as telegram;
 ```
 
 <!-- notes:
@@ -64,7 +64,7 @@ BotFather is Telegram's own bot for making bots. Besides the token it lets
 you set the description, the profile picture and the command list users see
 when they type a slash. The token is the bot's whole identity: whoever has it
 can read the bot's messages and send in its name. So it lives in the
-environment, filled from a secret store or a systemd™ credential, and never in
+environment, filled from a secret store or a systemd credential, and never in
 the repository. If it leaks, BotFather's /revoke issues a new one.
 -->
 
@@ -367,7 +367,7 @@ The deck's own tests work the same way.
   `telegram.parseUpdate` reads the same JSON in a `web` handler.
 - **Not yet in the deck:** the chat id of a button press, editing a sent
   message, the sender of a message (all reachable through the raw JSON)
-- The deck: [jennifer-language/deck-telegram](https://registry.jennifer-lang.dev/deck/jennifer/telegram)
+- The deck: [deckyard/deck-telegram](https://registry.jennifer-lang.dev/deck/deckyard/telegram)
 - The language: [jennifer-lang.dev](https://jennifer-lang.dev/), this talk in
   the [Jennifer Academy](https://academy.jennifer-lang.dev/)
 

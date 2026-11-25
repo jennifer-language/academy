@@ -31,7 +31,7 @@ and want to move their programs and decks across without surprises.
 - **Stricter input:** invalid UTF-8, sloppy base64, broken CSV are errors
 - **New:** `decimal` and `images`; `doctree`, `rst`, `myst`, `soap`,
   `webdav`, `zmq`
-- **Deprecated:** nine bundled vendor clients, now `@jennifer/*` decks
+- **Deprecated:** nine bundled vendor clients, now `@deckyard/*` decks
 
 <!-- notes:
 Four of these six lines are breaking changes, and they share one idea: the
@@ -217,12 +217,12 @@ allowInsecureRedirect in the http options.
 - `markdown` renders through `doctree`: `doctree.render("html", doc)`
   instead of `markdown.render(doc, "html")`; the `to*` shortcuts stay
 - `markdown` reads CommonMark 0.31.2, so some output differs
-- Removed: `oauth.google` / `microsoft` (use `@jennifer/oauthext`),
+- Removed: `oauth.google` / `microsoft` (use `@deckyard/oauthext`),
   `feed.fetch` (use `http.get`, then `feed.parse`)
 - `webapi.limiter` returns a `ratelimit.Result`, not a `bool`
 
 <!-- notes:
-markdown, reStructuredText and MyST™ now share one document tree, doctree, with
+markdown, reStructuredText and MyST now share one document tree, doctree, with
 renderers for HTML, ANSI and PDF. If you called markdown.toHtml nothing
 changes; if you walked the tree yourself, the node functions moved. The two
 provider helpers in oauth moved into a deck, because they track two vendors'
@@ -237,11 +237,11 @@ endpoints rather than a standard.
 `slack`, `statsd`, `telegram`: removed in 0.28.0.
 
 ```sh
-jvc add "@jennifer/slack"
+jvc add "@deckyard/slack"
 ```
 
 ```jennifer excerpt
-import "@jennifer/slack/" as slack;    # was: import "slack.j";
+import "@deckyard/slack/" as slack;    # was: import "slack.j";
 ```
 
 Same surface; only the import changes.
@@ -324,7 +324,7 @@ messaging. Each has its own page in the module reference with examples.
 - `lint`: L116 (a slot holding only a literal), L104 accepts error structs,
   L205 catches more accumulators, L303 checks pragma ranges
 - `profile --allocs` ranks copies by bytes and shows module rebuilds
-- `jennifer-tiny-dev`: `fmt`, `lint`, `test` on the TinyGo™ build
+- `jennifer-tiny-dev`: `fmt`, `lint`, `test` on the TinyGo build
 - Deep recursion on `jennifer-tiny` is a catchable `"limit"`
 - New `alpine` image; the images bundle `jvc`
 

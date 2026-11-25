@@ -6,10 +6,10 @@ use strings;
 use convert;
 use time;
 import "http.j" as http;
-import "@jennifer/gotify/" as gotify;
-import "@jennifer/telegram/" as telegram;
-import "@jennifer/slack/" as slack;
-import "@jennifer/discord/" as discord;
+import "@deckyard/gotify/" as gotify;
+import "@deckyard/telegram/" as telegram;
+import "@deckyard/slack/" as slack;
+import "@deckyard/discord/" as discord;
 
 def const MAX_TRIES as int init 3;
 def const MAX_WAIT as int init 60;
@@ -64,7 +64,11 @@ export def struct AlertError {
  */
 export func fromEnv() {
     def c as Channels init Channels{
-        gotify: gotify.Config{url: os.getEnv("GOTIFY_URL"), token: os.getEnv("GOTIFY_TOKEN")},
+        gotify: gotify.Config{
+            url: os.getEnv("GOTIFY_URL"),
+            token: os.getEnv("GOTIFY_TOKEN"),
+            allowInsecureHttp: false
+        },
         bot: telegram.bot(os.getEnv("TELEGRAM_BOT_TOKEN")),
         chatId: 0,
         slackUrl: os.getEnv("SLACK_WEBHOOK_URL"),

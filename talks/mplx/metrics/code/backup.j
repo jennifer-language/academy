@@ -10,7 +10,7 @@ use io;
 use time;
 
 import "http.j" as http;
-import "@jennifer/prometheus/" as prometheus;
+import "@deckyard/prometheus/" as prometheus;
 
 def const GATEWAY as string init "http://127.0.0.1:9091";
 

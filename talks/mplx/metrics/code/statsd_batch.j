@@ -5,7 +5,7 @@
  * Three metrics in one datagram.
  * @module batch
  */
-import "@jennifer/statsd/" as statsd;
+import "@deckyard/statsd/" as statsd;
 
 def c as statsd.Client init statsd.clientWith("127.0.0.1:8125", "shop.worker");
 def b as statsd.Batch init statsd.batch($c);

@@ -10,7 +10,7 @@ use math;
 use os;
 use time;
 
-import "@jennifer/statsd/" as statsd;
+import "@deckyard/statsd/" as statsd;
 
 def agent as string init "127.0.0.1:8125";
 def jobs as int init 3;

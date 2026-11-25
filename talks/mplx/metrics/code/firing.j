@@ -7,7 +7,7 @@
  */
 use io;
 
-import "@jennifer/prometheus/" as prometheus;
+import "@deckyard/prometheus/" as prometheus;
 
 def const PROM as string init "http://127.0.0.1:9090";
 

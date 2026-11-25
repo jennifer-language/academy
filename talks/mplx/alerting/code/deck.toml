@@ -14,10 +14,10 @@ bin-dir = ""
 [engines]
 
 [decks]
-"@jennifer/gotify" = "*"
-"@jennifer/telegram" = "*"
-"@jennifer/slack" = "*"
-"@jennifer/discord" = "*"
+"@deckyard/gotify" = "*"
+"@deckyard/telegram" = "*"
+"@deckyard/slack" = "*"
+"@deckyard/discord" = "*"
 
 [dev-decks]
 

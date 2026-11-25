@@ -7,7 +7,7 @@
  */
 use io;
 
-import "@jennifer/prometheus/" as prometheus;
+import "@deckyard/prometheus/" as prometheus;
 
 def r as prometheus.Result init prometheus.query("http://127.0.0.1:9090", "up");
 for (def s in $r.series) {

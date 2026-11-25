@@ -264,7 +264,7 @@ export func circumference(r as float) {
 ```jennifer excerpt
 use io;                            # a built-in library
 import "./geo.j" as geo;           # a module of your own
-import "@jennifer/telegram/";      # a deck, vendored by jvc
+import "@deckyard/telegram/";      # a deck, vendored by jvc
 ```
 
 <!-- notes:
@@ -357,7 +357,7 @@ learning how a parser works, and for tool writers.
 ## Packages with jvc
 
 ```sh
-jvc add "@jennifer/telegram" "^0.1.0"   # a requirement in deck.toml
+jvc add "@deckyard/telegram" "^0.4.0"   # a requirement in deck.toml
 jvc install                             # vendor what camcorder.lock pins
 jvc update                              # move to the newest allowed
 ```

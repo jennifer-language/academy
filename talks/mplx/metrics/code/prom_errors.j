@@ -7,8 +7,8 @@
  */
 use io;
 
-import "@jennifer/prometheus/" as prometheus;
-import "@jennifer/statsd/" as statsd;
+import "@deckyard/prometheus/" as prometheus;
+import "@deckyard/statsd/" as statsd;
 
 func promQuery(base as string, promql as string) {
     try {

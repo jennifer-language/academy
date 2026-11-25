@@ -49,7 +49,7 @@ it on a schedule or from CI.
 | Deck | What it is |
 | --- | --- |
 | `@deckyard/routeros` | the thick layer: typed verbs for 56 topics, input validated before sending |
-| `@jennifer/mikrotik` | the wire client: sessions, sentences, tags, `/listen` streams |
+| `@deckyard/mikrotik` | the wire client: sessions, sentences, tags, `/listen` streams |
 
 ```sh
 jvc add @deckyard/routeros   # into vendor/deckyard/routeros/
@@ -66,7 +66,7 @@ generic getAll, add, set and remove for any menu path. It validates input
 locally, so a typo fails before anything is sent. Underneath it speaks the
 binary API through the mikrotik client. In 0.27.0 that client is still the
 bundled module, which is deprecated; the routeros deck moves to the
-@jennifer/mikrotik deck before 0.28.0 removes the bundled copy. Your code does
+@deckyard/mikrotik deck before 0.28.0 removes the bundled copy. Your code does
 not change: you import routeros either way.
 -->
 
@@ -149,7 +149,7 @@ defer mt.disconnect($c);
 - a dedicated RouterOS user for the program, its password never in the repository
 
 <!-- notes:
-The credentials come from the environment: a CI secret, a systemd™ credential,
+The credentials come from the environment: a CI secret, a systemd credential,
 or a password manager that exports them. They are never in the device file, so
 the repository can be read by everyone who reviews changes. Use api-ssl: the
 plain API port sends the password in the clear on current RouterOS. Give the
@@ -367,7 +367,7 @@ them too. The second run's lines for those two are cut from the slide.
 - Read, plan, dry run, back up, apply with undo, verify: the same every time
 - Branch on the error's kind, read its fields
 - The deck: [deckyard/deck-routeros](https://registry.jennifer-lang.dev/deck/deckyard/routeros),
-  the wire client: [jennifer-language/deck-mikrotik](https://registry.jennifer-lang.dev/deck/jennifer/mikrotik)
+  the wire client: [deckyard/deck-mikrotik](https://registry.jennifer-lang.dev/deck/deckyard/mikrotik)
 - The language: [jennifer-lang.dev](https://jennifer-lang.dev/), this talk in
   the [Jennifer Academy](https://academy.jennifer-lang.dev/)
 
