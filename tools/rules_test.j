@@ -1257,6 +1257,28 @@ import "./lib/util.j" as util;
     testing.assertContains($abs[0].message, "an absolute path");
 }
 
+/** The release an L302 message names, and the order of two releases. */
+func testRemovedInAndReleaseBefore() {
+    testing.assertEqual(
+        removedIn("`strings.repeat` was removed in 0.28.0; use `strings.replicate`"),
+        "0.28.0");
+    testing.assertEqual(removedIn("call to undefined function `f`"), "");
+    testing.assertTrue(releaseBefore("0.26.0", "0.28.0"));
+    testing.assertTrue(releaseBefore("0.9.0", "0.10.0"));
+    testing.assertFalse(releaseBefore("0.28.0", "0.28.0"));
+    testing.assertFalse(releaseBefore("1.0.0", "0.28.0"));
+}
+
+/** Only a clean catalogue entry with an X.Y.Z version pins a talk. */
+func testPinnedRelease() {
+    def m as meta.Meta;
+    $m.jennifer = "0.26.0";
+    testing.assertEqual(pinnedRelease(meta.Checked{meta: $m, problems: []}), "0.26.0");
+    testing.assertEqual(pinnedRelease(meta.Checked{meta: $m, problems: ["bad"]}), "");
+    $m.jennifer = "latest";
+    testing.assertEqual(pinnedRelease(meta.Checked{meta: $m, problems: []}), "");
+}
+
 /** Lint runs on every program but an include; warnings fail, info does not. */
 func testCodeLint() {
     def dir as string init makeCodeTalk(goodCode());

@@ -182,7 +182,10 @@ for readers as well as for yourself.
 
 Put ™ after the first prose use of each third-party brand in a talk (slide
 text or notes, not code): `GitHub™`, later uses unmarked. Slide headings stay
-unmarked, except the title on slide 1, which marks each brand it names.
+unmarked, except the title on slide 1, which marks each brand it names. Mark
+only a name its owner registers or claims as a trademark: not a standard,
+protocol, file format or programming language, not a descriptive term such as
+GPT, and not an open-source project that claims no mark.
 
 ## The code folder
 
@@ -233,7 +236,8 @@ part in its path (`.env`, `app/.github/...`) is published in the zip only.
   installed for the check: lint accepts an `@scope/deck/` import it cannot
   resolve and leaves the calls into the deck unchecked (`check.j` says how
   many programs that concerns). The programs target the talk's Jennifer
-  version.
+  version: a call removed in a later release (lint's L302) is not reported
+  for a talk based on an earlier one.
 
 ## Diagrams and maths
 

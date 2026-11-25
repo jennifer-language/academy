@@ -1766,12 +1766,61 @@ func checkCodeText(p as string, rel as string, code as string, user as string) {
 }
 
 /**
+ * The release a lint L302 finding says removed a call ("was removed in
+ * 0.28.0"), or "" when the message names none.
+ * @param {string} message the finding's message
+ * @return {string} the X.Y.Z release, or ""
+ */
+func removedIn(message as string) {
+    def found as list of string init lineMatch('was removed in ([0-9]+\.[0-9]+\.[0-9]+)', $message);
+    if (len($found) < 2) {
+        return "";
+    }
+    return $found[1];
+}
+
+/**
+ * The release a talk is based on (`jennifer` in academy.toml), or "" when the
+ * entry has problems or the value is not X.Y.Z.
+ * @param {meta.Checked} entry the talk's parsed catalogue entry
+ * @return {string} the release, or ""
+ */
+func pinnedRelease(entry as meta.Checked) {
+    if (len($entry.problems) > 0 or
+        not regex.matches('^[0-9]+\.[0-9]+\.[0-9]+$', $entry.meta.jennifer)) {
+        return "";
+    }
+    return $entry.meta.jennifer;
+}
+
+/**
+ * Whether release `a` comes before release `b`, both X.Y.Z.
+ * @param {string} a a release
+ * @param {string} b a release
+ * @return {bool} true when a < b
+ */
+func releaseBefore(a as string, b as string) {
+    def x as list of string init strings.split($a, ".");
+    def y as list of string init strings.split($b, ".");
+    for (def i in 0..3) {
+        def p as int init convert.toInt($x[$i]);
+        def q as int init convert.toInt($y[$i]);
+        if ($p != $q) {
+            return $p < $q;
+        }
+    }
+    return false;
+}
+
+/**
  * Lint the programs of a code folder in one run of `jennifer lint`: every
  * warning and error is a finding, info is not. Decks are not installed, and
  * lint needs no vendor/: an `@scope/deck/` import it cannot resolve is not
- * reported, only the calls into it go unchecked.
+ * reported, only the calls into it go unchecked. A call removed in a release
+ * after the one the talk is based on (`pinned`) is not a finding: the talk
+ * shows that release, where the call still exists.
  */
-func lintPrograms(programs as list of string, opts as Options) {
+func lintPrograms(programs as list of string, opts as Options, pinned as string) {
     def out as list of Finding;
     def argv as list of string init [$opts.jennifer, "lint", "--format=json"];
     for (def p in $programs) {
@@ -1793,6 +1842,12 @@ func lintPrograms(programs as list of string, opts as Options) {
         def at as string init "/" + convert.toString($i);
         if (json.asString($doc, $at + "/severity") == "info") {
             continue;
+        }
+        if (json.asString($doc, $at + "/id") == "L302" and $pinned != "") {
+            def gone as string init removedIn(json.asString($doc, $at + "/message"));
+            if ($gone != "" and releaseBefore($pinned, $gone)) {
+                continue;
+            }
         }
         def why as string init json.asString($doc, $at + "/message") + " [" +
             json.asString($doc, $at + "/id") + "]";
@@ -1816,6 +1871,19 @@ func lintPrograms(programs as list of string, opts as Options) {
  * @return {list of Finding} empty when there is no code folder or it passes
  */
 export func checkCodeFolder(dir as string, user as string, opts as Options) {
+    return checkCodeFolderFor($dir, $user, $opts, "");
+}
+
+/**
+ * `checkCodeFolder` for a talk based on Jennifer `pinned` (X.Y.Z, "" for
+ * none): lint does not report a call removed in a later release.
+ * @param {string} dir the talk directory
+ * @param {string} user the namespace the talk is in
+ * @param {Options} opts whether to lint, and with which interpreter
+ * @param {string} pinned the release the talk is based on, or ""
+ * @return {list of Finding} empty when there is no code folder or it passes
+ */
+export func checkCodeFolderFor(dir as string, user as string, opts as Options, pinned as string) {
     def out as list of Finding;
     def code as string init path.join($dir, CODE_DIR);
     if (not fs.isDir($code) or isLinked($code, fs.realpath($dir), CODE_DIR)) {
@@ -1862,7 +1930,7 @@ export func checkCodeFolder(dir as string, user as string, opts as Options) {
         $out[] = finding($code, 0, "code-folder", $why);
     }
     if ($opts.parseCode and len($programs) > 0) {
-        for (def f in lintPrograms($programs, $opts)) {
+        for (def f in lintPrograms($programs, $opts, $pinned)) {
             $out[] = $f;
         }
     }
@@ -2008,7 +2076,7 @@ export func checkTalk(dir as string, user as string, opts as Options) {
         $out[] = $f;
     }
     def entry as meta.Checked init readMeta($dir, $user);
-    for (def f in checkCodeFolder($dir, $user, $opts)) {
+    for (def f in checkCodeFolderFor($dir, $user, $opts, pinnedRelease($entry))) {
         $out[] = $f;
     }
     def files as list of string init talkFiles($dir);
