@@ -1,0 +1,6 @@
+[book]
+title = "Shout"
+src = "docs"
+
+[preprocessor.shout]
+timeout = 5000

@@ -1,0 +1,9 @@
+title = "Writing plugins for Grimoire and Cantrip"
+description = "How Grimoire and Cantrip run preprocessors: the JSON contract on stdin and stdout, finding and trusting a plugin, generated files, MathML, caps and timeouts, tests, walked through grimoire-mermaid and grimoire-katex. Based on Jennifer 0.27.0."
+author = "mplx"
+license = "CC-BY-4.0"
+lang = "en"
+jennifer = "0.27.0"
+date = "2026-11"
+level = "intermediate"
+tags = ["grimoire", "cantrip", "plugins", "documentation", "json", "testing", "security"]

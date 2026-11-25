@@ -1,0 +1,7 @@
+{"api": 1, "kind": "preprocessor", "features": ["files", "mathml"],
+ "book": {"title": "Shout", "description": "", "authors": [], "language": "en",
+          "src": "docs", "out": "site", "generated": ""},
+ "plugin": {"name": "shout", "settings": {"timeout": 5000}, "files": ""},
+ "entries": [{"kind": "page", "title": "Shout", "src": "index.md",
+              "out": "index.html", "level": 0, "number": "1"}],
+ "chapters": [{"src": "index.md", "content": "# Shout\n\n```shout\nhello\n```\n"}]}

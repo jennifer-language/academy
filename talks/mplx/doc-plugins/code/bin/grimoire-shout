@@ -1,0 +1,12 @@
+#!/usr/bin/env -S jennifer run
+# pragma-jennifer-version: >=0.27.0
+# pragma-jennifer-capability: exec
+
+# The launcher: the request on stdin goes to the module, its status is the exit
+# status. The module never calls `exit`, so `jennifer test` can load it.
+use io;
+use strings;
+
+import "../src/shout.j" as shout;
+
+exit shout.run(strings.join(io.readLines(), "\n"));
