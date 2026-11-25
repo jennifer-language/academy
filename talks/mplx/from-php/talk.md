@@ -299,8 +299,8 @@ PDO. SQLite™ is not supported, so plan for a server database.
 | PHP | Jennifer |
 | --- | --- |
 | `php -l` | `jennifer lint` |
-| PHP-CS-Fixer™ | `jennifer fmt -w` |
-| PHPUnit™ | `jennifer test` |
+| PHP-CS-Fixer | `jennifer fmt -w` |
+| PHPUnit | `jennifer test` |
 | Xdebug™ profiler | `jennifer profile` |
 | `php -a` | `jennifer repl` |
 

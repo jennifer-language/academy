@@ -311,7 +311,7 @@ The pprof file carries three sample types: hits, self and cum. Pick one with
 sample_index; the default is the last, cum, whose total runs past a hundred
 percent because nested statements are counted at every level. The allocation
 form carries alloc_objects and alloc_space. The trace is JSON with one event
-per function call, for Perfetto™ or chrome tracing; for fib(20) that is 6.7 MB.
+per function call, for Perfetto or chrome tracing; for fib(20) that is 6.7 MB.
 -->
 
 ---

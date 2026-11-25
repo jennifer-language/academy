@@ -4,11 +4,11 @@ ratio: 16:9
 transition: slide
 ---
 
-# Dynamic workloads: autoscaling Resque™ workers with Jennifer
+# Dynamic workloads: autoscaling Resque workers with Jennifer
 
 ![Jennifer](jennifer-logo.png)
 
-A controller that watches a Resque™ queue, launches workers on Docker™,
+A controller that watches a Resque queue, launches workers on Docker™,
 VirtualBox™, Proxmox™ or VMware™ when the backlog grows, and drains them
 when it is gone.
 
@@ -235,7 +235,7 @@ ends only by return, so lint has nothing to say about while true.
 | Backend | Drain request | The worker sees |
 | --- | --- | --- |
 | Docker | `killContainer(c, id, "SIGTERM")` | SIGTERM, as PID 1 |
-| VirtualBox | `acpiShutdown(h, vm)` | systemd™ stops the service: SIGTERM |
+| VirtualBox | `acpiShutdown(h, vm)` | systemd stops the service: SIGTERM |
 | Proxmox | `shutdown(c, g, 0)` | ACPI, then the same |
 | VMware | `shutdownGuest(c, vm)` | VMware Tools shutdown, the same |
 
@@ -606,7 +606,7 @@ logfmt record; the timestamps here are shortened to fit the slide. When
 someone asks why there were five VMs at three in the morning, the answer is
 one grep away, because each record carries the numbers the decision was made
 from. For dashboards, export waiting, have, want and the launch count as
-gauges and counters to Prometheus™, StatsD™ or InfluxDB™, as the metrics talk
+gauges and counters to Prometheus™, StatsD or InfluxDB™, as the metrics talk
 shows; alert on the hold key and on fatal exits.
 -->
 

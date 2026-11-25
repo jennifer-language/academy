@@ -47,13 +47,13 @@ The academy collects talks that teach Jennifer, written by its users.
 
 **One static binary:** no runtime, no system libraries, copy it and run it.
 
-Runs on Linux™ (amd64, arm64), OpenWrt™ routers (`.ipk`) and Android™ in Termux™;
+Runs on Linux™ (amd64, arm64), OpenWrt™ routers (`.ipk`) and Android™ in Termux;
 macOS™ and Windows™ builds are best-effort.
 
 Two builds from the same source:
 
 - `jennifer`: the full build, multi-core `spawn`, network, processes, SQL
-- `jennifer-tiny`: the TinyGo™ build, small and embeddable
+- `jennifer-tiny`: the TinyGo build, small and embeddable
 
 43 built-in libraries and 80 shipped modules, over 2,300 functions.
 
@@ -162,7 +162,7 @@ The best evidence that a language works is the tools built with it. Grimoire
 builds the documentation of every deck, Cantrip made the slides you are
 looking at, jvc and the registry run the package ecosystem, and ocsaml gets
 people through a corporate VPN. Grimoire takes plugins; user plugins such as
-mermaid diagrams and KaTeX™ maths are tagged grimoire-plugin on GitHub.
+mermaid diagrams and KaTeX maths are tagged grimoire-plugin on GitHub.
 -->
 
 ---

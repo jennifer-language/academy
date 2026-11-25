@@ -236,7 +236,7 @@ def key as bytes init fs.readSecretBytes("/etc/myapp/signing-key.pem");
 - Over 1 MiB is `"limit"`; a secret is small
 
 <!-- notes:
-OpenSSH™ refuses a private key that others can read, and now Jennifer can do
+OpenSSH refuses a private key that others can read, and now Jennifer can do
 the same for your program's keys and tokens. The check runs on the opened
 file, so the file read is the file checked. Container secret mounts are
 read-only, so nothing in the container can replace them, and they are

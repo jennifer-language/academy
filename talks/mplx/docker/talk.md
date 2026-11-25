@@ -31,7 +31,7 @@ Docker™ on Linux™.
 | Tag | Base | Size | Use |
 | --- | --- | --- | --- |
 | `jennifer:0.26.0` | Debian™ trixie-slim | 168 MB | default; shell, apt, `jvc` |
-| `jennifer:0.26.0-alpine` | Alpine™ | 60 MB | small, still a build base |
+| `jennifer:0.26.0-alpine` | Alpine | 60 MB | small, still a build base |
 | `jennifer:0.26.0-static` | distroless | 51 MB | no shell: runtime only |
 | `jennifer:dev` | Debian | ~170 MB | every push to `main` |
 

@@ -17,7 +17,7 @@ Based on **Jennifer 0.27.0**, November 2026, by [@mplx](https://github.com/mplx)
 Two pieces of 1980s home computing, taken apart and put back together in
 Jennifer. First the floppy disk of the Commodore 64: we format one, write a
 BASIC program onto it as raw bytes, and read the allocation map. Then the
-Z-machine, the virtual machine Infocom™'s text adventures ran on, played from a
+Z-machine, the virtual machine Infocom's text adventures ran on, played from a
 script. Every output on these slides is from a real run on a laptop, with the
 decks' own test game; no copyrighted game or disk is used.
 -->
@@ -46,7 +46,7 @@ layout is documented. Jennifer has no pointers and no mutation through
 aliases: assigning or passing a value copies it. For an emulator or a disk
 editor that is a gift, because keeping the old value costs one variable and
 gives you undo. Neither deck asks for network, exec or SQL, so both run on the
-small TinyGo™ build of the interpreter as well.
+small TinyGo build of the interpreter as well.
 -->
 
 ---
@@ -98,7 +98,7 @@ an empty directory, a name and a two-character disk id. writeProgram and
 writeText return a new Image with the file added, and directoryText renders
 exactly what LOAD "$",8 followed by LIST shows on the screen. 2a is the DOS
 type every 1541 stamps on its disks. save writes the 174848 bytes that any
-emulator, such as VICE™, opens as drive 8.
+emulator, such as VICE, opens as drive 8.
 -->
 
 ---
@@ -269,7 +269,7 @@ and the image in $img stays as it was because the assignment never happened.
 
 ## The Z-machine
 
-- **Infocom** (Zork™, 1980) compiled each game for a virtual machine, then
+- **Infocom** (Zork, 1980) compiled each game for a virtual machine, then
   wrote one small interpreter per home computer
 - Story files `.z3` to `.z8`; **Inform** still compiles new games for it
 - The deck is an interpreter: versions 3, 4, 5, 7 and 8, Quetzal saves, undo

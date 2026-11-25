@@ -130,7 +130,7 @@ if ($dsn == "" or len($csrfSecret) < 32) {
 
 <!-- notes:
 No configuration file: everything comes from the environment, which is what
-a container, a systemd™ unit and a test all provide easily. The _FILE variant
+a container, a systemd unit and a test all provide easily. The _FILE variant
 reads a secret from a mounted file instead, so it never shows up in the
 process environment. A missing setting stops the program before it listens,
 with exit code 2, so a service manager can tell a configuration error from a

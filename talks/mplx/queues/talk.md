@@ -4,7 +4,7 @@ ratio: 16:9
 transition: slide
 ---
 
-# Queues and messaging: Resque™, AMQP, MQTT and ZeroMQ™
+# Queues and messaging: Resque, AMQP, MQTT and ZeroMQ™
 
 ![Jennifer](jennifer-logo.png)
 
@@ -46,7 +46,7 @@ worker sends it later, retries it when it fails, and a burst of uploads
 becomes a queue that four workers drain at their own pace. The price is a new
 moving part, a server that holds the messages, except for ZeroMQ, which has
 none. All four modules speak their protocol over the net library, so they
-need the default jennifer binary, not jennifer-tiny. Resque™ also needs
+need the default jennifer binary, not jennifer-tiny. Resque also needs
 redis.j, and most Options structs take a transport.Security value.
 -->
 

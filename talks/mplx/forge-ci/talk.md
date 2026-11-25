@@ -4,7 +4,7 @@ ratio: 16:9
 transition: slide
 ---
 
-# One CI pipeline for GitHub™, Gitea™ and Forgejo™
+# One CI pipeline for GitHub™, Gitea™ and Forgejo
 
 ![Jennifer](jennifer-logo.png)
 
@@ -14,7 +14,7 @@ docs, for a small Jennifer app.
 Based on **Jennifer 0.27.0**, November 2026, by [@mplx](https://github.com/mplx).
 
 <!-- notes:
-GitHub™ Actions, Gitea™ Actions and Forgejo™ Actions all read the same workflow
+GitHub™ Actions, Gitea™ Actions and Forgejo Actions all read the same workflow
 syntax, so one file can serve all three. It does not run unchanged by magic,
 though: the forges differ in where they look for workflows, where an action
 comes from, what a runner label means, what the token is called and which

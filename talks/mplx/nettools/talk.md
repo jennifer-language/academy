@@ -19,7 +19,7 @@ This talk walks through five modules that ship with the interpreter: ipnet,
 idna, snmp, ntp and ldap. Each gets a few slides with a small program, and at
 the end they come together in a network health report. Every program on the
 slides was run with the released 0.27.0 against real servers: net-snmp and
-chrony in Alpine™ containers, an OpenLDAP™ container with its own certificate
+chrony in Alpine containers, an OpenLDAP™ container with its own certificate
 authority, and one query to pool.ntp.org. Where 0.26.0 has a known bug that
 the next release fixes, the notes say so.
 -->
@@ -47,7 +47,7 @@ io.printf("%v\n", ipnet.isPrivate($a));   # true
 <!-- notes:
 These are bundled modules, not decks: they live in the interpreter's module
 directory and you import them by file name, with no jvc step. ipnet and idna
-are plain Jennifer and run anywhere, even on the small TinyGo™ build. The other
+are plain Jennifer and run anywhere, even on the small TinyGo build. The other
 three open sockets, so they need the default jennifer binary. None of them
 needs a C library or an external tool: SNMP and LDAP are encoded with the asn1
 library, byte by byte.
@@ -591,7 +591,7 @@ One real run against the lab. The second SNMP target is a switch that is
 "down": nothing listens on that port, so the check times out after one retry
 and the guard turns it into a FAIL line, shortened here. The address from
 203.0.113.0/24 is outside the management networks and is never contacted.
-Secrets come from the environment, as in a systemd™ EnvironmentFile. The exit
+Secrets come from the environment, as in a systemd EnvironmentFile. The exit
 code makes the run fail for cron, systemd or CI.
 -->
 

@@ -63,7 +63,7 @@ an I2C and an SPI version; take I2C unless you need the speed.
 
 <!-- notes:
 The GPIO module is plain Jennifer that writes files under /sys/class/gpio, so
-it runs on the small TinyGo™ build too. The four libraries use ioctls through
+it runs on the small TinyGo build too. The four libraries use ioctls through
 Go's unix package, which the tiny build does not carry, so there they are stubs
 that throw a clear message. If you deploy jennifer-tiny on a board to save
 space, use the GPIO module and nothing else. The library and the module share
@@ -527,7 +527,7 @@ A logger runs until it is stopped, so the loop is while true, and the trailing
 comment tells the linter that this is on purpose. One failed reading must not
 end the program: the catch flushes the port, reports on stderr and carries on.
 convert.toInt turns the comparison into the 0 or 1 that gpio.write wants, and
-gpio.read reads the pin back for the log line. Under systemd™, Restart=on-failure
+gpio.read reads the pin back for the log line. Under systemd, Restart=on-failure
 brings it back if something unexpected throws.
 -->
 

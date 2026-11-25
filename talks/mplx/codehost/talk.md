@@ -4,7 +4,7 @@ ratio: 16:9
 transition: slide
 ---
 
-# One API over GitHub™, GitLab™ and Forgejo™
+# One API over GitHub™, GitLab™ and Forgejo
 
 ![Jennifer](jennifer-logo.png)
 
@@ -15,7 +15,7 @@ Based on **Jennifer 0.27.0**, November 2026, by [@mplx](https://github.com/mplx)
 
 <!-- notes:
 This talk is about the forge APIs, not about CI: the pipeline that runs on
-GitHub™, Gitea™ and Forgejo™ has its own talk. We use the codehost deck and the
+GitHub™, Gitea™ and Forgejo has its own talk. We use the codehost deck and the
 three decks under it to do the work that otherwise means clicking through two
 or three web interfaces. Every output on the slides is from a real run with
 the released 0.27.0 interpreter and the released decks: against Forgejo 13.0.5
@@ -537,7 +537,7 @@ match ($f.backend) {
 
 <!-- notes:
 codehost covers what all forges share. Workflows and pipelines, reviews,
-milestones, webhooks, members, GraphQL™ and raw endpoints stay in the backend
+milestones, webhooks, members, GraphQL and raw endpoints stay in the backend
 decks, and the Forge carries the backend's client, so they are one match away
 with the same token. The same route serves settings connect does not take:
 build the client with withTimeout, withRetries or withCaCert and wrap it with

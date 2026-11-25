@@ -27,7 +27,7 @@ the model computes, not to compete with a real framework.
 ## What we build
 
 - **An autodiff engine:** every number a node on a tape, `backward` in one pass
-- **A GPT™:** embeddings, causal self-attention, an MLP, RMSNorm, softmax
+- **A GPT:** embeddings, causal self-attention, an MLP, RMSNorm, softmax
 - **Training:** Adam, data-parallel across all cores with `spawn`
 - **A checkpoint:** train once, then sample as often as you like
 
@@ -357,7 +357,7 @@ forced the arena design, is what makes this parallelism safe.
 The copy that makes spawn safe is not free. In the seventh edition each
 worker had little work, so copying the scope ate the gain. A transformer
 forward and backward pass over one name is much more work, so the same idea
-scales better there. The TinyGo™ build schedules cooperatively on one thread,
+scales better there. The TinyGo build schedules cooperatively on one thread,
 so measure on the binary you will ship.
 -->
 

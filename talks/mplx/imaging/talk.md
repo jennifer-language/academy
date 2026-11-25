@@ -33,7 +33,7 @@ the notes point out where they appear.
 | `@deckyard/magick` | deck: ImageMagick 7, needs `exec` | `jennifer` |
 | `import "barcode.j"` | module: QR, DataMatrix, 1D codes as SVG or PNG | both |
 | `import "label.j"` | module: ZPL and cab printer commands | both; `send` needs `jennifer` |
-| `@deckyard/escl` | deck: network scanners (AirScan™, Mopria™), needs `net` | `jennifer` |
+| `@deckyard/escl` | deck: network scanners (AirScan, Mopria™), needs `net` | `jennifer` |
 | `import "pdf.j"` | module: the PDF writer | both |
 
 <!-- notes:
@@ -215,7 +215,7 @@ H: QR-Code:https://academy.jennifer-lang.dev/
 
 <!-- notes:
 The images library paints an opaque square over a quarter of each code's width,
-right through the data. zbarimg, the reader from the ZBar™ project, gives up on
+right through the data. zbarimg, the reader from the ZBar project, gives up on
 L and M and still reads Q and H. That is the case for Q or H on anything that
 gets handled: a parcel label gets scuffed, folded and stamped. For a URL shown
 on a screen, M is the usual choice and the default. Test your codes with a

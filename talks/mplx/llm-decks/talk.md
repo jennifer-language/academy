@@ -8,7 +8,7 @@ transition: slide
 
 ![Jennifer](jennifer-logo.png)
 
-Claude™, GPT™ and Gemini™ side by side, with the `@deckyard/anthropic`,
+Claude™, GPT and Gemini™ side by side, with the `@deckyard/anthropic`,
 `@deckyard/openai` and `@deckyard/gemini` decks: messages, tools, errors,
 and tests that need no key.
 
@@ -64,7 +64,7 @@ export ANTHROPIC_API_KEY=...             # from a secret store
 
 <!-- notes:
 Read the key with os.getEnv at startup, fill the environment from a secret
-store or a systemd™ credential, and keep it out of the repository. The decks
+store or a systemd credential, and keep it out of the repository. The decks
 do their part: the key travels only as a header, x-api-key for Anthropic™,
 Authorization Bearer for OpenAI™, x-goog-api-key for Gemini, and server text
 that echoes it is cleaned before it reaches an error. What you print

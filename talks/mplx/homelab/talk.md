@@ -53,7 +53,7 @@ read every morning.
 | --- | --- | --- |
 | `@deckyard/proxmox` | REST, `/api2/json` | API token |
 | `@deckyard/synology` | DSM™ Web API, `entry.cgi` | account and password, a session |
-| `@deckyard/unraid` | GraphQL™ | API key |
+| `@deckyard/unraid` | GraphQL | API key |
 | `@deckyard/frigate` | REST, `/api` | user and password (port 8971) |
 | `@deckyard/docker` | Docker Engine API | none: guard the socket |
 
@@ -302,7 +302,7 @@ negotiate asks the daemon for its API version and uses the lower of that and
 the newest the deck knows, so the same script works against an old and a new
 Docker. containers with all set to true includes stopped ones, and the empty
 list means no filters. A container stuck in restarting is worse than a
-stopped one: it is crashing in a loop. The deck speaks Podman™'s compatible
+stopped one: it is crashing in a loop. The deck speaks Podman's compatible
 API as well.
 -->
 
@@ -408,7 +408,7 @@ if ($warnings > 0) { exit 1; }
 
 - Unraid's notification agents forward it: e-mail, push, chat
 - Or a bot: see [How to code a Telegram™ bot](https://academy.jennifer-lang.dev/talks/mplx/telegram-bot/)
-- Exit code 1 marks the run failed for systemd™ and for any other monitor
+- Exit code 1 marks the run failed for systemd and for any other monitor
 
 <!-- notes:
 We already have a box that knows how to notify people: Unraid raises a

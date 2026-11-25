@@ -40,7 +40,7 @@ output on these slides is from a real run.
 Two layers. The csv module ships with the interpreter: it knows quoting and
 delimiters and turns text into rows of strings, nothing more. The sheets deck
 is a community deck from the deckyard scope: it reads and writes ODS, XLSX and
-Gnumeric™ files over one cell model, evaluates formulas and applies number
+Gnumeric files over one cell model, evaluates formulas and applies number
 formats. Neither needs a network, a subprocess or an office suite installed,
 which also means they run in CI and inside a container.
 -->

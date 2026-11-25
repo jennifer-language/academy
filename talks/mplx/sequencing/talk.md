@@ -31,7 +31,7 @@ public test files or files the code folder generates.
 | `@deckyard/` deck | Reads | Sample here |
 | --- | --- | --- |
 | `bioinformatics` 0.4.0 | DNA, RNA, protein, FASTA | calls of `3730.ab1` |
-| `abif` 0.1.0 | .ab1, .fsa, .hid | Biopython™'s test files |
+| `abif` 0.1.0 | .ab1, .fsa, .hid | Biopython's test files |
 | `ngs` 0.3.0 | FASTQ, SAM, VCF, BED, GFF | 2000 generated reads |
 | `mitoleaf` 0.3.0 | mitoLEAF tree XML | the deck's test tree |
 | `statfiles` 0.1.0 | Stata™, SPSS™, SAS™ | a generated `.dta` |

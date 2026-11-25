@@ -10,7 +10,7 @@ report is checked.
 
 ## Trademarks
 
-Third-party product and company names in the talks are trademarks of their
+Third-party product and company names in the talks may be trademarks of their
 respective owners. They are used only to identify the products a talk works
 with. The Jennifer Academy and its talks are independent and not affiliated
 with, sponsored or endorsed by those owners.

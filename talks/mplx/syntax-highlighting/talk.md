@@ -8,7 +8,7 @@ transition: fade
 
 ![Jennifer](jennifer-logo.png)
 
-Colour for `.j` files in Vim™, Neovim™, VS Code™, Sublime Text™, JetBrains™ IDEs,
+Colour for `.j` files in Vim, Neovim, VS Code™, Sublime Text™, JetBrains™ IDEs,
 `bat`, web pages and self-hosted forges.
 
 by [@mplx](https://github.com/mplx)
@@ -32,7 +32,7 @@ editor; you can skip the rest.
 | `textmate/jennifer.tmLanguage.json` | editors that read TextMate™ grammars |
 | `sublime/jennifer.sublime-syntax` | Sublime Text and `bat` |
 | `highlightjs/jennifer.js` | web pages with highlight.js |
-| `chroma/jennifer.xml` | Forgejo™, Gitea™, Hugo™ (a draft) |
+| `chroma/jennifer.xml` | Forgejo, Gitea™, Hugo (a draft) |
 
 <!-- notes:
 All definitions live in the editors folder of the Jennifer repository. They
@@ -161,7 +161,7 @@ xcopy /E /I vscode "%USERPROFILE%\.vscode\extensions\jennifer-0.2.0"
 On Windows™ the extensions folder is in your user profile. Use whichever shell
 you have; both commands copy the whole folder. A symbolic link works too but
 needs an administrator shell or developer mode, so a copy is simpler. If you
-use VS Code inside WSL™, follow the Linux™ slide for the Linux side.
+use VS Code inside WSL, follow the Linux™ slide for the Linux side.
 -->
 
 ---
@@ -270,14 +270,14 @@ For a blog, a documentation site or any page that already uses highlight.js,
 load jennifer.js after highlight.js and it registers itself. Code blocks marked
 as jennifer are coloured from then on. In a build pipeline, require it and
 register it by hand. It works with highlight.js versions 10 and 11, so older
-tools like mdBook™ can use it too.
+tools like mdBook can use it too.
 -->
 
 ---
 
 ## Forgejo, Gitea and Hugo
 
-- They highlight with Chroma™, which compiles its lexers in
+- They highlight with Chroma, which compiles its lexers in
 - `chroma/jennifer.xml` is a draft for Chroma itself: no server shows
   Jennifer until a release carries it
 - Until then, a rough stand-in in Forgejo's or Gitea's `app.ini`:
@@ -333,8 +333,8 @@ need the setup shown here.
 
 ## Your editor is missing?
 
-Welcome as contributions: Emacs™ (`jennifer-mode.el`), nano (`.nanorc`), a
-tree-sitter grammar (for Zed™, Helix™, Neovim).
+Welcome as contributions: Emacs (`jennifer-mode.el`), nano (`.nanorc`), a
+tree-sitter grammar (for Zed™, Helix, Neovim).
 
 - `editors/README.md` lists the token classes to cover
 - Check your definition against `jennifer tokens file.j`
