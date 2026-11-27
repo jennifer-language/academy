@@ -1,0 +1,9 @@
+title = "Distributed computing in Jennifer"
+description = "The design of a small cluster framework: lazy planning, pull-based leases, scheduling with aging, task sizes from measurement, retries, snapshots, mutual token authentication, and an actor that owns all state because spawn shares no memory. Based on Jennifer 0.28.0."
+author = "mplx"
+license = "CC-BY-4.0"
+lang = "en"
+jennifer = "0.28.0"
+date = "2026-11"
+level = "advanced"
+tags = ["distributed", "concurrency", "networking", "scheduling", "performance", "architecture"]
