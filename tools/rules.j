@@ -41,7 +41,12 @@ import "./meta.j" as meta;
 export def const ALLOWED_DOMAIN as string init "jennifer-lang.dev";
 
 /** GitHub accounts of the project whose pages and repositories may be linked. */
-export def const GITHUB_OWNERS as list of string init ["jennifer-language", "deckyard", "mplx"];
+export def const GITHUB_OWNERS as list of string init [
+    "jennifer-language",
+    "deckyard",
+    "skiffyard",
+    "mplx"
+];
 
 /**
  * Single GitHub pages outside those accounts that may be linked. `karpathy` is

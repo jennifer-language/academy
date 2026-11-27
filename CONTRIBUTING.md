@@ -346,8 +346,9 @@ A link in a talk may point only to:
 
 - `jennifer-lang.dev` and every subdomain (`www.`, `docs.`, `registry.`,
   `jvc.`, `grimoire.`, `academy.`, `git.`, ...);
-- `github.com/jennifer-language/...`, `github.com/deckyard/...` and
-  `github.com/mplx/...`, the project's accounts;
+- `github.com/jennifer-language/...`, `github.com/deckyard/...`,
+  `github.com/skiffyard/...` and `github.com/mplx/...`, the project's
+  accounts;
 - `github.com/topics/grimoire-plugin`;
 - `github.com/karpathy`, the profile only: credit for the talks that
   reimplement Andrej Karpathy's micrograd and microGPT;
