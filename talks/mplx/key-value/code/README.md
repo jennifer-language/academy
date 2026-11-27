@@ -1,6 +1,6 @@
 # Key-value stores: the code
 
-The programs behind the slides, for Jennifer 0.27.0. The `kv` programs and
+The programs behind the slides, for Jennifer 0.28.0. The `kv` programs and
 `session_ratelimit.j` need nothing; the others talk to throwaway Redis and
 memcached containers bound to localhost. The modules (`redis.j`,
 `memcache.j`, `kvstore.j`, `session.j`, `ratelimit.j`, `transport.j`) ship

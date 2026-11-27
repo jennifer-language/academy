@@ -11,7 +11,7 @@ transition: slide
 One store in the process, two servers on the network, and one line to switch
 between them.
 
-Based on **Jennifer 0.27.0**, November 2026, by [@mplx](https://github.com/mplx).
+Based on **Jennifer 0.28.0**, November 2026, by [@mplx](https://github.com/mplx).
 
 <!-- notes:
 Almost every service ends up needing a small, fast place for state that is not
@@ -303,7 +303,7 @@ published before the server handled it reaches nobody, and publish says zero.
 ```text
 redis ERR: ERR value is not an integer or out of range
 redis WRONGTYPE: WRONGTYPE Operation against a key holding the wrong ...
-net: net.connect: 127.0.0.1:16999: dial tcp 127.0.0.1:16999: connect: ...
+net: net.connectWith: 127.0.0.1:16999: dial tcp 127.0.0.1:16999: connect: ...
 redis WRONGPASS
 redis NOAUTH
 timeout: net.readBytes: read timed out
@@ -311,7 +311,7 @@ timeout: net.readBytes: read timed out
 
 - `incr` on text, `lpush` on a string, a closed port
 - A wrong password, then none, against `requirepass`
-- `$db.timeout = 500;` then `BLPOP empty 5`
+- `$db.timeoutMs = 500;` then `BLPOP empty 5`
 - Branch on `$e.kind == "redis" and $e.code == "WRONGTYPE"`
 
 <!-- notes:
@@ -412,9 +412,9 @@ client side too, also as kind limit.
 ```jennifer excerpt
 func pick(name as string) {
     if ($name == "redis") {
-        return kvstore.redisStore(redis.connect($ropts));
+        return redis.kvStore(redis.connect($ropts));
     } elseif ($name == "memcache") {
-        return kvstore.memcacheStore(memcache.connect($mopts));
+        return memcache.kvStore(memcache.connect($mopts));
     }
     return kvstore.inProcessStore();      # or fileStore("state.kv")
 }
@@ -427,8 +427,10 @@ local 2  memcache 2  redis 2
 ```
 
 <!-- notes:
-kvstore is a bundled module whose Store is an enum over the three backends. The
-surface is the common ground: set with TTL, get, delete, touch, and incrWindow,
+kvstore is a bundled module whose Store is either a local store (in-process or
+a file) or a remote one, which redis.kvStore and memcache.kvStore build from a
+session; the local half also runs on jennifer-tiny. The surface is the common
+ground: set with TTL, get, delete, touch, and incrWindow,
 an increment that creates the key at one with its TTL on the first hit. On
 Redis that is SET NX EX before INCR, so a counter never exists without its
 expiry. The output loops over all three names and increments twice on each.

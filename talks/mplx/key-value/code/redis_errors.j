@@ -28,7 +28,7 @@ try {
 } catch (e) {
     io.printf("4 %s: %s\n", $e.kind, $e.message);
 }
-$db.timeout = 500;
+$db.timeoutMs = 500;
 try {
     redis.command($db, ["BLPOP", "empty", "5"]);
 } catch (e) {

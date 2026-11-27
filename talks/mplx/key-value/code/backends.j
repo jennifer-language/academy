@@ -12,9 +12,9 @@ def mopts as memcache.Options init memcache.Options{host: "127.0.0.1",
 
 func pick(name as string) {
     if ($name == "redis") {
-        return kvstore.redisStore(redis.connect($ropts));
+        return redis.kvStore(redis.connect($ropts));
     } elseif ($name == "memcache") {
-        return kvstore.memcacheStore(memcache.connect($mopts));
+        return memcache.kvStore(memcache.connect($mopts));
     }
     return kvstore.inProcessStore();      # or fileStore("state.kv")
 }
