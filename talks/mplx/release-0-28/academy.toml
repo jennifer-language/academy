@@ -1,0 +1,9 @@
+title = "Jennifer 0.28: what's new, what's deprecated, what breaks"
+description = "The 0.28.0 release for people who write Jennifer: nine modules and every @jennifer deck move to @deckyard, removed builtins, the library's own error kinds, verified TLS for sql, binary writers, bounded child processes, and how to upgrade. Based on Jennifer 0.28.0."
+author = "mplx"
+license = "CC-BY-4.0"
+lang = "en"
+jennifer = "0.28.0"
+date = "2026-11"
+level = "intermediate"
+tags = ["jennifer-inside", "release", "upgrade", "errors", "limits", "security"]
