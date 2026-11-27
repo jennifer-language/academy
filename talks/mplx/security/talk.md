@@ -490,7 +490,7 @@ and that it has not changed, not that it is harmless.
 - `camcorder.lock` pins each deck to a commit or a `sha256`, so an install
   is reproducible
 - `jvc install` copies `src/` into `vendor/` and runs none of it
-- `jvc install --runtests` runs dependency code as you: opt in, on a machine
+- `jvc install --run-untrusted-tests` runs dependency code as you: opt in, on a machine
   you can throw away
 - Read `vendor/` before you take a new deck or an update; it is plain `.j`
 - Run services as an unprivileged user in a container: a deck has your rights

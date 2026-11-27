@@ -455,7 +455,7 @@ in the format the jvc manual shows; the publish lines follow it.
   existing lockfiles keep working
 - From CI: **trusted publishing** (no stored secret) or `$JVC_TOKEN`
 - Consumers can run your overlays on their machine:
-  `jvc install --runtests`
+  `jvc install --run-untrusted-tests`
 
 <!-- notes:
 A version cannot be deleted, because deleting it would break builds that pin

@@ -327,7 +327,7 @@ The official decks test their HTTP clients this way, without a network.
 ## Fixtures travel with the code
 
 - Overlays run from a copy of `src/` alone when a deck is published or
-  installed with `--runtests`: `testdata/` is not there
+  installed with `--run-untrusted-tests`: `testdata/` is not there
 - Keep small fixtures in a `.j` file as constants
 - Guard large sample files, and return early when they are missing
 - Paths in tests are relative; CI mounts only the checkout

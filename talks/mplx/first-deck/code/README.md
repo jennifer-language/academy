@@ -37,7 +37,7 @@ consumer reads the deck from a local git repository through `[sources]`.
   at `../deck-beaufort-built`, the tagged repository `make-deck.sh` wrote.
   Run, from `consumer/`: `jvc install` (writes `vendor/mplx/beaufort/` and
   `camcorder.lock`), then `jennifer run main.j`. Without `vendor/` the
-  import fails with "needs a vendor directory". `jvc install --runtests`
+  import fails with "needs a vendor directory". `jvc install --run-untrusted-tests`
   also runs the deck's overlay.
 
 Not run for the talk: `jvc login`, `jvc claim`, `jvc scopes`, `jvc publish`,
