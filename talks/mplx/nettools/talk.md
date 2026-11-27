@@ -12,7 +12,8 @@ Five bundled modules for the jobs a network admin scripts every week:
 addresses and subnets, domain names, interface counters, clocks and
 directories.
 
-Based on **Jennifer 0.27.0**, November 2026, by [@mplx](https://github.com/mplx).
+November 2026, by [@mplx](https://github.com/mplx).\
+Based on **Jennifer 0.27.0**
 
 <!-- notes:
 This talk walks through five modules that ship with the interpreter: ipnet,

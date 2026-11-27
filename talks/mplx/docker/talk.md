@@ -13,7 +13,8 @@ From a working directory to an image that is small, runs as an
 unprivileged user, carries no secrets, says when it is healthy and stops
 cleanly.
 
-Based on **Jennifer 0.26.0**, November 2026, by [@mplx](https://github.com/mplx).
+November 2026, by [@mplx](https://github.com/mplx).\
+Based on **Jennifer 0.26.0**
 
 <!-- notes:
 We package Shelf, the book club reading list from the talk "A web app in

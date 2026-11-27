@@ -11,7 +11,8 @@ transition: slide
 Load a JSON file, query and edit it with JSON Pointer, save it crash-atomically,
 and know when a single file is no longer enough.
 
-Based on **Jennifer 0.26.0**, November 2026, by [@mplx](https://github.com/mplx).
+November 2026, by [@mplx](https://github.com/mplx).\
+Based on **Jennifer 0.26.0**
 
 <!-- notes:
 Many small programs need to remember something between runs: a few settings, a

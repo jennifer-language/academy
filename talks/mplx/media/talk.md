@@ -11,7 +11,8 @@ transition: slide
 Music tags, film data, a Jellyfin™ server and the Steam™ pile of shame,
 with four community decks and a picker for tonight at the end.
 
-Based on **Jennifer 0.26.0**, November 2026, by [@mplx](https://github.com/mplx).
+November 2026, by [@mplx](https://github.com/mplx).\
+Based on **Jennifer 0.26.0**
 
 <!-- notes:
 Everyone has a media library, and most of them are a bit of a mess: MP3s with

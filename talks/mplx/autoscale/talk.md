@@ -12,7 +12,8 @@ A controller that watches a Resque queue, launches workers on Docker™,
 VirtualBox™, Proxmox™ or VMware™ when the backlog grows, and drains them
 when it is gone.
 
-Based on **Jennifer 0.27.0**, November 2026, by [@mplx](https://github.com/mplx).
+November 2026, by [@mplx](https://github.com/mplx).\
+Based on **Jennifer 0.27.0**
 
 <!-- notes:
 This talk builds one program of about six hundred lines: an autoscaler for

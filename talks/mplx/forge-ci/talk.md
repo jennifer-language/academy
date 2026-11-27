@@ -11,7 +11,8 @@ transition: slide
 One workflow file, three forges: fmt, lint, docblocks, tests and the
 docs, for a small Jennifer app.
 
-Based on **Jennifer 0.27.0**, November 2026, by [@mplx](https://github.com/mplx).
+November 2026, by [@mplx](https://github.com/mplx).\
+Based on **Jennifer 0.27.0**
 
 <!-- notes:
 GitHub™ Actions, Gitea™ Actions and Forgejo Actions all read the same workflow

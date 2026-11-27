@@ -12,7 +12,8 @@ Money that adds up, statistics, a regression three ways, charts and graphs:
 `decimal`, `intl`, `stats`, `linalg`, `ml`, `plot`, `dot` and the
 `@deckyard/money` deck.
 
-Based on **Jennifer 0.26.0**, November 2026, by [@mplx](https://github.com/mplx).
+November 2026, by [@mplx](https://github.com/mplx).\
+Based on **Jennifer 0.26.0**
 
 <!-- notes:
 The talk on CSV and spreadsheets ended with a float that printed as

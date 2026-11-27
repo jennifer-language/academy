@@ -11,7 +11,8 @@ transition: fade
 Markdown posts in, a finished website out: pages, a feed, a calendar and a
 contact card, built by one small program you can read from top to bottom.
 
-Based on **Jennifer 0.26.0**, November 2026, by [@mplx](https://github.com/mplx).
+November 2026, by [@mplx](https://github.com/mplx).\
+Based on **Jennifer 0.26.0**
 
 <!-- notes:
 In this talk we build a static site generator: a program that reads a folder

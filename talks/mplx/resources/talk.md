@@ -10,7 +10,8 @@ transition: fade
 
 The interpreter, the tools, the decks, and where each one lives.
 
-Based on **Jennifer 0.26.0**, November 2026, by [@mplx](https://github.com/mplx).
+November 2026, by [@mplx](https://github.com/mplx).\
+Based on **Jennifer 0.26.0**
 
 <!-- notes:
 A short tour of everything around the language: what to install, where the

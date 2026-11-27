@@ -11,7 +11,8 @@ transition: fade
 A folder of Markdown in, a searchable website, a printed book and an EPUB
 out, rebuilt by CI on every release.
 
-Based on **Jennifer 0.26.0** and Grimoire 0.5.0, November 2026, by [@mplx](https://github.com/mplx).
+November 2026, by [@mplx](https://github.com/mplx).\
+Based on **Jennifer 0.26.0** and Grimoire 0.5.0
 
 <!-- notes:
 Grimoire is the documentation builder of the Jennifer project, written in

@@ -11,7 +11,8 @@ transition: slide
 A complete interactive bot in one short program: commands, buttons, photos,
 flood control, and a clean stop, with the `@deckyard/telegram` deck.
 
-Based on **Jennifer 0.27.0**, November 2026, by [@mplx](https://github.com/mplx).
+November 2026, by [@mplx](https://github.com/mplx).\
+Based on **Jennifer 0.27.0**
 
 <!-- notes:
 We build a dice bot: it answers /start with buttons, rolls dice on /roll 2d6,

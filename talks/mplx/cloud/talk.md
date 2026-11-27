@@ -11,7 +11,8 @@ transition: slide
 Object storage, a file protocol and two file-sync services from one
 Jennifer program, and a backup job that mirrors a folder to two of them.
 
-Based on **Jennifer 0.27.0**, November 2026, by [@mplx](https://github.com/mplx).
+November 2026, by [@mplx](https://github.com/mplx).\
+Based on **Jennifer 0.27.0**
 
 <!-- notes:
 This talk puts files into four kinds of cloud storage from Jennifer: an S3

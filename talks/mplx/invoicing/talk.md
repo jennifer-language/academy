@@ -12,7 +12,8 @@ Orders from a GraphQL API, EU VAT numbers checked with VIES over SOAP,
 reverse charge, exact amounts, a PDF per invoice, and what to do when a
 service is down.
 
-Based on **Jennifer 0.27.0**, November 2026, by [@mplx](https://github.com/mplx).
+November 2026, by [@mplx](https://github.com/mplx).\
+Based on **Jennifer 0.27.0**
 
 <!-- notes:
 One program, built step by step: an invented Austrian consultancy turns the

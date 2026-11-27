@@ -11,7 +11,8 @@ transition: fade
 
 The wrong code, what the interpreter really says, and the fix.
 
-Based on **Jennifer 0.26.0**, November 2026, by [@mplx](https://github.com/mplx).
+November 2026, by [@mplx](https://github.com/mplx).\
+Based on **Jennifer 0.26.0**
 
 <!-- notes:
 Everyone who comes to Jennifer from another language falls into the same ten

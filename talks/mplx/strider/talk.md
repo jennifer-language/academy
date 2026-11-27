@@ -11,7 +11,8 @@ transition: slide
 From a STRidER allele-frequency export to a random match probability, with
 the `@deckyard/strider` and `@deckyard/forensicgenetics` decks.
 
-Based on **Jennifer 0.26.0**, November 2026, by [@mplx](https://github.com/mplx).
+November 2026, by [@mplx](https://github.com/mplx).\
+Based on **Jennifer 0.26.0**
 
 <!-- notes:
 Forensic DNA statistics rest on two things: a profile, and a table that says how

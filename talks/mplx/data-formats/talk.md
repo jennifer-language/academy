@@ -11,7 +11,8 @@ transition: slide
 One small config in four formats: how each maps to Jennifer values, where
 they differ, and what happens when the input is wrong or hostile.
 
-Based on **Jennifer 0.27.0**, November 2026, by [@mplx](https://github.com/mplx).
+November 2026, by [@mplx](https://github.com/mplx).\
+Based on **Jennifer 0.27.0**
 
 <!-- notes:
 Most programs read some kind of configuration or exchange data with another

@@ -12,7 +12,8 @@ Sequences, Sanger traces, fragment runs, NGS reads, mtDNA haplogroups and
 study tables with five `@deckyard` decks, and one pipeline that ties them
 together.
 
-Based on **Jennifer 0.27.0**, November 2026, by [@mplx](https://github.com/mplx).
+November 2026, by [@mplx](https://github.com/mplx).\
+Based on **Jennifer 0.27.0**
 
 <!-- notes:
 This talk reads the files a sequencing lab produces, one deck per kind of

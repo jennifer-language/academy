@@ -11,7 +11,8 @@ transition: slide
 
 Caps, bounded parsing, deadlines, server defaults, and what decks promise.
 
-Based on **Jennifer 0.27.0**, November 2026, by [@mplx](https://github.com/mplx).
+November 2026, by [@mplx](https://github.com/mplx).\
+Based on **Jennifer 0.27.0**
 
 <!-- notes:
 This talk is for people who write servers, parsers and decks that read data

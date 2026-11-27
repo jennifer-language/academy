@@ -11,7 +11,8 @@ transition: slide
 One alert, four channels: Gotify, Telegram™, Slack™ and Discord™, sent once when
 something breaks and once when it is fixed.
 
-Based on **Jennifer 0.27.0**, November 2026, by [@mplx](https://github.com/mplx).
+November 2026, by [@mplx](https://github.com/mplx).\
+Based on **Jennifer 0.27.0**
 
 <!-- notes:
 This talk builds a small alerting layer: four decks that send messages, one

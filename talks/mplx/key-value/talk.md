@@ -11,7 +11,8 @@ transition: slide
 One store in the process, two servers on the network, and one line to switch
 between them.
 
-Based on **Jennifer 0.28.0**, November 2026, by [@mplx](https://github.com/mplx).
+November 2026, by [@mplx](https://github.com/mplx).\
+Based on **Jennifer 0.28.0**
 
 <!-- notes:
 Almost every service ends up needing a small, fast place for state that is not

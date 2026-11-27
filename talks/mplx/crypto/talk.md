@@ -12,7 +12,8 @@ transition: slide
 Hashes, MACs, ciphers and signatures, passwords, two-factor codes, JWT,
 OAuth2, ACME certificates and sealed secrets.
 
-Based on **Jennifer 0.27.0**, November 2026, by [@mplx](https://github.com/mplx).
+November 2026, by [@mplx](https://github.com/mplx).\
+Based on **Jennifer 0.27.0**
 
 <!-- notes:
 This talk is for people who already write services in Jennifer and now have

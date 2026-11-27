@@ -11,7 +11,8 @@ transition: slide
 One nightly script that asks every box in the rack how it is doing and sends
 a single summary: Proxmox™, Synology™, Unraid™, Frigate™ and Docker™.
 
-Based on **Jennifer 0.27.0**, November 2026, by [@mplx](https://github.com/mplx).
+November 2026, by [@mplx](https://github.com/mplx).\
+Based on **Jennifer 0.27.0**
 
 <!-- notes:
 A homelab grows one box at a time, and each box has its own web interface,

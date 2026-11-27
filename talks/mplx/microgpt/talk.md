@@ -12,7 +12,8 @@ transition: fade
 From a scalar autodiff engine to a transformer that invents names: microGPT,
 written from scratch, no libraries.
 
-Based on **Jennifer 0.27.0**, November 2026, by [@mplx](https://github.com/mplx).
+November 2026, by [@mplx](https://github.com/mplx).\
+Based on **Jennifer 0.27.0**
 
 <!-- notes:
 ChatGPT™ is a transformer trained to predict the next token. This talk builds

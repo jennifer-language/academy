@@ -12,7 +12,8 @@ transition: zoom
 A highly optimized interpreted programming language, and how to get even
 more speed out of it: concurrency, errors, profiling, memory.
 
-Based on **Jennifer 0.27.0**, November 2026, by [@mplx](https://github.com/mplx).
+November 2026, by [@mplx](https://github.com/mplx).\
+Based on **Jennifer 0.27.0**
 
 <!-- notes:
 The classroom talk showed how Jennifer explains itself. This one is for people

@@ -11,7 +11,8 @@ transition: fade
 
 The release that tidied the standard library before 1.0.
 
-Based on **Jennifer 0.26.0**, November 2026, by [@mplx](https://github.com/mplx).
+November 2026, by [@mplx](https://github.com/mplx).\
+Based on **Jennifer 0.26.0**
 
 <!-- notes:
 Every Jennifer release gets a talk like this one: what changed, what you have

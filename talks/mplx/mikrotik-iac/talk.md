@@ -11,7 +11,8 @@ transition: none
 Scripting the setup of new MikroTik™ devices with the RouterOS™ deck: desired
 state in a file, a plan, a dry run, backup, apply, verify, roll back.
 
-Based on **Jennifer 0.27.0**, November 2026, by [@mplx](https://github.com/mplx).
+November 2026, by [@mplx](https://github.com/mplx).\
+Based on **Jennifer 0.27.0**
 
 <!-- notes:
 This talk builds one program, about four hundred lines of Jennifer, that

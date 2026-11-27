@@ -11,7 +11,8 @@ transition: slide
 Pictures with `images` and ImageMagick™, barcodes you can scan, labels a
 printer understands, a scanner that hands you a PDF.
 
-Based on **Jennifer 0.27.0**, November 2026, by [@mplx](https://github.com/mplx).
+November 2026, by [@mplx](https://github.com/mplx).\
+Based on **Jennifer 0.27.0**
 
 <!-- notes:
 This talk follows a parcel through a small warehouse office: a photo is shrunk

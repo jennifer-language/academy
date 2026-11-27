@@ -12,7 +12,8 @@ transition: slide
 doctree, MyST, reStructuredText and fonts: the model under Grimoire and
 Cantrip, and how to extend it.
 
-Based on **Jennifer 0.27.0**, November 2026, by [@mplx](https://github.com/mplx).
+November 2026, by [@mplx](https://github.com/mplx).\
+Based on **Jennifer 0.27.0**
 
 <!-- notes:
 This talk is for people who build or extend document tools: a docs site

@@ -12,7 +12,8 @@ transition: fade
 One small, useful program, built step by step: arguments, help, errors,
 exit codes, colour, logging, a spinner, and a command you can install.
 
-Based on **Jennifer 0.26.0**, November 2026, by [@mplx](https://github.com/mplx).
+November 2026, by [@mplx](https://github.com/mplx).\
+Based on **Jennifer 0.26.0**
 
 <!-- notes:
 This talk is for people who can write a small Jennifer program and now want

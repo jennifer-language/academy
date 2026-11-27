@@ -10,7 +10,8 @@ transition: zoom
 
 One Markdown file in, a browser slideshow and a PDF out.
 
-Based on **Jennifer 0.26.0** and Cantrip 0.4.0, November 2026, by [@mplx](https://github.com/mplx).
+November 2026, by [@mplx](https://github.com/mplx).\
+Based on **Jennifer 0.26.0** and Cantrip 0.4.0
 
 <!-- notes:
 Cantrip is the slide tool of the Jennifer project, a program written in

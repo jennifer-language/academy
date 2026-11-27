@@ -12,7 +12,8 @@ A small server that serves the Jennifer documentation to an assistant:
 two tools, every page as a resource and a prompt, tested with real
 clients and connected to Claude™ Code and VS Code™.
 
-Based on **Jennifer 0.27.0**, November 2026, by [@mplx](https://github.com/mplx).
+November 2026, by [@mplx](https://github.com/mplx).\
+Based on **Jennifer 0.27.0**
 
 <!-- notes:
 The companion talk, Talking to LLMs from Jennifer, is about the model side:

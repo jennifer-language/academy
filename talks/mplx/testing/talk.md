@@ -10,7 +10,8 @@ transition: fade
 
 From the first test function to fake servers, fixtures and a CI gate.
 
-Based on **Jennifer 0.27.0**, November 2026, by [@mplx](https://github.com/mplx).
+November 2026, by [@mplx](https://github.com/mplx).\
+Based on **Jennifer 0.27.0**
 
 <!-- notes:
 Jennifer ships its test runner in the interpreter: there is nothing to install

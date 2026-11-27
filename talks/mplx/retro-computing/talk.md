@@ -11,7 +11,8 @@ transition: slide
 Commodore™ 1541 disk images and Infocom-style text adventures, byte by byte,
 with the `@deckyard/d64` and `@deckyard/zmachine` decks.
 
-Based on **Jennifer 0.27.0**, November 2026, by [@mplx](https://github.com/mplx).
+November 2026, by [@mplx](https://github.com/mplx).\
+Based on **Jennifer 0.27.0**
 
 <!-- notes:
 Two pieces of 1980s home computing, taken apart and put back together in

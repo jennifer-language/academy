@@ -11,7 +11,8 @@ transition: slide
 Blink an LED, read a button, a sensor, an ADC and a microcontroller from a
 Raspberry Pi™, and test all of it on a laptop.
 
-Based on **Jennifer 0.27.0**, November 2026, by [@mplx](https://github.com/mplx).
+November 2026, by [@mplx](https://github.com/mplx).\
+Based on **Jennifer 0.27.0**
 
 <!-- notes:
 This talk is for people who have a Raspberry Pi or a similar Linux™ board in a

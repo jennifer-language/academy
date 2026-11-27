@@ -12,7 +12,8 @@ Background jobs on Redis™, a RabbitMQ™ broker with acks, pub/sub for small
 devices, and ZeroMQ™ without any broker: four modules that ship with the
 interpreter.
 
-Based on **Jennifer 0.27.0**, November 2026, by [@mplx](https://github.com/mplx).
+November 2026, by [@mplx](https://github.com/mplx).\
+Based on **Jennifer 0.27.0**
 
 <!-- notes:
 This talk is about handing work to someone else and trusting that it gets

@@ -12,7 +12,8 @@ Counters, gauges and histograms from a Jennifer service: scraped by
 Prometheus™, pushed by a batch job, sent over UDP to StatsD, written as
 points to InfluxDB™.
 
-Based on **Jennifer 0.27.0**, November 2026, by [@mplx](https://github.com/mplx).
+November 2026, by [@mplx](https://github.com/mplx).\
+Based on **Jennifer 0.27.0**
 
 <!-- notes:
 This talk instruments a small Jennifer web service and a queue worker with

@@ -11,7 +11,8 @@ transition: slide
 Versioned routes, migrations, contracts, idempotency, a lifecycle,
 signed webhooks, logs and end-to-end tests.
 
-Based on **Jennifer 0.27.0**, November 2026, by [@mplx](https://github.com/mplx).
+November 2026, by [@mplx](https://github.com/mplx).\
+Based on **Jennifer 0.27.0**
 
 <!-- notes:
 This talk builds the order API of a small shop, the kind of service other

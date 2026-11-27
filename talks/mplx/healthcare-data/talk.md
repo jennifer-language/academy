@@ -11,7 +11,8 @@ transition: slide
 A lab result on its way from the analyzer to a FHIR server: ASTM, HL7 v2 and
 FHIR with the `@deckyard/astm`, `@deckyard/hl7` and `@deckyard/fhir` decks.
 
-Based on **Jennifer 0.27.0**, November 2026, by [@mplx](https://github.com/mplx).
+November 2026, by [@mplx](https://github.com/mplx).\
+Based on **Jennifer 0.27.0**
 
 <!-- notes:
 Healthcare IT is three generations of standards talking to each other. This

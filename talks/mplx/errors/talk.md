@@ -11,7 +11,8 @@ transition: slide
 
 Kinds, error structs, and the handful of rules that keep a catch honest.
 
-Based on **Jennifer 0.27.0**, November 2026, by [@mplx](https://github.com/mplx).
+November 2026, by [@mplx](https://github.com/mplx).\
+Based on **Jennifer 0.27.0**
 
 <!-- notes:
 The Advanced programming talk showed try, catch and defer in one slide each.

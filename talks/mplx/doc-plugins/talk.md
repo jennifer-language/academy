@@ -12,8 +12,8 @@ One JSON request in, one JSON reply out: how a diagram or a formula gets into a
 book and a slide deck, with grimoire-mermaid and grimoire-katex as the worked
 examples.
 
-Based on **Jennifer 0.27.0**, Grimoire 0.6.1 and Cantrip 0.7.3, November 2026,
-by [@mplx](https://github.com/mplx).
+November 2026, by [@mplx](https://github.com/mplx).\
+Based on **Jennifer 0.27.0**, Grimoire 0.6.1 and Cantrip 0.7.3
 
 <!-- notes:
 Grimoire builds books, Cantrip builds slide decks, and neither draws diagrams or

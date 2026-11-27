@@ -12,7 +12,8 @@ transition: slide
 `jennifer profile` in depth: every flag, every column, and one program
 taken from slow to fast.
 
-Based on **Jennifer 0.26.0**, November 2026, by [@mplx](https://github.com/mplx).
+November 2026, by [@mplx](https://github.com/mplx).\
+Based on **Jennifer 0.26.0**
 
 <!-- notes:
 The Advanced programming talk in this academy spends two slides on the

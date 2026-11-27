@@ -11,7 +11,8 @@ transition: fade
 
 The release that tightened the modules and chose one way per thing.
 
-Based on **Jennifer 0.27.0**, November 2026, by [@mplx](https://github.com/mplx).
+November 2026, by [@mplx](https://github.com/mplx).\
+Based on **Jennifer 0.27.0**
 
 <!-- notes:
 0.27.0 is a release without a milestone of its own. It ships what was done

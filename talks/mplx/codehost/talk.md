@@ -11,7 +11,8 @@ transition: slide
 One Jennifer script that releases a project on every forge it is
 mirrored to: notes, a CI gate, assets, and a check of what landed.
 
-Based on **Jennifer 0.27.0**, November 2026, by [@mplx](https://github.com/mplx).
+November 2026, by [@mplx](https://github.com/mplx).\
+Based on **Jennifer 0.27.0**
 
 <!-- notes:
 This talk is about the forge APIs, not about CI: the pipeline that runs on

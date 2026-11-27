@@ -11,7 +11,8 @@ transition: slide
 From flags and nested ifs to explicit states and transitions: by hand with an
 enum and `match`, then with the `@deckyard/fsm` deck.
 
-Based on **Jennifer 0.27.0**, November 2026, by [@mplx](https://github.com/mplx).
+November 2026, by [@mplx](https://github.com/mplx).\
+Based on **Jennifer 0.27.0**
 
 <!-- notes:
 Every program that tracks something over time has states, whether it names

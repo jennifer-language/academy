@@ -12,7 +12,8 @@ transition: fade
 Eight design decisions, why they were made, and what the interpreter
 says when you run into one.
 
-Based on **Jennifer 0.27.0**, November 2026, by [@mplx](https://github.com/mplx).
+November 2026, by [@mplx](https://github.com/mplx).\
+Based on **Jennifer 0.27.0**
 
 <!-- notes:
 Everyone who learns Jennifer asks at some point: why can I not write plus

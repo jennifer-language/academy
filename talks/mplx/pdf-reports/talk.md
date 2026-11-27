@@ -11,7 +11,8 @@ transition: slide
 A multi-page table report with the stdlib `pdf` module: fonts, measuring,
 right-aligned numbers, clipped columns, page breaks and "Page x of y".
 
-Based on **Jennifer 0.26.0**, November 2026, by [@mplx](https://github.com/mplx).
+November 2026, by [@mplx](https://github.com/mplx).\
+Based on **Jennifer 0.26.0**
 
 <!-- notes:
 We build one real program: a stock list of 130 articles, printed on A4

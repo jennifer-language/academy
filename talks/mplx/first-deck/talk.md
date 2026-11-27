@@ -11,7 +11,8 @@ transition: slide
 From an empty directory to a deck others install with `jvc`: the manifest,
 the source layout, tests, the shared CI gate, a tag, and the registry.
 
-Based on **Jennifer 0.27.0**, November 2026, by [@mplx](https://github.com/mplx).
+November 2026, by [@mplx](https://github.com/mplx).\
+Based on **Jennifer 0.27.0**
 
 <!-- notes:
 We build one small deck from start to finish: @mplx/beaufort, which turns a

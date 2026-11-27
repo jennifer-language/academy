@@ -12,7 +12,8 @@ Claude™, GPT and Gemini™ side by side, with the `@deckyard/anthropic`,
 `@deckyard/openai` and `@deckyard/gemini` decks: messages, tools, errors,
 and tests that need no key.
 
-Based on **Jennifer 0.27.0**, November 2026, by [@mplx](https://github.com/mplx).
+November 2026, by [@mplx](https://github.com/mplx).\
+Based on **Jennifer 0.27.0**
 
 <!-- notes:
 Three decks, one per vendor API, written in Jennifer over plain HTTPS. They

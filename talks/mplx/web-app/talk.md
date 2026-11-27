@@ -11,7 +11,8 @@ transition: slide
 Routes, forms, a database, logins, templates and CSRF protection, with
 nothing but the modules that ship with the interpreter.
 
-Based on **Jennifer 0.26.0**, November 2026, by [@mplx](https://github.com/mplx).
+November 2026, by [@mplx](https://github.com/mplx).\
+Based on **Jennifer 0.26.0**
 
 <!-- notes:
 We build Shelf, a reading list for a book club: members sign in, add books,

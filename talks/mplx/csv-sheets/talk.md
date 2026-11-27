@@ -11,7 +11,8 @@ transition: slide
 From a messy till export to an XLSX with formulas and number formats: the
 `csv` module and the `@deckyard/sheets` deck.
 
-Based on **Jennifer 0.27.0**, November 2026, by [@mplx](https://github.com/mplx).
+November 2026, by [@mplx](https://github.com/mplx).\
+Based on **Jennifer 0.27.0**
 
 <!-- notes:
 Almost every program that touches business data meets a CSV file sooner or

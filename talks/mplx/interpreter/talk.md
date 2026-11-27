@@ -12,7 +12,8 @@ transition: slide
 From source text to a running program: the pipeline, the runtime, and why the
 rules are what they are.
 
-Based on **Jennifer 0.26.0**, November 2026, by [@mplx](https://github.com/mplx).
+November 2026, by [@mplx](https://github.com/mplx).\
+Based on **Jennifer 0.26.0**
 
 <!-- notes:
 This talk is for people who want to change the interpreter, or who want to know

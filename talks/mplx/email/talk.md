@@ -11,7 +11,8 @@ transition: slide
 Composing, sending, reading and filtering mail with the modules that ship
 with the interpreter: `mime`, `smtp`, `imap` and `pop`.
 
-Based on **Jennifer 0.27.0**, November 2026, by [@mplx](https://github.com/mplx).
+November 2026, by [@mplx](https://github.com/mplx).\
+Based on **Jennifer 0.27.0**
 
 <!-- notes:
 This talk walks through email end to end: build a message, hand it to a

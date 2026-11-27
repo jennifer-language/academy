@@ -12,7 +12,8 @@ transition: fade
 Nine modules become decks, the 0.27 deprecations are removed, and the
 libraries agree on errors, caps and timeouts.
 
-Based on **Jennifer 0.28.0**, November 2026, by [@mplx](https://github.com/mplx).
+November 2026, by [@mplx](https://github.com/mplx).\
+Based on **Jennifer 0.28.0**
 
 <!-- notes:
 0.28.0 is milestone M29. It removes what 0.27.0 deprecated, moves the nine
