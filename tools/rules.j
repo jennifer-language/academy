@@ -98,6 +98,22 @@ export def const MIN_NOTE_WORDS as int init 40;
 /** The word in a fence's info string that marks a block as an excerpt. */
 export def const EXCERPT as string init "excerpt";
 
+/** The month names a "Rebased on Jennifer X, <Month YYYY>" line may use, January first. */
+export def const MONTHS as list of string init [
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December",
+];
+
 # ---------------------------------------------------------------------------
 # The code folder (rule 12): a talk's runnable programs in `code/`. These
 # lists are the one place its rules are defined; CONTRIBUTING.md documents
@@ -1056,16 +1072,55 @@ func checkFrontMatter(file as string, fm as FrontMatter) {
     return $out;
 }
 
-/** The finding when the text does not state the version academy.toml names. */
+/**
+ * The problems of each "Rebased on Jennifer X" line in `body`: it must end in
+ * the month of the rebase, ", <Month> <YYYY>", not before the talk's `date`.
+ */
+func rebaseProblems(body as string, date as string) {
+    def out as list of string;
+    def pattern as string init '(?m)Rebased on (?:\*\*)?Jennifer (?:\*\*)?[0-9]+\.[0-9]+\.[0-9]+' +
+        '[^\n]*?(?:, ([A-Za-z]+) ([0-9]{4}))?$';
+    for (def m in regex.findAll($pattern, $body)) {
+        def name as string init $m.groups[0];
+        if ($name == "") {
+            $out[] = "\"Rebased on Jennifer X\" must end in the month of the rebase, " +
+                "e.g. \", December 2026\"";
+        } elseif (not lists.contains(MONTHS, $name)) {
+            $out[] = "\"{$name}\" in \"Rebased on\" is not a month name, e.g. \"December\"";
+        } else {
+            def number as int init lists.indexOf(MONTHS, $name) + 1;
+            def month as string init $m.groups[1] + "-" + convert.toString($number);
+            if ($number < 10) {
+                $month = $m.groups[1] + "-0" + convert.toString($number);
+            }
+            if ($month < $date) {
+                $out[] = "the rebase ({$month}) is before the talk's date ({$date})";
+            }
+        }
+    }
+    return $out;
+}
+
+/**
+ * The findings when the text does not state the version academy.toml names
+ * ("Based on Jennifer X", or "Rebased on Jennifer X, <Month YYYY>" after an
+ * update), or a rebase line does not name a valid month.
+ */
 func checkVersion(file as string, m as meta.Meta, body as string) {
     def out as list of Finding;
     def valid as bool init regex.matches('^[0-9]+\.[0-9]+\.[0-9]+$', $m.jennifer);
-    if (not $valid or statesVersion($body, $m.jennifer)) {
+    if (not $valid) {
         return $out;
     }
     def v as string init $m.jennifer;
-    def why as string init "the text must state the version too: \"Based on Jennifer {$v}\"";
-    $out[] = finding($file, 0, "version", $why);
+    if (not statesVersion($body, $v)) {
+        def why as string init "the text must state the version too: \"Based on Jennifer {$v}\" " +
+            "(\"Rebased on Jennifer {$v}, <Month YYYY>\" after an update)";
+        $out[] = finding($file, 0, "version", $why);
+    }
+    for (def why in rebaseProblems($body, $m.date)) {
+        $out[] = finding($file, 0, "version", $why);
+    }
     return $out;
 }
 

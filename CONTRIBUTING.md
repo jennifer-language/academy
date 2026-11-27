@@ -158,7 +158,8 @@ transition: slide
 
 # Tasks and channels in practice
 
-Based on **Jennifer 0.26.0**, by [@octocat](https://github.com/octocat).
+November 2026, by [@octocat](https://github.com/octocat).\
+Based on **Jennifer 0.26.0**
 
 <!-- notes: what this talk covers, and for whom -->
 
@@ -179,6 +180,16 @@ large screen; <kbd>s</kbd> hides them, `?notes=0` in the URL starts without
 them). The build sets Cantrip's `notes: open` for that, so a talk does not set
 `notes` itself, and since the notes are part of what readers see, write them
 for readers as well as for yourself.
+
+Slide 1 ends with two lines, joined by a trailing `\` (a line break in the
+slideshow and the PDF): the month the talk was first given (`date` in
+academy.toml) with your link, then the Jennifer release (`jennifer`), plus any
+other tool the talk is built on (`Based on **Jennifer 0.27.0** and Cantrip
+0.7.3`). The first line never changes. When you update the talk to a newer
+Jennifer, changing only the code and small details, raise `jennifer` in
+academy.toml, keep `date`, and make the second line say so with the month of
+the update: `Rebased on **Jennifer 0.29.0**, December 2026`. A talk in another
+language writes both lines in that language.
 
 Put ™ after the first prose use of each third-party brand in a talk (slide
 text or notes, not code): `GitHub™`, later uses unmarked. Slide headings stay
@@ -314,7 +325,7 @@ each problem.
 | # | Rule | How it is checked |
 | --- | --- | --- |
 | 1 | **No external links or images.** Links point only into the Jennifer project (the allowlist below). Images are local files beside `talk.md`. | Every Markdown link and image target, reference definition, autolink and bare URL in the text, outside fenced code and code spans, is matched against the allowlist. |
-| 2 | **Front matter and catalogue entry.** `talk.md` sets `theme` and at most `mode`, `ratio` and `transition`; `academy.toml` follows the schema above. The slides state the Jennifer version from `academy.toml` ("Based on Jennifer 0.26.0"). | Front-matter keys are compared with the allowed list; `academy.toml` is parsed with Jennifer's `toml` module and every key validated; the text is searched for "Jennifer X.Y.Z". |
+| 2 | **Front matter and catalogue entry.** `talk.md` sets `theme` and at most `mode`, `ratio` and `transition`; `academy.toml` follows the schema above. The slides state the Jennifer version from `academy.toml` ("Based on Jennifer 0.26.0", or "Rebased on Jennifer 0.29.0, December 2026" after an update, see [talk.md](#talkmd)). | Front-matter keys are compared with the allowed list; `academy.toml` is parsed with Jennifer's `toml` module and every key validated; the text is searched for "Jennifer X.Y.Z"; a "Rebased on Jennifer X.Y.Z" line must end in a month name and year not before `date`. |
 | 3 | **Every slide has speaker notes of at least 40 words**, a `<!-- notes: ... -->` comment. Write what you would say: the explanation, the example you would give, the question you would ask the room. A reader of the published talk has only the slides and the notes. A closing imprint slide needs notes, but they may be short. | The slides are split the way Cantrip splits them; each needs a notes comment outside code, and its words are counted. |
 | 4 | **The talk builds with Cantrip without a warning.** A warning means a slide overflowed its page. | The talk is built with Cantrip; any `cantrip: warning:` line fails. |
 | 5 | **Every `jennifer` code block parses**, unless it is marked as an excerpt. | Each block is written to a file and run through `jennifer ast` (parse and name resolution); an excerpt through `jennifer tokens` (it must lex). |

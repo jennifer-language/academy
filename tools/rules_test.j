@@ -292,6 +292,47 @@ func testVersionMustBeStated() {
     testing.assertContains($found[0].message, "Based on Jennifer 0.27.0");
 }
 
+/** Check GOOD with its version line replaced by `line`, academy.toml naming `version`. */
+func checkedRebase(line as string, version as string) {
+    def text as string init swap(GOOD, "Based on Jennifer 0.26.0. ", $line + "\n\n");
+    def entry as string init swap(GOOD_META, "jennifer = \"0.26.0\"", "jennifer = \"{$version}\"");
+    def dir as string init makeTalkWith("ada", "talk", $text, $entry);
+    defer fs.removeAll(path.dir(path.dir(path.dir($dir))));
+    return checkTalk($dir, "ada", fast());
+}
+
+func testRebasedVersionPasses() {
+    testing.assertEqual(
+        checkedRebase("Rebased on **Jennifer 0.27.0**, December 2026", "0.27.0"),
+        []);
+    testing.assertEqual(checkedRebase("Rebased on Jennifer 0.27.0, October 2026", "0.27.0"), []);
+    testing.assertEqual(
+        checkedRebase("Rebased on **Jennifer 0.27.0** and Cantrip 0.9.0, December 2026", "0.27.0"),
+        []);
+}
+
+func testRebasedWrongVersionFails() {
+    def found as list of Finding init checkedRebase(
+        "Rebased on **Jennifer 0.27.0**, December 2026",
+        "0.28.0");
+    testing.assertEqual(rulesOf($found), ["version"]);
+    testing.assertContains($found[0].message, "Rebased on Jennifer 0.28.0, <Month YYYY>");
+}
+
+func testRebaseNamesItsMonth() {
+    def cases as list of list of string init [
+        ["Rebased on **Jennifer 0.27.0**", "must end in the month of the rebase"],
+        ["Rebased on Jennifer 0.27.0, December 2026.", "must end in the month of the rebase"],
+        ["Rebased on Jennifer 0.27.0, Dezember 2026", "is not a month name"],
+        ["Rebased on Jennifer 0.27.0, September 2026", "(2026-09) is before"],
+    ];
+    for (def c in $cases) {
+        def found as list of Finding init checkedRebase($c[0], "0.27.0");
+        testing.assertEqual(rulesOf($found), ["version"]);
+        testing.assertContains($found[0].message, $c[1]);
+    }
+}
+
 func testPrepareInjectsTheCatalogue() {
     def dir as string init makeTalk(
         "ada",
