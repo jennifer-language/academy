@@ -25,14 +25,14 @@ env:
   # The tools and cantrip need 0.26.0; a talk's code may need the newest release
   # (lint enforces its pragma floor), so this follows the releases. Not named
   # JENNIFER: the tools read that as the interpreter's path.
-  JENNIFER_REF: "0.27.0"
+  JENNIFER_REF: "0.28.0"
   # The cantrip release the talks are built with; 0.6.0 is the first that runs
   # the plugins a talk names in cantrip.toml.
-  CANTRIP_REF: "0.7.3"
+  CANTRIP_REF: "0.8.0"
   # The plugins a talk may name in cantrip.toml (PLUGINS in tools/rules.j), and
   # the renderers they run, as checked by the plugins' own READMEs.
-  GRIMOIRE_MERMAID_REF: "0.1.0"
-  GRIMOIRE_KATEX_REF: "0.1.0"
+  GRIMOIRE_MERMAID_REF: "0.2.0"
+  GRIMOIRE_KATEX_REF: "0.2.0"
   MERMAN_REF: "v0.10.0"
   KATEX_REF: "0.19.1"
 
