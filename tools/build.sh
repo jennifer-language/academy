@@ -80,15 +80,17 @@ for meta in talks/*/*/academy.toml; do
             handout="$dest/handout.pdf"
         fi
         mkdir -p "$dest"
-        cantrip html "$prepared" --out "$dest/index.html"
-        cantrip pdf "$prepared" --out "$pdf"
+        # --credit names cantrip on each talk's first slide (and so on the
+        # handout's first page), with a link to its repository.
+        cantrip html "$prepared" --out "$dest/index.html" --credit
+        cantrip pdf "$prepared" --out "$pdf" --credit
         # The handout's footer says where the slides live, for a printed copy.
         if [ "$kind" = primary ]; then
             url="https://$DOMAIN/talks/$user/$topic/"
         else
             url="https://$DOMAIN/talks/$user/$topic/$lang/"
         fi
-        cantrip handout "$prepared" --out "$handout" --footer "Jennifer Academy, $url"
+        cantrip handout "$prepared" --out "$handout" --credit --footer "Jennifer Academy, $url"
         # The slideshow keeps image paths as written, so a talk's images
         # sit beside each version's index.html, as they sit beside talk.md.
         # Its code/ is published once, by gallery.j, for every version.
