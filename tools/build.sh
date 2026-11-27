@@ -81,8 +81,10 @@ for meta in talks/*/*/academy.toml; do
         fi
         mkdir -p "$dest"
         # --credit names cantrip on each talk's first slide (and so on the
-        # handout's first page), with a link to its repository.
-        cantrip html "$prepared" --out "$dest/index.html" --credit
+        # handout's first page), with a link to its repository. The notes
+        # start on the right, where prose reads better than below the slide.
+        cantrip html "$prepared" --out "$dest/index.html" --credit \
+            --notes-place right --notes-title "Beyond the slide"
         cantrip pdf "$prepared" --out "$pdf" --credit
         # The handout's footer says where the slides live, for a printed copy.
         if [ "$kind" = primary ]; then
