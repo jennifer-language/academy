@@ -9,9 +9,10 @@ transition: slide
 ![Jennifer](jennifer-logo.png)
 
 A master, workers that find it on the local network, and jobs split into
-tasks: the design of demo-distributed.
+tasks: <https://github.com/jennifer-language/demo-distributed>
 
-Based on **Jennifer 0.28.0**, November 2026, by [@mplx](https://github.com/mplx).
+November 2026, by [@mplx](https://github.com/mplx).\
+Based on **Jennifer 0.28.0**
 
 <!-- notes:
 demo-distributed spreads computations over several machines. It handles
@@ -351,7 +352,7 @@ parameter, so its tests need no sockets and no sleeping.
 ```jennifer excerpt
 func worker(id as int, inbox as channel of Msg) {
     def reply as channel of int init channel.make(1);
-    while (true) {
+    while (true) { # lint-disable: L105
         channel.send($inbox, message("lease", $id, 0, 0, $reply));
         def index as int init channel.recv($reply);
         if ($index == DONE) {
@@ -410,7 +411,7 @@ run.
 | `wordcount` | slices of whole lines | text out, word maps back |
 | `exec` | a script name and arguments | a process start |
 
-The World English Bible: 925,038 words, "the" 67,866 times; identical to
+The World English Bible™: 925,038 words, "the" 67,866 times; identical to
 `distributed local`.
 
 <!-- notes:
@@ -452,7 +453,7 @@ worker serves exec only with an exec directory.
 ./bin/distributed submit wordcount -f input=data/web.txt.gz -o top=5 --wait
 ```
 
-Source: [demo-distributed](https://github.com/jennifer-language/demo-distributed)
+Source: <https://github.com/jennifer-language/demo-distributed>
 
 <!-- notes:
 Four terminals on one machine are enough. The sleep tasks share the slots

@@ -44,7 +44,7 @@ func message(what as string, id as int, index as int, value as int, reply as cha
 func worker(id as int, inbox as channel of Msg) {
     def reply as channel of int init channel.make(1);
     def failures as int init 0;
-    while (true) {
+    while (true) { # lint-disable: L105
         channel.send($inbox, message("lease", $id, 0, 0, $reply));
         def index as int init channel.recv($reply);
         if ($index == DONE) {
