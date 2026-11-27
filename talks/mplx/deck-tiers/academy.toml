@@ -1,0 +1,9 @@
+title = "Sharing your code as a deck: tiers, publishing and being found"
+description = "What a deck is, the four tiers from core to your own scope, starting from the deck template, publishing to the registry with jvc, how a deck moves to Skiffyard or Deckyard and back, and a checklist for being found."
+author = "mplx"
+license = "CC-BY-4.0"
+lang = "en"
+jennifer = "0.28.0"
+date = "2026-11"
+level = "beginner"
+tags = ["decks", "jvc", "registry", "documentation", "release"]
