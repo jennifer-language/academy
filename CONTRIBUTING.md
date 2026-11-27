@@ -181,11 +181,13 @@ them). The build sets Cantrip's `notes: open` for that, so a talk does not set
 `notes` itself, and since the notes are part of what readers see, write them
 for readers as well as for yourself.
 
-Slide 1 ends with two lines, joined by a trailing `\` (a line break in the
-slideshow and the PDF): the month the talk was first given (`date` in
-academy.toml) with your link, then the Jennifer release (`jennifer`), plus any
-other tool the talk is built on (`Based on **Jennifer 0.27.0** and Cantrip
-0.7.3`). The first line never changes. When you update the talk to a newer
+A talk built on code ends slide 1 with two lines, joined by a trailing `\` (a
+line break in the slideshow and the PDF): the month the talk was first given
+(`date` in academy.toml) with your link, then the Jennifer release
+(`jennifer`), plus any other tool the talk is built on (`Based on **Jennifer
+0.27.0** and Cantrip 0.7.3`). The version line is optional: a general talk may
+leave it off slide 1 and state the release elsewhere, on its closing slide for
+example (rule 2 only needs it somewhere). The first line never changes. When you update the talk to a newer
 Jennifer, changing only the code and small details, raise `jennifer` in
 academy.toml, keep `date`, and make the second line say so with the month of
 the update: `Rebased on **Jennifer 0.29.0**, December 2026`. A talk in another
